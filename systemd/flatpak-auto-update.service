@@ -1,0 +1,10 @@
+[Unit]
+Description=Flatpak Update and Snapper Snapshot Utility
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/flatpak-auto-update/env.conf
+ExecStart=/usr/bin/flatpak-auto-update
+User=root
