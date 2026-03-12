@@ -1,7 +1,7 @@
 Name:           flatpak-auto-update
 Version:        1.0.0
 Release:        1%{?dist}
-Summary:        Automated Flatpak updates with Snapper snapshots
+Summary:        Automated Flatpak updates with optional snapshots and mail notifications
 License:        GPL-3.0-or-later
 BuildArch:      noarch
 Requires:       flatpak, snapper, s-nail, systemd
