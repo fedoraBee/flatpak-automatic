@@ -4,29 +4,37 @@
 
 ---
 
+## 📖 Project Architecture & Vision
+
+This framework is designed to solve the "update-and-forget" challenge for Flatpak-heavy environments by bridging the gap between containerized application management and system-level recovery.
+
+### The "Safety-First" Engineering Pillars:
+* **Intelligent State Detection:** Implements **Universal Compatibility** via real-time probe of the host filesystem. If Snapper or Btrfs is unavailable, the engine self-reconfigures into a "Safe-Update" mode to ensure 100% uptime regardless of hardware abstraction.
+* **Zero-Waste Logic:** To preserve SSD endurance, the tool executes a `dry-run` analysis. If no updates are pending, the script terminates before a single disk write or snapshot is generated.
+* **Dynamic Notification Engine:** The engine parses the transaction buffer to provide high-signal subject lines (e.g., `[hostname] 5 new upgrades installed`), allowing for rapid fleet monitoring.
+
+---
+
 ## 🚀 Overview
 
-This utility ensures your Flatpak environment remains current without manual overhead. By leveraging Btrfs snapshots, it creates a reliable "time machine" for your applications. Starting with v1.0.3, it features **Universal Compatibility**, allowing it to run safely on systems with or without Snapper/Btrfs support.
+This utility ensures your Flatpak environment remains current without manual overhead. By leveraging Btrfs snapshots, it creates a reliable "time machine" for your applications. 
 
 ### Key Features
-- **Atomic-like Safety:** Automatically pairs Snapper `pre` and `post` snapshots for every successful update session.
-- **Universal Logic:** Automatically detects if Snapper/Btrfs is available; if not, it gracefully degrades to a safe "update-only" mode.
-- **Smart Notifications:** Subject lines dynamically include package counts: `[hostname] flatpak-auto-update: 5 new upgrades have been installed.`.
-- **Optimization-First:** Performs a zero-impact dry-run check to prevent unnecessary disk writes and snapshots.
-- **Developer Tooling:** Includes a dynamic build helper for rapid RPM generation and testing.
+* **Atomic-like Safety:** Automatically pairs Snapper `pre` and `post` snapshots for every update session.
+* **Universal Logic:** Gracefully degrades on non-Btrfs systems (XFS, EXT4, LVM).
+* **Smart Notifications:** Dynamic subject lines based on actual package modification counts.
+* **Developer Tooling:** Includes `build-rpm.sh` for rapid RPM generation and testing.
 
 ---
 
 ## 🛠 Technical Logic Flow (v1.0.3)
 
-1. **Safety Check:** The script verifies the Snapper configuration. If Btrfs or the specified config is missing, snapshots are disabled to prevent errors.
-2. **Zero-Impact Check:** Executes `flatpak update --dry-run`. If the system is current, the script terminates.
-3. **Pre-Update State:** A Snapper `pre` snapshot is generated (if enabled/supported).
-4. **Automated Execution:** Updates are applied in non-interactive mode (`flatpak update -y`).
-5. **Change Analysis:** The script parses the output to calculate exactly how many packages were modified.
-6. **Conditional Finalization:**
-   - **On Success:** A `post` snapshot is linked; a notification is sent with the dynamic package count.
-   - **On Failure:** Any "orphan" `pre` snapshot is purged to save space, and a failure report is dispatched.
+1.  **Safety Check:** Verifies Snapper configuration. Disables snapshots if requirements aren't met.
+2.  **Zero-Impact Check:** Executes `flatpak update --dry-run`.
+3.  **Pre-Update State:** Generates a Snapper `pre` snapshot (if supported).
+4.  **Automated Execution:** Applies updates in non-interactive mode (`-y`).
+5.  **Change Analysis:** Calculates exactly how many packages were modified.
+6.  **Conditional Finalization:** Links `post` snapshot on success or purges orphans on failure.
 
 ---
 
@@ -39,32 +47,22 @@ sudo dnf install flatpak-auto-update-1.0.3-1.*.noarch.rpm
 ```
 
 ### For Developers (Build from Source)
-The project includes a build helper `build-rpm.sh` in the project root to automate the RPM lifecycle.
-
-**To Build Only:**
+Use the build helper in the project root:
 ```bash
-./build-rpm.sh
-```
-
-**To Build and Install Locally:**
-```bash
-./build-rpm.sh --install
+chmod +x build-rpm.sh
+./build-rpm.sh --install --clean
 ```
 
 ---
 
 ## ⚙️ Usage
 
-The utility is managed by a systemd timer for automated daily maintenance.
-
 ### Check the Schedule
-To see the next scheduled execution:
 ```bash
 systemctl list-timers flatpak-auto-update.timer
 ```
 
 ### Manual Trigger
-To initiate an update cycle immediately:
 ```bash
 sudo systemctl start flatpak-auto-update.service
 ```
@@ -86,7 +84,6 @@ ENABLE_SNAPSHOTS=yes  # Set to "no" to force-disable snapshots
 
 # --- Notification Customization ---
 EMAIL_FROM_DISPLAY="Fedora Bot"
-# Subject lines support $UPDATE_COUNT and $(hostname)
 EMAIL_SUBJECT_SUCCESS="[$(hostname)] flatpak-auto-update: \$UPDATE_COUNT new upgrades have been installed."
 
 # --- Advanced Provider Settings ---
@@ -97,12 +94,12 @@ SNAPPER_CONFIG="root"
 
 ## 📋 Dependencies & Compatibility
 
-* **flatpak**: Application lifecycle management.
-* **snapper**: Btrfs snapshot orchestration (Optional/Detected).
-* **mailx/s-nail**: SMTP notification delivery.
-* **systemd**: Service scheduling and logging.
+* **flatpak**: Application management.
+* **snapper**: Snapshot orchestration (Optional).
+* **mailx/s-nail**: SMTP delivery.
+* **systemd**: Scheduling and logging.
 
-*Compatible with Fedora, RHEL, and other modern RPM-based distributions.*
+*Compatible with Fedora, RHEL, and modern RPM-based distributions.*
 
 ---
 *License: GPL-3.0-or-later* *Maintained by fedoraBee - 2026*
