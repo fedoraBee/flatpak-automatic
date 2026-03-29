@@ -1,7 +1,7 @@
 #!/bin/bash
 ################################################################################
 # Flatpak Auto Update (Linux Professional Edition)
-# Version: 1.0.1
+# Version: 1.0.2
 # Author: fedoraBee
 # Source: https://github.com/fedoraBee/flatpak-auto-update
 #
@@ -26,7 +26,7 @@ EMAIL_FROM_DISPLAY="${EMAIL_FROM_DISPLAY:-Fedora Bot}"
 # The Subject now uses a variable $UPDATE_COUNT which is calculated later
 EMAIL_SUBJECT_SUCCESS="${EMAIL_SUBJECT_SUCCESS:-[$(hostname)] flatpak-auto-update: \$UPDATE_COUNT new upgrades have been installed.}"
 EMAIL_SUBJECT_FAILURE="${EMAIL_SUBJECT_FAILURE:-[$(hostname)] flatpak-auto-update: FAILED}"
-MAIL_CMD="${MAIL_CMD:-mailx -S sendwait -r \"\$EMAIL_FROM_DISPLAY <\$email_from>\" -s \"\$1\" \"\$2\"}"
+MAIL_CMD="${MAIL_CMD:-mailx -S sendwait -r \"\$EMAIL_FROM_DISPLAY <\$EMAIL_FROM>\" -s \"\$1\" \"\$2\"}"
 EMAIL_BODY_SUCCESS="${EMAIL_BODY_SUCCESS:-\$UPDATE_OUT}"
 EMAIL_BODY_FAILURE="${EMAIL_BODY_FAILURE:-\$UPDATE_OUT}"
 
@@ -40,8 +40,8 @@ SNAPPER_DELETE_CMD="${SNAPPER_DELETE_CMD:-snapper -c \"\$SNAPPER_CONFIG\" delete
 
 # Validation for email if enabled
 if [[ "$ENABLE_EMAIL" == "yes" ]]; then
-    : "${email_to:? 'Set email_to in $CONFIG_FILE or disable ENABLE_EMAIL'}"
-    : "${email_from:? 'Set email_from in $CONFIG_FILE or disable ENABLE_EMAIL'}"
+    : "${EMAIL_TO:? 'Set EMAIL_TO in $CONFIG_FILE or disable ENABLE_EMAIL'}"
+    : "${EMAIL_FROM:? 'Set EMAIL_FROM in $CONFIG_FILE or disable ENABLE_EMAIL'}"
 fi
 
 # Helper to send notifications
@@ -94,12 +94,12 @@ if [ "$UPDATED" = true ]; then
     fi
     # Send success email
     if [[ "$ENABLE_EMAIL" == "yes" ]]; then
-        send_notification "$EMAIL_SUBJECT_SUCCESS" "$email_to" "$EMAIL_BODY_SUCCESS"
+        send_notification "$EMAIL_SUBJECT_SUCCESS" "$EMAIL_TO" "$EMAIL_BODY_SUCCESS"
     fi
 elif [ "$EXIT_CODE" -ne 0 ]; then
     # Send failure email
     if [[ "$ENABLE_EMAIL" == "yes" ]]; then
-        send_notification "$EMAIL_SUBJECT_FAILURE" "$email_to" "$EMAIL_BODY_FAILURE"
+        send_notification "$EMAIL_SUBJECT_FAILURE" "$EMAIL_TO" "$EMAIL_BODY_FAILURE"
     fi
     # Cleanup orphan pre-snapshot
     if [[ "$ENABLE_SNAPSHOTS" == "yes" && -n "$PRE_NUM" ]]; then

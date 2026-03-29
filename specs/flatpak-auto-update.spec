@@ -1,5 +1,5 @@
 Name:           flatpak-auto-update
-Version:        1.0.1
+Version:        1.0.2
 Release:        1%{?dist}
 Summary:        Automated Flatpak updates with optional snapshots and mail notifications
 License:        GPL-3.0-or-later
@@ -34,11 +34,15 @@ cp %{_sourcedir}/LICENSE .
 %dir %{_sysconfdir}/flatpak-auto-update
 %config(noreplace) %{_sysconfdir}/flatpak-auto-update/env.conf
 
-# These macros now look in the current directory (BUILD), where we just copied them
+# Documentation macros look in the current BUILD directory
 %license LICENSE
 %doc README.md
 
 %changelog
+* Sun Mar 29 2026 Alex <alex@localhost> - 1.0.2-1
+- Standardized configuration variables to UPPERCASE (EMAIL_TO, EMAIL_FROM).
+- Improved internal script consistency and documentation.
+
 * Sun Mar 29 2026 Alex <alex@localhost> - 1.0.1-1
 - Fixed macro path resolution for LICENSE and README.
 - Added dynamic package count to email subject line.

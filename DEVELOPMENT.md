@@ -43,7 +43,7 @@ sudo dnf install fedora-packager rpm-build shellcheck rpmlint
 
 3. **Install/Update the package:**
    ```bash
-   sudo dnf reinstall ~/rpmbuild/RPMS/noarch/flatpak-auto-update-1.0.1-1.*.noarch.rpm
+   sudo dnf reinstall ~/rpmbuild/RPMS/noarch/flatpak-auto-update-1.0.2-1.*.noarch.rpm
    ```
 
 ## 🧪 Testing Logic

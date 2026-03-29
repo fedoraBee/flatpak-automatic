@@ -16,7 +16,7 @@ This utility ensures your Flatpak environment remains current without manual ove
 
 ---
 
-## 🛠 Technical Logic Flow (v1.0.1)
+## 🛠 Technical Logic Flow (v1.0.2)
 
 1. **Zero-Impact Check:** Executes `flatpak update --dry-run`. If the system is current, the script terminates.
 2. **Pre-Update State:** A Snapper `pre` snapshot is generated to secure the current system state.
@@ -33,7 +33,7 @@ This utility ensures your Flatpak environment remains current without manual ove
 Install the utility using the generated RPM package:
 
 ```bash
-sudo dnf install ~/rpmbuild/RPMS/noarch/flatpak-auto-update-1.0.1-1.*.noarch.rpm
+sudo dnf install ~/rpmbuild/RPMS/noarch/flatpak-auto-update-1.0.2-1.*.noarch.rpm
 ```
 
 ---
@@ -87,8 +87,8 @@ Settings are managed in `/etc/flatpak-auto-update/env.conf`. This file supports 
 
 ```bash
 # --- Core Identification ---
-email_from="bot@$(hostname)"
-email_to="admin@example.com"
+EMAIL_FROM="bot@$(hostname)"
+EMAIL_TO="admin@example.com"
 
 # --- Feature Toggles ---
 ENABLE_EMAIL=yes
