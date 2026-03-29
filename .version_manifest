@@ -1,0 +1,28 @@
+# Flatpak Auto Update - Project Metadata Manifest
+# Generated: 2026-03-29
+
+project_identity:
+  name: "flatpak-auto-update"
+  vendor: "fedoraBee"
+  license: "GPL-3.0-or-later"
+
+release_versioning:
+  current_tag: "v1.0.3"
+  spec_version: "1.0.3"
+  spec_release: "1"
+  logic_standard: "v1.0.3-universal"
+
+engineering_standards:
+  shell_flags: "set -euo pipefail"
+  filesystem_logic: "hybrid-btrfs-safe"
+  config_convention: "UPPERCASE_ENV"
+  build_helper: "build-rpm.sh"
+
+documentation_sync:
+  readme: "v1.0.3-updated"
+  changelog: "synchronized"
+  contributing: "standardized"
+
+vcs_comparison:
+  previous_tag: "v1.0.2"
+  compare_path: "compare/v1.0.2...v1.0.3"
