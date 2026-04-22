@@ -10,7 +10,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- **Consistency**: Replaced legacy `flatpak-auto-update` references with `flatpak-automatic` across sysconfig and automation scripts.
+- **Consistency**: Replaced legacy `flatpak-auto-update` references with
+  `flatpak-automatic` across sysconfig and automation scripts.
 
 ## [1.1.1] - 2026-04-22
 
