@@ -78,28 +78,32 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git config --global --add safe.directory '*'
 
+      - name: Prepare Public Directory
+        run: |
+          mkdir -p public/rpms
+          cp -r repo/* public/rpms/
+
       - name: Generate Static Index
         run: |
           chmod +x .github/scripts/generate-index.sh
           .github/scripts/generate-index.sh
 
       - name: Debug Repository Contents
-        run: ls -R repo
+        run: ls -R public
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: repo
-          destination_dir: rpms
+          publish_dir: public
           keep_files: true
 
       - name: Upload Repository Artifact
         uses: actions/upload-artifact@v6
         with:
           name: dnf-repo
-          path: repo/
+          path: public/
 
       - name: Create Release
         uses: softprops/action-gh-release@v2

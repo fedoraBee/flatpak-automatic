@@ -6,6 +6,15 @@ The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2026-04-22
+
+### Changed
+
+- **Build System**: Refactored CI/CD deployment architecture to use a `public/`
+  staging directory for GitHub Pages.
+- **Documentation**: Overhauled the static `index.html` landing page to provide
+  a modern, styled installation guide at the repository root.
+
 ## [1.1.2] - 2026-04-22
 
 ### Changed
