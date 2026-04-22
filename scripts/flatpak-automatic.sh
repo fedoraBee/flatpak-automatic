@@ -1,6 +1,6 @@
 #!/bin/bash
 ################################################################################
-# Flatpak Auto Update (Linux Professional Edition)
+# Flatpak Automatic
 # Version: 1.0.3
 # Author: fedoraBee
 # Source: https://github.com/fedoraBee/flatpak-automatic

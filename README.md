@@ -13,11 +13,13 @@ RPM-based distributions.
 ## ✨ Features
 
 - **Automated Updates** – Keeps your Flatpak applications up to date
-- **Atomic-like Rollbacks** – Integrates with Snapper/Btrfs for pre/post snapshots
+- **Atomic-like Rollbacks** – Integrates with Snapper/Btrfs for pre/post
+  snapshots
 - **Smart Execution** – Dry-run checks prevent unnecessary snapshots and logs
 - **Notifications** – Sends update reports via local mail (`s-nail`/`mailx`)
 - **Systemd Integration** – Managed via standard oneshot services and timers
-- **Configurable** – Easily tune email, snapshot, and scheduling behavior via `/etc/sysconfig/flatpak-automatic`
+- **Configurable** – Easily tune email, snapshot, and scheduling behavior via
+  `/etc/sysconfig/flatpak-automatic`
 
 ## 📦 Installation via DNF (Recommended)
 
@@ -119,5 +121,5 @@ Makefile, RPM spec, and CHANGELOG.
 
 ## ⚠️ Disclaimer
 
-This is an independent project and not affiliated with Fedora or the Flatpak project.
-Use at your own discretion.
+This is an independent project and not affiliated with Fedora or the Flatpak
+project. Use at your own discretion.

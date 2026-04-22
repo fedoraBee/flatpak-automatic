@@ -1,6 +1,6 @@
 # ==============================================================================
-# Flatpak Auto Update - Configuration File
-# Location: /etc/flatpak-auto-update/env.conf
+# Flatpak Automatic - Configuration File
+# Location: /etc/sysconfig/flatpak-automatic
 # ==============================================================================
 
 # --- [ Email Notification Settings ] ---
@@ -19,8 +19,8 @@ EMAIL_FROM_DISPLAY="Fedora Auto-Updater"
 # --- [ Dynamic Email Subjects ] ---
 # Use \$UPDATE_COUNT for package count and \$(hostname) for machine name.
 # Note: Variables must be escaped with a backslash (\) to be evaluated by the script.
-EMAIL_SUBJECT_SUCCESS="[$(hostname)] flatpak-auto-update: \$UPDATE_COUNT new upgrades have been installed."
-EMAIL_SUBJECT_FAILURE="[$(hostname)] flatpak-auto-update: FAILED"
+EMAIL_SUBJECT_SUCCESS="[$(hostname)] flatpak-automatic: \$UPDATE_COUNT new upgrades have been installed."
+EMAIL_SUBJECT_FAILURE="[$(hostname)] flatpak-automatic: FAILED"
 
 # --- [ Snapshot Settings ] ---
 # Set to "yes" to create Snapper pre/post snapshots, "no" to disable.
@@ -32,8 +32,8 @@ ENABLE_SNAPSHOTS="yes"
 SNAPPER_CONFIG="root"
 
 # Descriptions that will appear in 'snapper list'.
-SNAPPER_DESC_PRE="flatpak-auto-update-pre"
-SNAPPER_DESC_POST="flatpak-auto-update-post"
+SNAPPER_DESC_PRE="flatpak-automatic-pre"
+SNAPPER_DESC_POST="flatpak-automatic-post"
 
 # --- [ Advanced Overrides ] ---
 # Only modify these for non-standard mail clients or custom snapshot logic.
