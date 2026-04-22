@@ -6,6 +6,23 @@ The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-04-22
+
+### Changed
+
+- **Build System**: Modernized the RPM build process using a `.spec.in` template
+  and a centralized `.rpmbuild` directory.
+- **Metadata Automation**: Enhanced `update-rpm-metadata.py` to handle epoch,
+  release numbers, and Makefile-integrated versioning.
+- **CI/CD**: Upgraded GitOps PR tool to v3 with template-aware validation and
+  automated rebase logic.
+- **Linting**: Removed unused filters.
+
+### Fixed
+
+- **CI/CD**: Updated GitHub workflows and scripts to reflect the new `.rpmbuild`
+  directory and `repo` path architecture.
+
 ## [1.1.0] - 2026-04-22
 
 ### Changed
@@ -14,6 +31,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   project dependencies (Flatpak, Snapper, systemd) and remove legacy references.
 - **Versioning**: Bumped minor version to `1.1.0` to reflect stable
   architectural alignment.
+
+### Fixed
+
+- **Packaging**: Expanded 'pre' to 'pre-update' in the spec description to
+  resolve rpmlint spelling warnings.
+- **Packaging**: Suppressed rpmlint warnings for missing man pages,
+  `incoherent-version-in-changelog`, and empty `%%preun` scriptlets.
 
 ## [1.0.3] - 2026-03-29
 
@@ -34,7 +58,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Variable Refactoring:** Standardized environment variables to **UPPERCASE**
   (`EMAIL_TO`, `EMAIL_FROM`, etc.).
 - **Metadata Sync:** Optimized the `.spec` file to include all new documentation
-  in the `%doc` payload.
+  in the `%%doc` payload.
 
 ## [1.0.2] - 2026-03-29
 

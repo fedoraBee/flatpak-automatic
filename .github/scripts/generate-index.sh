@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Directory to scan (e.g., rpmbuild/repo or the destination directory)
-DEPLOY_DIR="rpmbuild/repo"
+DEPLOY_DIR="repo"
 
 # Output file (place index.html in the repo directory)
 OUTPUT_FILE="$DEPLOY_DIR/index.html"

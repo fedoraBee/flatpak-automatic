@@ -1,10 +1,13 @@
 # Makefile for flatpak-automatic
 
 NAME := flatpak-automatic
-VERSION := 1.1.0
-RPM_VERSION := $(subst -,~,$(VERSION))
-BUILD_DIR := $(CURDIR)/rpmbuild
-RPM_DIR := $(BUILD_DIR)/RPMS/noarch
+EPOCH := 1
+VERSION := 1.1.1
+REL_NUM := 1
+DATE := $(shell LC_ALL=C date +"%a %b %d %Y")
+AUTHOR := "fedoraBee <9395414+fedoraBee@users.noreply.github.com>"
+TOPDIR := $(CURDIR)/.rpmbuild
+
 PREFIX ?= /usr
 SYSCONFDIR ?= /etc
 
@@ -15,10 +18,9 @@ all:
 
 prep:
 	@echo "Preparing RPM build environment..."
-	rm -rf $(RPM_DIR)/*.rpm
-	mkdir -p $(BUILD_DIR)/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+	mkdir -p $(TOPDIR)/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 	@echo "Generating RPM changelog..."
-	$(CURDIR)/scripts/update-rpm-metadata.py --version $(RPM_VERSION) --spec $(CURDIR)/rpm/$(NAME).spec --changelog-in $(CURDIR)/CHANGELOG.md --changelog-out $(BUILD_DIR)/changelog
+	$(CURDIR)/scripts/update-rpm-metadata.py --epoch $(EPOCH) --version $(VERSION) --rel-num $(REL_NUM) --spec-in $(CURDIR)/rpm/$(NAME).spec.in --spec-out $(TOPDIR)/SPECS/$(NAME).spec --makefile $(CURDIR)/Makefile --date "$(DATE)" --changelog-in $(CURDIR)/CHANGELOG.md
 rpm: prep rpm-build
 
 lint: lint-shell lint-md lint-spec
@@ -34,12 +36,10 @@ lint-md:
 	fi
 
 lint-spec: prep
-	@echo "%_topdir $(BUILD_DIR)" > $(BUILD_DIR)/.rpmmacros
-	@echo "%_version $(RPM_VERSION)" >> $(BUILD_DIR)/.rpmmacros
-	HOME=$(BUILD_DIR) rpmlint -v -r $(CURDIR)/rpm/flatpak-automatic.spec.rpmlintrc --ignore-unused-rpmlintrc $(CURDIR)/rpm/$(NAME).spec
+	rpmlint -v -r $(CURDIR)/rpm/flatpak-automatic.spec.rpmlintrc --ignore-unused-rpmlintrc $(TOPDIR)/SPECS/$(NAME).spec
 
 lint-rpm:
-	rpmlint -v -r $(CURDIR)/rpm/flatpak-automatic.rpm.rpmlintrc --ignore-unused-rpmlintrc $(RPM_DIR)/*.rpm
+	rpmlint -v -r $(CURDIR)/rpm/flatpak-automatic.rpm.rpmlintrc --ignore-unused-rpmlintrc $(TOPDIR)/RPMS/noarch/*.rpm
 
 install:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
@@ -51,40 +51,40 @@ install:
 	install -p -m 644 systemd/flatpak-automatic.timer $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.timer
 
 rpm-build:
-	@echo "Building RPM packages..."
-	tar -czf $(BUILD_DIR)/SOURCES/$(NAME)-$(RPM_VERSION).tar.gz --exclude=.git --exclude=rpmbuild --transform 's|^|$(NAME)-$(RPM_VERSION)/|' .
-	rpmbuild -ba $(CURDIR)/rpm/$(NAME).spec --define "_version $(RPM_VERSION)" --define "_topdir $(BUILD_DIR)"
-	@echo "RPMs built in $(RPM_DIR)"
+	@echo "Building RPM for $(NAME) $(EPOCH):$(VERSION)-$(REL_NUM)..."	
+	tar -czf $(TOPDIR)/SOURCES/$(NAME)-$(VERSION).tar.gz --exclude='.git' --exclude=.rpmbuild .
+	rpmbuild --define "_topdir $(TOPDIR)" -ba $(TOPDIR)/SPECS/$(NAME).spec
+	@echo "RPM build complete. Output located in $(TOPDIR)/RPMS/noarch/"
 
 rpm-sign:
 	@echo "Signing RPM packages..."
-	@for f in $(RPM_DIR)/*.rpm; do \
-		if [ -f "$$f" ]; then \
-			echo "Signing $$f..."; \
-			if [ -n "$(GPG_KEY_ID)" ]; then \
-				rpmsign --addsign "$$f" --define "_gpg_name $(GPG_KEY_ID)" || { \
-					echo "Conflict detected, removing old signature and re-signing..."; \
-					rpmsign --delsign "$$f"; \
-					rpmsign --addsign "$$f" --define "_gpg_name $(GPG_KEY_ID)"; \
-				}; \
-			elif [ -n "$$(rpm --eval '%{?_gpg_name}')" ]; then \
-				rpmsign --addsign "$$f" || { \
-					echo "Conflict detected, removing old signature and re-signing..."; \
-					rpmsign --delsign "$$f"; \
-					rpmsign --addsign "$$f"; \
-				}; \
-			else \
-				echo "Error: GPG_KEY_ID is not set and %_gpg_name macro is not defined."; \
-				echo "Use: make sign GPG_KEY_ID=<your-key-id> or configure ~/.rpmmacros"; \
-				exit 1; \
-			fi; \
-		fi; \
-	done
+	@for f in $(TOPDIR)/RPMS/noarch/*.rpm; do \
+        if [ -f "$$f" ]; then \
+            echo "Signing $$f..."; \
+            if [ -n "$(GPG_KEY_ID)" ]; then \
+                rpmsign --addsign "$$f" --define "_gpg_name $(GPG_KEY_ID)" || { \
+                    echo "Conflict detected, removing old signature and re-signing..."; \
+                    rpmsign --delsign "$$f"; \
+                    rpmsign --addsign "$$f" --define "_gpg_name $(GPG_KEY_ID)"; \
+                }; \
+            elif [ "$$(rpm --eval '%{?_gpg_name}')" != "%{?_gpg_name}" ]; then \
+                rpmsign --addsign "$$f" || { \
+                    echo "Conflict detected, removing old signature and re-signing..."; \
+                    rpmsign --delsign "$$f"; \
+                    rpmsign --addsign "$$f"; \
+                }; \
+            else \
+                echo "Error: GPG_KEY_ID is not set and %_gpg_name macro is not defined."; \
+                echo "Use: make rpm-sign GPG_KEY_ID=<your-key-id> or configure ~/.rpmmacros"; \
+                exit 1; \
+            fi; \
+        fi; \
+    done
 
 CHANNEL ?= $(or $(channel),stable)
 
 rpm-repo:
-	$(CURDIR)/scripts/update-repo.sh $(RPM_DIR) $(VERSION) $(CHANNEL) "$(GPG_KEY_ID)"
+	$(CURDIR)/scripts/update-repo.sh $(TOPDIR)/RPMS/noarch $(VERSION) $(CHANNEL) "$(GPG_KEY_ID)" $(CURDIR)/repo
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(TOPDIR)
