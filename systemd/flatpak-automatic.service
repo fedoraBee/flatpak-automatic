@@ -5,6 +5,6 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-EnvironmentFile=-/etc/flatpak-auto-update/env.conf
-ExecStart=/usr/bin/flatpak-auto-update
+EnvironmentFile=-/etc/sysconfig/flatpak-automatic
+ExecStart=/usr/bin/flatpak-automatic
 User=root

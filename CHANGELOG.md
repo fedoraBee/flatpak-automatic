@@ -1,33 +1,834 @@
 # Changelog
 
-All notable changes to the **Flatpak Auto Update** project will be documented in this file.
+All notable changes to this project will be documented in this file.
 
-## [1.0.3] - 2026-03-29
+The format is based on
+[Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
+adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.5.0-rc5] - 2026-04-21
+
 ### Added
-- **Build Automation:** Introduced `build-rpm.sh`, a dynamic helper script that extracts versioning from the SPEC file and automates the full build lifecycle.
-- **Universal Compatibility:** Added filesystem safety checks to automatically detect Snapper/Btrfs support. The script now gracefully degrades to "Update-Only" mode on non-Btrfs systems.
-- **Open Source Governance:** Added `CONTRIBUTING.md` and `DEVELOPMENT.md` to establish standards and local setup guides.
-- **Fail-Fast Logic:** Integrated `set -euo pipefail` and validation checks for reliability.
 
-### Changed
-- **Variable Refactoring:** Standardized environment variables to **UPPERCASE** (`EMAIL_TO`, `EMAIL_FROM`, etc.).
-- **Metadata Sync:** Optimized the `.spec` file to include all new documentation in the `%doc` payload.
+- **Documentation**: Added `MIGRATION.md` to clarify the non-breaking upgrade
+  path from `v0.4.x` to `v0.5.x` and document the opt-in SQLite to PostgreSQL
+  migration workflow.
 
-## [1.0.2] - 2026-03-29
-### Changed
-- **Internal Refactor:** Improved shell logic consistency and variable validation.
-- **Reporting:** Optimized notification logic with late-binding variable evaluation.
+## [0.5.0-rc4] - 2026-04-21
 
-## [1.0.1] - 2026-03-29
 ### Added
-- **Dynamic Subjects:** Email subjects now include the count of updated packages using regex parsing.
-- **Optimization:** Added a zero-impact dry-run check to prevent unnecessary disk writes/snapshots.
+
+- **CI/CD**: Added an automated test in the CI smoke test workflow to validate
+  the `backup-ai-stack.sh` script execution and verify archive creation.
+
+## [0.5.0-rc3] - 2026-04-21
+
+### Security
+
+- **Network Hardening**: Bound pod ports to `127.0.0.1` by default in Quadlets
+  and Makefile to prevent accidental public exposure of Ollama and Open WebUI on
+  cloud VPS deployments.
+
+## [0.5.0-rc2] - 2026-04-21
 
 ### Fixed
-- **RPM Build:** Corrected macro path resolution for `LICENSE` and `README.md` within the buildroot.
 
-## [1.0.0] - 2026-03-12
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed RPM linting and build errors for pre-releases by
+  automatically translating hyphens to tildes (`-` to `~`) in the RPM `Version`
+  spec tag.
+
+### Security
+
+- **Secrets Management**: Added native Podman Secrets support to
+  `postgres.container.in` and `open-webui.container.in` for handling database
+  passwords and API keys securely.
+- **Documentation**: Added a Secrets Management runbook to `README.md` detailing
+  how to initialize and consume Podman secrets.
+
+## [0.4.15] - 2026-04-21
+
 ### Added
-- Initial release with Snapper pre/post snapshot integration.
-- Systemd timer and service for daily automation.
-- Email reporting via `s-nail/mailx`.
+
+- **Documentation**: Added `HARDWARE.md` containing hardware sizing guidelines
+  (VRAM/RAM) for various LLM models.
+- **Resource Management**: Documented instructions in `HARDWARE.md` for
+  dynamically overriding container CPU and Memory limits using systemd drop-in
+  files without modifying managed Quadlets.
+
+## [0.4.14] - 2026-04-21
+
+### Added
+
+- **Developer Experience**: Added `.pre-commit-config.yaml` to run `shellcheck`,
+  `actionlint`, and `markdownlint` locally before committing.
+- **Automation**: Integrated `renovate.json` to automatically manage updates for
+  GitHub Actions and Docker image dependencies defined in the Makefile.
+
+## [0.4.13] - 2026-04-21
+
+### Added
+
+- **Scalability**: Added an optional `postgres.container.in` Quadlet template
+  and documented `DATABASE_URL` in sysconfig to support decoupling Open WebUI
+  state into a robust PostgreSQL database.
+
+## [0.4.12] - 2026-04-21
+
+### Added
+
+- **Disaster Recovery**: Added `scripts/backup-ai-stack.sh` and documentation in
+  README for safely snapshotting Open WebUI and Ollama volumes without
+  corrupting active database writes.
+
+## [0.4.11] - 2026-04-21
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed RPM linting and build errors for pre-releases by
+  automatically translating hyphens to tildes (`-` to `~`) in the RPM `Version`
+  spec tag.
+
+### Security
+
+- **Containers**: Enforced `ReadOnly=true` for both Open WebUI and Ollama to
+  prevent malicious persistence.
+- **Containers**: Added `DropCapability=all` to drop unnecessary default root
+  capabilities.
+- **Ollama**: Replaced `SecurityLabelDisable=true` with strict SELinux volume
+  labeling (`:Z`) to maintain container boundaries.
+
+## [0.4.7] - 2026-04-20
+
+### Added
+
+- New `PublishPort` directive to `flatpak-automatic.pod.in` to expose the Ollama
+  API port (default: 11434).
+- Added `ExecStartPre` directives to container templates to ensure images are
+  pre-pulled before service startup.
+
+### Changed
+
+- Updated `Makefile` to include `OLLAMA_PORT` variable and substitution logic.
+
+## [0.4.6] - 2026-04-19
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Fixed `update-rpm-metadata.py` script failing to update the
+  spec version when `--version` argument is explicitly passed, and improved
+  regex to support pre-release tags in changelog parsing.
+- Resolved `rpmlint` spec file parsing error by updating the `lint-spec`
+  Makefile target to properly define `_topdir` and `_version` macros for
+  `rpmlint` in CI environments, ensuring the `%include` directive for the
+  changelog is correctly resolved.
+
+### Changed
+
+- Harmonized workflow job and naming across `ci.yml` and `release.yml` for
+  better consistency. Used `ci-` prefix for all CI jobs and `release-` prefix
+  for release workflow jobs.
+- Fixed a reference error in the `smoke-test` job in `ci.yml` where it was
+  referencing a non-existent `build` job.
+- Enforced English as the mandatory language for all project file edits,
+  including code, comments, and documentation.
+- Updated `AGENTS.md` and internal instructions to include Markdown linting
+  rules (specifically MD013 for line length).
+- Added a synchronization requirement between the primary instruction file and
+  `AGENTS.md` to ensure they remain identical.
+- Updated `smoke-test` job in `ci.yml` to correctly reference the artifact ID
+  from the renamed `build` job.
+
+## [0.4.5] - 2026-04-19
+
+### Added
+
+- New `prep` target in `Makefile` to automate build environment setup and
+  changelog generation.
+- Integrated `scripts/changelog-to-rpm.py` logic into
+  `scripts/update-rpm-metadata.py` with full `argparse` support.
+- Added `rpm/flatpak-automatic.spec.rpmlintrc` and
+  `rpm/flatpak-automatic.rpm.rpmlintrc` for more precise linter control.
+- `AGENTS.md` is now tracked in git (removed from `.gitignore`).
+
+### Changed
+
+- Refactored `Makefile` with improved variable definitions (`BUILD_DIR`,
+  `RPM_DIR`) and renamed targets (`rpm-sign`, `rpm-repo`).
+- Updated `rpm/flatpak-automatic.spec` to use `%{_version}` macro and dynamic
+  changelog inclusion from `%{_topdir}`.
+- Relocated and consolidated markdownlint configuration to
+  `rpm/.markdownlint.jsonc`.
+- Synchronized all documentation (`README.md`, `DEVELOPMENT.md`,
+  `CONTRIBUTING.md`, `AGENTS.md`) with the new build system structure.
+- Updated `.gitignore` to ignore `.gemini/` directory.
+- Justified how gitops pr cli tool handles the spec file version check and
+  improved pr title extraction from commit messages.
+
+### Removed
+
+- Deleted legacy `GEMINI.md` in favor of `AGENTS.md`.
+- Removed `scripts/changelog-to-rpm.py` as it was merged into
+  `update-rpm-metadata.py`.
+- Deleted top-level and `.github/` markdownlint config files.
+
+## [0.4.4] - 2026-04-18
+
+### Changed
+
+- Renamed `scripts/changelog-to-rpm.py` to `scripts/update-rpm-metadata.py` to
+  reflect expanded functionality.
+- Implemented automated synchronization of the RPM spec file's `Version` field
+  from `Makefile`'s `VERSION` variable using `scripts/update-rpm-metadata.py`.
+- Updated `Makefile` to utilize `scripts/update-rpm-metadata.py` for both RPM
+  changelog generation and spec file version synchronization.
+- Updated `CONTRIBUTING.md`, `DEVELOPMENT.md`, and `README.md` to reflect the
+  automated spec file versioning and to clarify version synchronization
+  guidelines.
+- Enhanced `scripts/gitops-pr-cli-tool.sh` to include validation for the
+  `Makefile`'s `VERSION` variable.
+
+## [0.4.3] - 2026-04-18
+
+### Added
+
+- Automated RPM changelog generation from `CHANGELOG.md` using
+  `scripts/changelog-to-rpm.py`.
+- Integrated changelog automation into the `Makefile` and RPM spec file via
+  `%include`.
+- New Filter rule to `rpm/flatpak-automatic.rpmlintrc` to allow `%include` macro
+  in changelog section.
+
+## [0.4.2] - 2026-04-17
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Fixed `update-rpm-metadata.py` script failing to update the
+  spec version when `--version` argument is explicitly passed, and improved
+  regex to support pre-release tags in changelog parsing.
+- Ensured the backup in `scripts/git-clean-switch-tool.sh` is consistently made
+  from the base branch before reset.
+
+## [0.4.1] - 2026-04-17
+
+### Added
+
+- Introduced `scripts/git-clean-switch-tool.sh` for safe git branch resets and
+  development environment syncing.
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Fixed `update-rpm-metadata.py` script failing to update the
+  spec version when `--version` argument is explicitly passed, and improved
+  regex to support pre-release tags in changelog parsing.
+- Corrected `--dry-run` parsing in `scripts/gitops-pr-cli-tool.sh` to properly
+  simulate actions without making changes.
+
+### Changed
+
+- Standardized command-line parameters across `scripts/gitops-pr-cli-tool.sh`
+  and `scripts/git-clean-switch-tool.sh` for consistency.
+- Made `--base/-b` parameter optional in `scripts/gitops-pr-cli-tool.sh`
+  (defaults to `main`).
+- Renamed `--reviewers` to `-R` and added `-r, --remote` to
+  `scripts/gitops-pr-cli-tool.sh`.
+- Improved logging and error handling in `scripts/git-clean-switch-tool.sh`.
+
+## [0.4.0] - 2026-04-17
+
+### Added
+
+- Added a GPG key section to the generated repository index page for better
+  security transparency.
+- Automated `index.html` generation for the DNF repository within the release
+  workflow.
+
+### Changed
+
+- Updated the release workflow to use an `rpms/` subfolder for the DNF
+  repository structure.
+- Refined the build destination directory in CI workflows for improved artifact
+  organization.
+- Fixed repository and GPG key URLs in `README.md` to point to the new `/rpms/`
+  subfolder.
+- Updated supported versions in `.github/SECURITY.md`.
+
+## [0.3.4] - 2026-04-16
+
+### Changed
+
+- Added dry-run mode and rebase safety to GitOps PR CLI tool.
+- Expanded usage examples in GitOps PR CLI tool.
+- Removed the end decision logic in the GitOps PR CLI tool.
+
+## [0.3.3] - 2026-04-16
+
+### Changed
+
+- Updated `rpm/flatpak-automatic.rpmlintrc` to filter
+  `W: only-non-binary-in-usr-lib` warnings.
+- Commented out `Provides: user(flatpak-automatic)` in `rpm/flatpak-automatic.spec` to
+  address `rpmlint` warnings.
+- Fixed typos in changelog entries for version `0.3.1`.
+
+## [0.3.2] - 2026-04-16
+
+### Added
+
+- Updated `CONTRIBUTING.md` and `DEVELOPMENT.md` to document the mandatory
+  GitOps PR workflow and `scripts/gitops-pr-cli-tool.sh` usage.
+- Enforced branch naming conventions: `<type>/v<version>-<description>`.
+
+### Changed
+
+- Aligned project version references to `0.3.2` across the RPM spec metadata and
+  changelog entries.
+
+## [0.3.1] - 2026-04-16
+
+### Added
+
+- Restored manual `%pre` service account creation as a fallback to support
+  Fedora 41+ environments where `sysusers.d` triggers might be delayed or
+  unavailable during the RPM transaction.
+- Re-added explicit `user(flatpak-automatic)` and `group(flatpak-automatic)` virtual provides to
+  assist DNF in dependency resolution during automated installs.
+
+### Changed
+
+- Aligned project version references to `0.3.1` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.3.0] - 2026-04-15
+
+### Changed
+
+- Replaced the manual `%pre` service account creation with a shipped
+  `sysusers.d` definition for the `flatpak-automatic` user and group.
+- Removed the explicit `user(flatpak-automatic)` and `group(flatpak-automatic)` virtual
+  provides, fixing the `rpmlint` warning `W: unversioned-explicit-provides`.
+- Aligned project version references to `0.3.0` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.15] - 2026-04-15
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Fixed `update-rpm-metadata.py` script failing to update the
+  spec version when `--version` argument is explicitly passed, and improved
+  regex to support pre-release tags in changelog parsing.
+- Updated the CI workflow scripts to satisfy `actionlint` and ShellCheck by
+  replacing unsafe negation patterns with explicit conditionals.
+- Hardened the release workflow shell scripts by quoting command substitutions,
+  separating variable assignment from export, and switching prerelease channel
+  detection to a `case` statement.
+- Aligned project version references to `0.2.15` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.14] - 2026-04-15
+
+### Changed
+
+- Pinned `ludeeus/action-shellcheck` in CI to the stable `2.0.0` release tag
+  instead of tracking `master`.
+- Added `actionlint` workflow linting to the GitHub Actions pipeline.
+- Made the top README status badges clickable links to their corresponding
+  GitHub Actions workflow pages.
+- Aligned project version references to `0.2.14` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.13] - 2026-04-15
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Fixed `update-rpm-metadata.py` script failing to update the
+  spec version when `--version` argument is explicitly passed, and improved
+  regex to support pre-release tags in changelog parsing.
+- Corrected the CI smoke-test file assertions to check for
+  `flatpak-automatic.pod`, matching the actual installed Quadlet filename.
+- Aligned project version references to `0.2.13` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.12] - 2026-04-15
+
+### Changed
+
+- Expanded the GitHub Actions install smoke test into a Fedora matrix covering
+  Fedora 40, 41, and 42.
+- Split install validation into current-user rootless, service-user rootless,
+  and rootfull package paths so each deployment mode is verified explicitly.
+- Added a release workflow status badge and documented the expanded CI coverage
+  in the `README.md`.
+- Aligned project version references to `0.2.12` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.11] - 2026-04-15
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Fixed `update-rpm-metadata.py` script failing to update the
+  spec version when `--version` argument is explicitly passed, and improved
+  regex to support pre-release tags in changelog parsing.
+- Configured GitHub Pages deployment to keep existing `gh-pages` branch contents
+  so prerelease publishes do not remove previously published repository channels
+  such as `latest/stable`.
+- Preserved multi-channel DNF repository layouts when publishing only a subset
+  of paths from `rpmbuild/repo` during release automation.
+- Aligned project version references to `0.2.11` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.10] - 2026-04-15
+
+### Changed
+
+- Replaced `actions/download-artifact` in the `smoke-test` job with a direct
+  GitHub Actions artifact API download to remove the final Node.js 20
+  deprecation warning from push CI runs.
+- Added `actions: read` permission and passed the uploaded RPM artifact ID
+  between CI jobs for API-based artifact retrieval.
+- Aligned project version references to `0.2.10` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.9] - 2026-04-15
+
+### Changed
+
+- Scoped the Node.js 24 override to the `smoke-test` job so
+  `actions/download-artifact` can run without deprecation warnings while the
+  rest of CI continues using native Node.js 24-compatible action versions.
+- Kept the workaround limited to the job that still depends on a Node.js 20
+  targeted artifact download action.
+- Aligned project version references to `0.2.9` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.8] - 2026-04-15
+
+### Changed
+
+- Updated the CI workflow to use Node.js 24-compatible action releases for
+  checkout, Markdown linting, and artifact handling, and removed the forced
+  Node.js 24 override from push and pull request jobs.
+- Updated checkout and artifact actions in the release workflow while keeping
+  the temporary Node.js 24 override there for the GitHub Pages deploy action.
+- Aligned project version references to `0.2.8` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.7] - 2026-04-15
+
+### Changed
+
+- Opted GitHub Actions workflows into Node.js 24 with
+  `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true` to remove deprecation warnings for
+  JavaScript-based actions on GitHub runners.
+- Applied the Node.js 24 runtime setting to both CI and release workflows for
+  consistent automation behavior.
+- Aligned project version references to `0.2.7` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.6] - 2026-04-15
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Fixed `update-rpm-metadata.py` script failing to update the
+  spec version when `--version` argument is explicitly passed, and improved
+  regex to support pre-release tags in changelog parsing.
+- Guarded `systemctl` and `loginctl` RPM scriptlets so package installation
+  succeeds in CI containers that do not run `systemd` as PID 1.
+- Wrapped the root subpackage systemd macros with the same runtime checks to
+  avoid smoke-test transaction failures.
+- Aligned project version references to `0.2.6` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.5] - 2026-04-15
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Fixed `update-rpm-metadata.py` script failing to update the
+  spec version when `--version` argument is explicitly passed, and improved
+  regex to support pre-release tags in changelog parsing.
+- Added `user(flatpak-automatic)` and `group(flatpak-automatic)` virtual provides to the
+  `flatpak-automatic-user` RPM so DNF can resolve the dedicated service account
+  during smoke-test installs.
+- Aligned project version references to `0.2.5` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.4] - 2026-04-15
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Fixed `update-rpm-metadata.py` script failing to update the
+  spec version when `--version` argument is explicitly passed, and improved
+  regex to support pre-release tags in changelog parsing.
+- Fixed dnf install command in CI workflow to avoid broken dependency CI issue.
+- Aligned project version references to `0.2.4` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.3] - 2026-04-15
+
+### Changed
+
+- Added `systemd-rpm-macros` to the Fedora package install steps in CI build and
+  release workflows so `make rpm` can satisfy spec build dependencies.
+- Aligned project version references to `0.2.3` across the `Makefile`, RPM spec
+  metadata, and changelog entries.
+
+## [0.2.2] - 2026-04-15
+
+### Added
+
+- Added `rpmlint` filters to suppress `non-standard-uid`/`gid` warnings for the
+  `flatpak-automatic` system user.
+
+### Changed
+
+- Included `%doc` for subpackages in the RPM spec file to resolve
+  `no-documentation` warnings.
+- Updated `CONTRIBUTING.md` with instructions for installing `shellcheck` and
+  `markdownlint-cli`.
+- Switched Markdown linting configuration from YAML/JSON to `.jsonc` and
+  standardized CI and local lint commands to use `.github/.markdownlint.jsonc`.
+- Updated the CI Markdown lint step to use `markdownlint-cli2-action` with
+  explicit Markdown globs for repository-wide checks.
+- Removed obsolete `.github/linters/ignore` and legacy
+  `.github/linters/markdownlint.yaml` configuration files.
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Fixed `update-rpm-metadata.py` script failing to update the
+  spec version when `--version` argument is explicitly passed, and improved
+  regex to support pre-release tags in changelog parsing.
+- Resolved `shellcheck` SC2115 warning in `scripts/update-repo.sh` by ensuring
+  safe expansion of variables in `rm -rf`.
+- Corrected Markdown formatting issues in GitHub issue and pull request
+  templates to satisfy linting rules and avoid heading/line-length violations.
+
+## [0.2.1] - 2026-04-15
+
+### Changed
+
+- Improved RPM spec compliance by adding a `%check` section for build-time
+  validation.
+- Resolved `rpmlint` warnings regarding missing documentation in subpackages by
+  adding `%license` to all subpackages.
+- Fixed `rpmlint` macro-in-changelog warnings by escaping `%` characters in the
+  spec file.
+- Updated `Source0` URL in spec file for better standards compliance.
+
+## [0.2.0] - 2026-04-15
+
+### Added
+
+- **CI/CD Pipeline**: Introduced a comprehensive GitHub Actions workflow for
+  pull requests and main branch pushes.
+- **Linting**: Automated shell script linting (`shellcheck`), Markdown linting
+  (`markdownlint`), and RPM spec/package linting (`rpmlint`).
+- **Packaging Verification**: Added `make verify-rpm` target to build and
+  validate RPM integrity locally and in CI.
+- **Smoke Tests**: Integrated basic installation and service status verification
+  in the CI pipeline.
+- **Project Badges**: Added a CI status badge to the `README.md`.
+
+### Changed
+
+- Improved `CONTRIBUTING.md` with instructions for local linting and
+  verification.
+- Refactored `Makefile` for better build reliability and standard compliance.
+- Optimized RPM spec file descriptions and file ownership handling.
+
+### Fixed
+
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Used sanitized `RPM_VERSION` in Makefile during `rpmbuild`
+  execution and tarball creation to prevent hyphen validation errors.
+- **Packaging**: Fixed `update-rpm-metadata.py` script to preserve the
+  `Version: %{_version}` placeholder and utilize `%mkrel` macro for automatic
+  release string generation.
+- **Packaging**: Fixed `update-rpm-metadata.py` script failing to update the
+  spec version when `--version` argument is explicitly passed, and improved
+  regex to support pre-release tags in changelog parsing.
+- Resolved `tar` concurrency issues during RPM building by excluding the
+  `rpmbuild` directory.
+- Fixed missing directory creation in the build root for the `flatpak-automatic` user.
+
+## [0.1.0-5] - 2026-04-14
+
+### Changed
+
+- Attempted fix for GitHub workflow RPM signing by escaping positional
+  parameters (`%%{1}` and `%%{2}`) in the `%__gpg_sign_cmd` macro definition to
+  ensure proper RPM macro expansion.
+- Configured GPG loopback pinentry, batch mode, and no-tty for non-interactive
+  CI environments.
+- Added `--pinentry-mode loopback` to repository metadata signing in
+  `scripts/update-repo.sh`.
+- Exported `GPG_TTY` in GitHub workflow to suppress terminal-related warnings.
+
+## [0.1.0-4] - 2026-04-14
+
+### Changed
+
+- Added automatic signature cleanup (`rpm --delsig`) to `make sign` to handle
+  "legacy signature" conflicts.
+- Refactored `Makefile` to use `RPM_DIR` variable and improved overall
+  robustness.
+- Enhanced `scripts/update-repo.sh` with dependency checks and a usage function.
+
+## [0.1.0-3] - 2026-04-14
+
+### Changed
+
+- Improved GPG key discovery in `Makefile` and `update-repo.sh` to automatically
+  use `%_gpg_name` macro.
+- Made `GPG_KEY_ID` parameter optional for both RPM signing and repository
+  metadata signing.
+- Refactored `scripts/update-repo.sh` for better readability and more
+  professional logic.
+
+## [0.1.0-2] - 2026-04-14
+
+### Changed
+
+- Updated DNF repository structure to support versioned channels (e.g.,
+  `v0.1/stable`, `latest/testing`).
+- Modified `scripts/update-repo.sh` to automatically organize RPMs and sync
+  `latest` pointers.
+- Updated GitHub Actions workflow to deploy the new repository structure to
+  GitHub Pages.
+- Improved documentation in `DEVELOPMENT.md` to reflect the new build process.
+
+## [0.1.0-1] - 2026-04-11
+
+### Changed
+
+- Clarified that the `ollama` container is optional and not started by default.
+- Added documentation for using the built-in Ollama service or an external
+  server.
+- Clarified rootless Quadlet installation paths and configuration mechanisms in
+  `README.md`.
+- Added support for optional user-specific configuration via
+  `~/.config/flatpak-automatic.env`.
+- Added documentation for disabling the dedicated bridge network in `README.md`.
+- Added "Advanced Customization (Masking)" documentation for users who need
+  total control over the Quadlet definitions.
+- Improved `/etc/sysconfig/flatpak-automatic` with documented default variables
+  and reference links.
+- Updated `README.md` with comprehensive project description and DNF repository
+  integration steps.
+
+### Added
+
+- Marked all Quadlet files as `%config(noreplace)` to preserve user
+  modifications during updates.
+- Refined automated cleanup of user-level pods to use runuser and
+  XDG_RUNTIME_DIR.
+- Automated cleanup of user-level pods during uninstallation.
+- Initial release of the Podman AI Stack.
+- Podman Quadlet templates for Ollama and Open WebUI.
+- Rootless and Rootfull deployment support via RPM subpackages.
+- Configurable build-time variables for ports, images, and resource limits.
+- `/etc/sysconfig/flatpak-automatic` for runtime environment variable
+  configuration.
+- GPG signing support for RPM builds.
+- Integrated `createrepo_c` support for DNF repository management.
+- Comprehensive documentation and contribution guidelines.

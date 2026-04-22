@@ -1,29 +1,7 @@
-# --- Project Specific ---
-# Gemini CLI Configuration
+rpmbuild/
+.codex
+.vscode/
+.gemini/
+.geminiignore
 GEMINI.md
-
-# --- RPM Build Artifacts ---
-# These are generated in your home directory by default, 
-# but if you build within the project folder, ignore them:
-RPMS/
-SRPMS/
-BUILD/
-BUILDROOT/
-SOURCES/
-
-# --- Local Development & Testing ---
-# Ignore any local copies of the built RPMs
-*.rpm
-# Ignore local environment overrides used for testing
-test-env.conf
-*.log
-
-# --- System & Editor Clutter ---
-.DS_Store
-.thumbs
-*~
-*.swp
-*.bak
-
-# --- Spec file backups ---
-specs/*.spec.bak
+SUGGESTIONS.md

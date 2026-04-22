@@ -1,0 +1,109 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  release-build:
+    runs-on: ubuntu-latest
+    environment: gh-pages
+    container: fedora:latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install dependencies
+        run: |
+          dnf install -y python3 make rpm-build systemd-rpm-macros createrepo_c gnupg2 rpm-sign git rsync which
+
+      - name: Build RPM
+        run: make rpm
+
+      - name: Import GPG Key
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+
+      - name: Setup GPG
+        run: |
+          mkdir -p ~/.gnupg
+          chmod 700 ~/.gnupg
+
+          echo "use-agent" > ~/.gnupg/gpg.conf
+          echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
+
+          gpg-connect-agent reloadagent /bye
+
+          preset_passphrase_bin="$(find /usr/lib* -name gpg-preset-passphrase 2>/dev/null | head -n 1)"
+          keygrip="$(gpg --with-keygrip -K | awk '/Keygrip =/ {print $3; exit}')"
+          "$preset_passphrase_bin" --passphrase "${{ secrets.GPG_PASSPHRASE }}" --preset "$keygrip"
+
+      - name: Configure RPM Signing
+        run: |
+          echo "%_signature gpg" > ~/.rpmmacros
+          echo "%_gpg_name ${{ vars.GPG_KEY_ID }}" >> ~/.rpmmacros
+          echo "%__gpg $(which gpg)" >> ~/.rpmmacros
+
+      - name: Sign RPMs
+        run: |
+          GPG_TTY="$(tty || echo /dev/null)"
+          export GPG_TTY
+          make rpm-sign GPG_KEY_ID=${{ vars.GPG_KEY_ID }}
+
+      - name: Update RPM Repository
+        run: |
+          CHANNEL=stable
+          ref_name="${{ github.ref_name }}"
+          case "$ref_name" in
+            *rc*|*beta*|*alpha*|*test*)
+              CHANNEL=testing
+              ;;
+          esac
+
+          echo "Deploying to channel: $CHANNEL"
+          make rpm-repo GPG_KEY_ID=${{ vars.GPG_KEY_ID }} CHANNEL=$CHANNEL
+
+      - name: Prepare Git Environment
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git config --global --add safe.directory '*'
+
+      - name: Generate Static Index
+        run: |
+          chmod +x .github/scripts/generate-index.sh
+          .github/scripts/generate-index.sh
+
+      - name: Debug Repository Contents
+        run: ls -R rpmbuild/repo
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: rpmbuild/repo
+          destination_dir: rpms
+          keep_files: true
+
+      - name: Upload Repository Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: dnf-repo
+          path: rpmbuild/repo/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            rpmbuild/RPMS/noarch/*.rpm

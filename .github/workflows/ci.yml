@@ -1,0 +1,164 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  actions: read
+  checks: write
+  contents: read
+
+jobs:
+  ci-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: './scripts'
+
+      - name: Run Markdownlint
+        uses: DavidAnson/markdownlint-cli2-action@v23
+        with:
+          config: rpm/.markdownlint.jsonc
+          globs: "**/*.md"
+
+  ci-actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install Actionlint
+        run: |
+          curl -fsSL \
+            https://github.com/rhysd/actionlint/releases/download/v1.7.8/actionlint_1.7.8_linux_amd64.tar.gz \
+            -o /tmp/actionlint.tar.gz
+          tar -xzf /tmp/actionlint.tar.gz -C /tmp actionlint
+          install -m 0755 /tmp/actionlint /usr/local/bin/actionlint
+
+      - name: Run Actionlint
+        run: actionlint -color
+
+  ci-prep:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        run: dnf install -y python3 make
+      - name: Configure RPM _topdir
+        run: echo "%_topdir ${{ github.workspace }}/rpmbuild" > ~/.rpmmacros
+      - name: Prepare Build Environment
+        run: make prep
+
+  ci-lint-spec:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install dependencies
+        run: dnf install -y rpmlint make python3
+
+      - name: Configure RPM _topdir
+        run: echo "%_topdir ${{ github.workspace }}/rpmbuild" > ~/.rpmmacros
+
+      - name: Lint RPM Spec
+        run: make lint-spec
+
+  ci-build:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    outputs:
+      rpm_artifact_id: ${{ steps.upload_rpms.outputs.artifact-id }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install dependencies
+        run: dnf install -y python3 rpm-build systemd-rpm-macros make tar
+
+      - name: Build RPM
+        run: make rpm
+
+      - name: Upload RPM Artifacts
+        id: upload_rpms
+        uses: actions/upload-artifact@v6
+        with:
+          name: rpms
+          path: rpmbuild/RPMS/noarch/*.rpm
+
+  ci-lint-rpm:
+    needs: ci-build
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Download RPM Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: rpms
+          path: rpmbuild/RPMS/noarch
+
+      - name: Install dependencies
+        run: dnf install -y rpmlint make
+
+      - name: Lint RPM Artifacts
+        run: make lint-rpm
+
+  ci-smoke-test:
+    needs: ci-build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        fedora_version: [40, 41, 42, rawhide]
+    container:
+      image: fedora:${{ matrix.fedora_version }}
+      options: --privileged
+    name: Fedora ${{ matrix.fedora_version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install dependencies
+        run: dnf install -y curl unzip systemd shadow-utils util-linux
+
+      - name: Download RPM Artifacts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p rpms
+          curl -fsSL \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -o rpms/rpms.zip \
+            "${{ github.api_url }}/repos/${{ github.repository }}/actions/artifacts/${{ needs.ci-build.outputs.rpm_artifact_id }}/zip"
+          unzip -o rpms/rpms.zip -d rpms
+
+      - name: Install RPM
+        run: |
+          dnf install -y rpms/flatpak-automatic-[0-9].*.noarch.rpm
+
+      - name: Verify Installation
+        run: |
+          test -f /etc/sysconfig/flatpak-automatic
+          test -f /usr/lib/systemd/system/flatpak-automatic.timer
+          test -f /usr/lib/systemd/system/flatpak-automatic.service
+          test -f /usr/bin/flatpak-automatic
+
+      - name: Systemd Syntax Check
+        run: |
+          systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.timer
+          systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.service
