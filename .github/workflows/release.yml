@@ -84,14 +84,14 @@ jobs:
           .github/scripts/generate-index.sh
 
       - name: Debug Repository Contents
-        run: ls -R rpmbuild/repo
+        run: ls -R repo
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: rpmbuild/repo
+          publish_dir: repo
           destination_dir: rpms
           keep_files: true
 
@@ -99,11 +99,11 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: dnf-repo
-          path: rpmbuild/repo/
+          path: repo/
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            rpmbuild/RPMS/noarch/*.rpm
+            .rpmbuild/RPMS/noarch/*.rpm

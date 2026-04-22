@@ -16,6 +16,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   release numbers, and Makefile-integrated versioning.
 - **CI/CD**: Upgraded GitOps PR tool to v3 with template-aware validation and
   automated rebase logic.
+- **Linting**: Removed unused filters.
+
+### Fixed
+
+- **CI/CD**: Updated GitHub workflows and scripts to reflect the new `.rpmbuild`
+  directory and `repo` path architecture.
 
 ## [1.1.0] - 2026-04-22
 

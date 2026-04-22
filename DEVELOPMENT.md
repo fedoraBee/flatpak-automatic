@@ -8,7 +8,7 @@ To build the RPM package:
 make rpm
 ```
 
-This generates the following packages in `rpmbuild/RPMS/noarch/`:
+This generates the following packages in `.rpmbuild/RPMS/noarch/`:
 
 - `flatpak-automatic`: Core configuration.
 - `flatpak-automatic-user`: Rootless deployment.
@@ -52,16 +52,16 @@ make rpm-repo CHANNEL=testing GPG_KEY_ID=YOUR_KEY_ID
 
 This will:
 
-1. Organize RPMs into `rpmbuild/repo/v<MAJOR>.<MINOR>/<CHANNEL>/`.
+1. Organize RPMs into `repo/v<MAJOR>.<MINOR>/<CHANNEL>/`.
 2. Run `createrepo_c --update` on that directory.
 3. Generate a signed `repomd.xml.asc` if a GPG key is provided.
-4. Sync the content to `rpmbuild/repo/latest/<CHANNEL>/`.
+4. Sync the content to `repo/latest/<CHANNEL>/`.
 
 ### Hosting on GitHub
 
 To host this as a DNF repository on GitHub:
 
-1. The repository structure in `rpmbuild/repo` is automatically deployed to the
+1. The repository structure in `repo` is automatically deployed to the
    `gh-pages` branch by the CI workflow on each tag release.
 2. Users can then add the repository by creating a `.repo` file pointing to the
    raw GitHub Pages URL.

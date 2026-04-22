@@ -52,7 +52,7 @@ To deploy changes locally for testing:
 
 1. **Build the RPM:** `make rpm`
 2. **Generate Repo:** `make rpm-repo CHANNEL=testing`
-3. **Update Local Repo:** `cp -r rpmbuild/repo/ ../dnf-repos/flatpak-automatic/`
+3. **Update Local Repo:** `cp -r repo/ ../dnf-repos/flatpak-automatic/`
 4. **Install/Reinstall:**
    `sudo dnf reinstall -Cy ../dnf-repos/flatpak-automatic/latest/testing/*.rpm`
 5. **Start Timer:** `systemctl enable --now flatpak-automatic.timer`

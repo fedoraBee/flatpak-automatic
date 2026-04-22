@@ -55,7 +55,7 @@ jobs:
       - name: Install dependencies
         run: dnf install -y python3 make
       - name: Configure RPM _topdir
-        run: echo "%_topdir ${{ github.workspace }}/rpmbuild" > ~/.rpmmacros
+        run: echo "%_topdir ${{ github.workspace }}/.rpmbuild" > ~/.rpmmacros
       - name: Prepare Build Environment
         run: make prep
 
@@ -70,7 +70,7 @@ jobs:
         run: dnf install -y rpmlint make python3
 
       - name: Configure RPM _topdir
-        run: echo "%_topdir ${{ github.workspace }}/rpmbuild" > ~/.rpmmacros
+        run: echo "%_topdir ${{ github.workspace }}/.rpmbuild" > ~/.rpmmacros
 
       - name: Lint RPM Spec
         run: make lint-spec
@@ -95,7 +95,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: rpms
-          path: rpmbuild/RPMS/noarch/*.rpm
+          path: .rpmbuild/RPMS/noarch/*.rpm
 
   ci-lint-rpm:
     needs: ci-build
@@ -109,7 +109,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: rpms
-          path: rpmbuild/RPMS/noarch
+          path: .rpmbuild/RPMS/noarch
 
       - name: Install dependencies
         run: dnf install -y rpmlint make
