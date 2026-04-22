@@ -3,7 +3,7 @@
 # Flatpak Auto Update (Linux Professional Edition)
 # Version: 1.0.3
 # Author: fedoraBee
-# Source: https://github.com/fedoraBee/flatpak-auto-update
+# Source: https://github.com/fedoraBee/flatpak-automatic
 #
 # Description:
 #   An automation wrapper for Flatpak updates on Fedora and RPM-based systems,
@@ -14,8 +14,8 @@
 ################################################################################
 set -euo pipefail
 
-CONFIG_FILE="/etc/flatpak-auto-update/env.conf"
-[ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
+CONFIG_FILE="/etc/sysconfig/flatpak-automatic"
+[ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE" # shellcheck disable=SC1090
 
 # Defaults
 ENABLE_EMAIL="${ENABLE_EMAIL:-yes}"
@@ -23,24 +23,24 @@ ENABLE_SNAPSHOTS="${ENABLE_SNAPSHOTS:-yes}"
 
 # Mail Defaults
 EMAIL_FROM_DISPLAY="${EMAIL_FROM_DISPLAY:-Fedora Bot}"
-EMAIL_SUBJECT_SUCCESS="${EMAIL_SUBJECT_SUCCESS:-[$(hostname)] flatpak-auto-update: \$UPDATE_COUNT new upgrades have been installed.}"
-EMAIL_SUBJECT_FAILURE="${EMAIL_SUBJECT_FAILURE:-[$(hostname)] flatpak-auto-update: FAILED}"
+EMAIL_SUBJECT_SUCCESS="${EMAIL_SUBJECT_SUCCESS:-[$(hostname)] flatpak-automatic: \$UPDATE_COUNT new upgrades have been installed.}"
+EMAIL_SUBJECT_FAILURE="${EMAIL_SUBJECT_FAILURE:-[$(hostname)] flatpak-automatic: FAILED}"
 MAIL_CMD="${MAIL_CMD:-mailx -S sendwait -r \"\$EMAIL_FROM_DISPLAY <\$EMAIL_FROM>\" -s \"\$1\" \"\$2\"}"
 EMAIL_BODY_SUCCESS="${EMAIL_BODY_SUCCESS:-\$UPDATE_OUT}"
 EMAIL_BODY_FAILURE="${EMAIL_BODY_FAILURE:-\$UPDATE_OUT}"
 
 # Snapper Defaults
 SNAPPER_CONFIG="${SNAPPER_CONFIG:-root}"
-SNAPPER_DESC_PRE="${SNAPPER_DESC_PRE:-flatpak-auto-update-pre}"
-SNAPPER_DESC_POST="${SNAPPER_DESC_POST:-flatpak-auto-update-post}"
+SNAPPER_DESC_PRE="${SNAPPER_DESC_PRE:-flatpak-automatic-pre}"
+SNAPPER_DESC_POST="${SNAPPER_DESC_POST:-flatpak-automatic-post}"
 SNAPPER_PRE_CMD="${SNAPPER_PRE_CMD:-snapper -c \"\$SNAPPER_CONFIG\" create --type pre --description \"\$SNAPPER_DESC_PRE\" --cleanup-algorithm number --print-number}"
 SNAPPER_POST_CMD="${SNAPPER_POST_CMD:-snapper -c \"\$SNAPPER_CONFIG\" create --type post --pre-number \"\$PRE_NUM\" --description \"\$SNAPPER_DESC_POST\"}"
 SNAPPER_DELETE_CMD="${SNAPPER_DELETE_CMD:-snapper -c \"\$SNAPPER_CONFIG\" delete \"\$PRE_NUM\"}"
 
 # Validation for email if enabled
 if [[ "$ENABLE_EMAIL" == "yes" ]]; then
-    : "${EMAIL_TO:? 'Set EMAIL_TO in $CONFIG_FILE or disable ENABLE_EMAIL'}"
-    : "${EMAIL_FROM:? 'Set EMAIL_FROM in $CONFIG_FILE or disable ENABLE_EMAIL'}"
+    : "${EMAIL_TO:? "Set EMAIL_TO in $CONFIG_FILE or disable ENABLE_EMAIL"}"
+    : "${EMAIL_FROM:? "Set EMAIL_FROM in $CONFIG_FILE or disable ENABLE_EMAIL"}"
 fi
 
 # Helper to send notifications
@@ -88,7 +88,7 @@ UPDATE_OUT=$(flatpak update -y --noninteractive 2>&1) || EXIT_CODE=$?
 
 # 3. Calculate Update Count
 # Counts lines starting with Installing, Updating, or Removing
-UPDATE_COUNT=$(echo "$UPDATE_OUT" | grep -E "^(Installing|Updating|Removing)" | wc -l)
+UPDATE_COUNT=$(echo "$UPDATE_OUT" | grep -E -c "^(Installing|Updating|Removing)")
 
 UPDATED=false
 [[ "$EXIT_CODE" -eq 0 ]] && [[ "$UPDATE_COUNT" -gt 0 ]] && UPDATED=true

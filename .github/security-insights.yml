@@ -2,5 +2,5 @@ content_version: 1.0.0
 project_lifecycle:
   status: active
 security_contacts:
-  - "https://github.com/fedoraBee/flatpak-auto-update/security/advisories/new"
-vulnerability_disclosure_policy: "https://github.com/fedoraBee/flatpak-auto-update/blob/main/SECURITY.md"
+  - "https://github.com/fedoraBee/flatpak-automatic/security/advisories/new"
+vulnerability_disclosure_policy: "https://github.com/fedoraBee/flatpak-automatic//blob/main/SECURITY.md"
