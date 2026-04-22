@@ -1,7 +1,7 @@
 #!/bin/bash
 OUTPUT_FILE="public/index.html"
 
-cat <<EOF > "$OUTPUT_FILE"
+cat <<EOF_HTML > "$OUTPUT_FILE"
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,6 +53,6 @@ sudo dnf install flatpak-automatic</div>
     </div>
 </body>
 </html>
-EOF
+EOF_HTML
 
 echo "Generated styled index.html at $OUTPUT_FILE"
