@@ -16,7 +16,7 @@ fi
 # -----------------------------
 usage() {
   cat <<EOF
-GitOps PR CLI Tool v2 (Release-aware)
+GitOps PR CLI Tool v3 (Template-aware)
 
 Usage:
   $(basename "$0") [options]
@@ -75,7 +75,7 @@ if [[ -z "$TARGET_BRANCH" ]]; then
     exit 1
 fi
 
-# Branch naming enforcement (Gemini.md)
+# Branch naming enforcement
 if [[ ! "$TARGET_BRANCH" =~ ^(feat|fix|chore|refactor|docs|ci)/v[0-9]+\.[0-9]+\.[0-9]+- ]]; then
     echo "❌ Invalid branch name: $TARGET_BRANCH"
     echo "Expected: <type>/v<version>-<description>"
@@ -111,21 +111,18 @@ echo "📦 Detected version: v$VERSION"
 # -----------------------------
 # Git safety checks
 # -----------------------------
-# Check if we're in a git repo
 echo "🔍 Checking base branch ..."
-git ls-remote --exit-code --heads "$REMOTE" "$BASE_BRANCH" || {
+git ls-remote --exit-code --heads "$REMOTE" "$BASE_BRANCH" >/dev/null || {
     echo "❌ Git branch '$BASE_BRANCH' does not exist in the remote repository ($REMOTE)."
     exit 1
 }
 
-# Fetch latest from remote
 echo "🔍 Fetching base branch from $REMOTE ..."
-git fetch "$REMOTE" "$BASE_BRANCH" || {
+git fetch "$REMOTE" "$BASE_BRANCH" --quiet || {
     echo "❌ Failed to fetch base branch. Check your network and remote configuration."
     exit 1
 }
 
-# Ensure repo is clean
 echo "🔍 Checking for uncommitted changes..."
 if [[ -n "$(git status --porcelain)" ]]; then
     echo "❌ Working tree is not clean. Commit or stash changes first."
@@ -137,17 +134,17 @@ fi
 # -----------------------------
 if git show-ref --verify --quiet "refs/heads/$TARGET_BRANCH"; then
     echo "🔀 Switching to existing branch: $TARGET_BRANCH"
-    git switch "$TARGET_BRANCH"
+    git switch "$TARGET_BRANCH" --quiet
 else
     echo "🌱 Creating branch: $TARGET_BRANCH"
-    git switch -c "$TARGET_BRANCH"
+    git switch -c "$TARGET_BRANCH" --quiet
 fi
 
 # -----------------------------
 # Sync with base (rebase safety)
 # -----------------------------
 echo "🔄 Rebasing on $REMOTE/$BASE_BRANCH..."
-git rebase -Xtheirs "$REMOTE/$BASE_BRANCH" || {
+git rebase -Xtheirs "$REMOTE/$BASE_BRANCH" --quiet || {
     echo "❌ Rebase failed. Resolve conflicts manually."
     exit 1
 }
@@ -164,25 +161,33 @@ if ! grep -q "$VERSION" CHANGELOG.md; then
     echo "❌ CHANGELOG.md does not contain version v$VERSION"
     exit 1
 fi
-
 echo "✅ CHANGELOG contains version v$VERSION"
 
 # -----------------------------
-# Validate RPM spec version
+# Validate RPM spec template
 # -----------------------------
-SPEC_FILE=$(find rpm -name "*.spec" | head -n 1 || true)
+# NOTE: We now check for the .spec.in template and the @@VERSION@@ placeholder
+SPEC_TEMPLATE=$(find rpm -name "*.spec.in" | head -n 1 || true)
 
-if [[ -z "$SPEC_FILE" ]]; then
-    echo "❌ RPM spec file not found"
+if [[ -z "$SPEC_TEMPLATE" ]]; then
+    echo "❌ RPM spec template (*.spec.in) not found"
     exit 1
 fi
 
-if ! grep -q "Version:        %{_version}" "$SPEC_FILE"; then
-    echo "❌ RPM spec does not contain version macro '%{_version}'"
+if ! grep -q "@@VERSION@@" "$SPEC_TEMPLATE"; then
+    echo "❌ RPM spec template does not contain '@@VERSION@@' placeholder"
     exit 1
 fi
+echo "✅ RPM spec template is valid"
 
-echo "✅ RPM spec version macro matches"
+# -----------------------------
+# Validate Python Script Presence
+# -----------------------------
+if [[ ! -f "scripts/update-rpm-metadata.py" ]]; then
+    echo "❌ scripts/update-rpm-metadata.py is missing. PR blocked."
+    exit 1
+fi
+echo "✅ Metadata generator script found"
 
 # -----------------------------
 # Validate Makefile version
@@ -192,11 +197,11 @@ if [[ ! -f "Makefile" ]]; then
     exit 1
 fi
 
-if ! grep -q "^VERSION := $VERSION" Makefile; then
-    echo "❌ Makefile does not contain version $VERSION"
+# Regex updated to tolerate spaces: VERSION := 1.1.0 or VERSION:=1.1.0
+if ! grep -qE "^VERSION[[:space:]]*:=[[:space:]]*$VERSION" Makefile; then
+    echo "❌ Makefile does not contain VERSION := $VERSION"
     exit 1
 fi
-
 echo "✅ Makefile version matches"
 
 # -----------------------------
@@ -222,8 +227,8 @@ $PR_BODY"
 # Push branch
 # -----------------------------
 echo "🚀 Pushing branch to $REMOTE..."
-git push -u "$REMOTE" "$TARGET_BRANCH" || {
-    echo "❌ Failed to push branch to $REMOTE. Check your remote and permissions."
+git push -u "$REMOTE" "$TARGET_BRANCH" --quiet || {
+    echo "❌ Failed to push branch to $REMOTE."
     exit 1
 }
 
@@ -233,7 +238,7 @@ git push -u "$REMOTE" "$TARGET_BRANCH" || {
 CMD=(gh pr create
     --base "$BASE_BRANCH"
     --head "$TARGET_BRANCH"
-    --title "$PR_TITLE"
+    --title "${PR_TITLE:-"Release v$VERSION"}"
     --body "$PR_BODY_FULL"
 )
 
@@ -243,10 +248,9 @@ fi
 
 echo "📬 Creating Pull Request..."
 "${CMD[@]}" || {
-    echo "❌ Failed to create Pull Request. Check your GitHub CLI configuration and permissions."
+    echo "❌ Failed to create Pull Request."
     exit 1
 }
 
 echo "✅ GitOps PR created successfully (v$VERSION)"
-
 exit 0

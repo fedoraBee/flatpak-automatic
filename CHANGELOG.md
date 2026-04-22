@@ -14,6 +14,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   and a centralized `.rpmbuild` directory.
 - **Metadata Automation**: Enhanced `update-rpm-metadata.py` to handle epoch,
   release numbers, and Makefile-integrated versioning.
+- **CI/CD**: Upgraded GitOps PR tool to v3 with template-aware validation and
+  automated rebase logic.
 
 ## [1.1.0] - 2026-04-22
 
