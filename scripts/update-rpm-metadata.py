@@ -1,47 +1,47 @@
 #!/usr/bin/env python3
 import sys
 import re
+import os
 from datetime import datetime
 import subprocess
 import argparse
 
 def get_git_info():
+    """Fetches author info from git, falling back to a default."""
     try:
         name = subprocess.check_output(['git', 'config', 'user.name']).decode().strip()
         email = subprocess.check_output(['git', 'config', 'user.email']).decode().strip()
         return f"{name} <{email}>"
-    except:
+    except Exception:
         return "fedoraBee <9395414+fedoraBee@users.noreply.github.com>"
 
 def format_date(date_str):
-    # CHANGELOG.md uses YYYY-MM-DD
+    """Converts YYYY-MM-DD from Markdown to RPM Day Mon DD YYYY."""
     dt = datetime.strptime(date_str, '%Y-%m-%d')
-    # RPM uses Day Mon DD YYYY (e.g., Fri Apr 17 2026)
     return dt.strftime('%a %b %d %Y')
 
 def get_version_from_makefile(makefile='Makefile'):
-    with open(makefile, 'r') as f:
-        for line in f:
-            match = re.match(r'^VERSION := (\d+\.\d+\.\d+)', line)
-            if match:
-                return match.group(1)
+    """Extracts the VERSION variable from a Makefile as a fallback."""
+    try:
+        with open(makefile, 'r') as f:
+            for line in f:
+                match = re.match(r'^VERSION\s*:=\s*(\d+\.\d+\.\d+)', line)
+                if match:
+                    return match.group(1)
+    except FileNotFoundError:
+        pass
     return None
 
-def update_spec_version(spec, version):
-    with open(spec, 'r') as f:
-        lines = f.readlines()
+def generate_rpm_changelog(changelog_in, current_epoch, current_version, current_rel):
+    """Parses CHANGELOG.md and formats it for RPM."""
+    try:
+        with open(changelog_in, 'r') as f:
+            content = f.read()
+    except FileNotFoundError:
+        print(f"Warning: Changelog {changelog_in} not found. Skipping changelog generation.")
+        return ""
 
-    with open(spec, 'w') as f:
-        for line in lines:
-            if line.startswith('Version:'):
-                f.write(f"Version:        {version}\n")
-            else:
-                f.write(line)
-
-def generate_rpm_changelog(changelog='CHANGELOG.md'):
-    with open(changelog, 'r') as f:
-        content = f.read()
-
+    # Matches headers like: ## [1.1.0] - 2026-04-22
     version_pattern = re.compile(r'## \[([\w\.\-]+)\] - (\d{4}-\d{2}-\d{2})')
     author = get_git_info()
     sections = version_pattern.split(content)
@@ -49,7 +49,7 @@ def generate_rpm_changelog(changelog='CHANGELOG.md'):
     rpm_changelog = []
     
     for i in range(1, len(sections), 3):
-        version = sections[i]
+        md_version = sections[i]
         date_str = sections[i+1]
         text = sections[i+2].strip()
         
@@ -59,60 +59,102 @@ def generate_rpm_changelog(changelog='CHANGELOG.md'):
         entries = []
         for line in lines:
             line = line.strip()
-            if not line:
-                continue
-            if line.startswith('###'):
+            if not line or line.startswith('###'):
                 continue
             if line.startswith('- '):
                 entries.append(line)
             elif entries:
                 entries[-1] += ' ' + line
 
+        # Format markdown links and codeblocks to plain text for RPM
         formatted_entries = []
         for entry in entries:
             entry = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', entry)
             entry = entry.replace('`', '')
             formatted_entries.append(entry)
 
-        rpm_changelog.append(f"* {rpm_date} {author} - %{{_version}}-%{{mkrel}}")
+        # Ensure the current build version gets the full Epoch:Version-Release tuple
+        if md_version == current_version:
+            rpm_changelog.append(f"* {rpm_date} {author} {current_epoch}:{md_version}-{current_rel}")
+        else:
+            rpm_changelog.append(f"* {rpm_date} {author} {md_version}")
+            
         for entry in formatted_entries:
             rpm_changelog.append(entry)
         rpm_changelog.append("")
     
     return '\n'.join(rpm_changelog)
 
-def main(version=None,
-         spec='default-app.spec',
-         changelog_in='CHANGELOG.md',
-         makefile='Makefile',
-         changelog_out='changelog'
-         ):
-   
-    if not version:
-        version = get_version_from_makefile(makefile)
-        if not version:
-            print("Error: Could not find VERSION in Makefile.", file=sys.stderr)
-            sys.exit(1)
-    # update_spec_version(spec, version) disabled to keep placeholder
+def build_spec_file(spec_in, spec_out, epoch, version, rel_num, changelog_content):
+    """Injects EVR variables into the spec template and appends the changelog."""
+    try:
+        with open(spec_in, 'r') as f:
+            spec_text = f.read()
+    except FileNotFoundError:
+        print(f"Error: Spec template {spec_in} not found.", file=sys.stderr)
+        sys.exit(1)
 
-    rpm_changelog_content = generate_rpm_changelog(changelog_in)
-    with open(changelog_out, 'w') as f:
-        f.write(rpm_changelog_content)
+    # Replace the Makefile-injected placeholders
+    spec_text = spec_text.replace('@@EPOCH@@', str(epoch))
+    spec_text = spec_text.replace('@@VERSION@@', str(version))
+    spec_text = spec_text.replace('@@REL_NUM@@', str(rel_num))
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Update RPM version and generate changelog')
-    parser.add_argument('--version', dest='version', help='Update RPM version in spec file')
-    parser.add_argument('--spec', default='rpm/flatpak-automatic.spec', help='Path to spec file')
-    parser.add_argument('--changelog-in', default='CHANGELOG.md', help='Path to changelog file')
-    parser.add_argument('--makefile', default='Makefile', help='Path to Makefile')
-    parser.add_argument('--changelog-out', default='rpmbuild/changelog', help='Path to output changelog file')
+    # Append the Changelog section
+    if changelog_content:
+        spec_text += "\n%changelog\n"
+        spec_text += changelog_content
+
+    # Ensure the output directory exists
+    os.makedirs(os.path.dirname(os.path.abspath(spec_out)), exist_ok=True)
+
+    with open(spec_out, 'w') as f:
+        f.write(spec_text)
+    
+    print(f"Successfully generated complete spec at: {spec_out}")
+
+def main():
+    parser = argparse.ArgumentParser(description='Compile an RPM .spec file with EVR injection and Markdown changelog parsing.')
+    
+    # Define arguments with sensible RPM defaults
+    parser.add_argument('--epoch', default='0', help='RPM Epoch (Default: 0)')
+    parser.add_argument('--version', help='RPM Version (Fallback: extracted from Makefile)')
+    parser.add_argument('--rel-num', default='1', help='RPM Release Number (Default: 1)')
+    parser.add_argument('--spec-in', default='rpm/flatpak-automatic.spec.in', help='Path to template .spec.in file')
+    parser.add_argument('--spec-out', default='.rpmbuild/SPECS/flatpak-automatic.spec', help='Path to save the ready .spec file')
+    parser.add_argument('--changelog-in', default='CHANGELOG.md', help='Path to source markdown changelog')
+    parser.add_argument('--makefile', default='Makefile', help='Path to Makefile for fallback version extraction')
+    parser.add_argument('--date', help='Current build date (used for changelog headers if needed)')
 
     args = parser.parse_args()
-    if hasattr(args, "version") and args.version:
-        args.version = args.version.replace("-", "~")
 
-    main(version=args.version,
-         spec=args.spec,
-         changelog_in=args.changelog_in,
-         makefile=args.makefile,
-         changelog_out=args.changelog_out)
+    # Fallback to Makefile if version is missing
+    version = args.version
+    if not version:
+        version = get_version_from_makefile(args.makefile)
+        if not version:
+            print("Error: Could not find VERSION in Makefile and --version was not passed.", file=sys.stderr)
+            sys.exit(1)
+            
+    # Standardize RPM version format (RPM doesn't like hyphens in the version string)
+    version = version.replace("-", "~")
+
+    # 1. Generate the Changelog string
+    rpm_changelog_content = generate_rpm_changelog(
+        args.changelog_in, 
+        args.epoch, 
+        version, 
+        args.rel_num
+    )
+
+    # 2. Compile the final Spec file
+    build_spec_file(
+        args.spec_in, 
+        args.spec_out, 
+        args.epoch, 
+        version, 
+        args.rel_num, 
+        rpm_changelog_content
+    )
+
+if __name__ == '__main__':
+    main()
