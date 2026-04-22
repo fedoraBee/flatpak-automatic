@@ -1,7 +1,7 @@
 # Makefile for flatpak-automatic
 
 NAME := flatpak-automatic
-VERSION := 1.0.3
+VERSION := 1.1.0
 RPM_VERSION := $(subst -,~,$(VERSION))
 BUILD_DIR := $(CURDIR)/rpmbuild
 RPM_DIR := $(BUILD_DIR)/RPMS/noarch
@@ -19,7 +19,6 @@ prep:
 	mkdir -p $(BUILD_DIR)/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 	@echo "Generating RPM changelog..."
 	$(CURDIR)/scripts/update-rpm-metadata.py --version $(RPM_VERSION) --spec $(CURDIR)/rpm/$(NAME).spec --changelog-in $(CURDIR)/CHANGELOG.md --changelog-out $(BUILD_DIR)/changelog
-
 rpm: prep rpm-build
 
 lint: lint-shell lint-md lint-spec

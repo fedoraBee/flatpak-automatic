@@ -1,7 +1,8 @@
 # Contributing to flatpak-automatic
 
-Thank you for contributing! This project aims to provide a secure and flexible
-AI stack for Fedora and other RPM-based distributions using Podman Quadlets.
+Thank you for contributing! This project aims to provide a secure, configurable,
+and systemd-native automation wrapper for Flatpak updates with Snapper
+integration.
 
 ## 📜 Code of Conduct
 
@@ -21,11 +22,14 @@ RPM-based distribution is recommended).
 Ensure you have the necessary development tools installed:
 
 ```bash
-sudo dnf install make rpm-build podman systemd-devel rpmlint shellcheck pre-commit
+sudo dnf install make rpm-build flatpak snapper systemd-devel \
+  rpmlint shellcheck pre-commit
 # Install markdownlint-cli or markdownlint-cli2 globally via npm
 sudo npm install -g markdownlint-cli # or markdownlint-cli2
+```
 
 ### 3. Initialize Pre-Commit Hooks
+
 To catch linting errors before pushing to GitHub, install the pre-commit hooks:
 
 ```bash
@@ -36,12 +40,10 @@ pre-commit run --all-files
 
 ### 3. Project Structure & Standards
 
-- **Quadlets**: Templates are stored in `quadlets/*.in`. Do not edit the
-  generated `.container` files.
-- **Variables**: Use `@VARIABLE_NAME@` placeholders in `.in` files. Update the
-  `Makefile` and `rpm/flatpak-automatic.spec` if you add new variables.
-- **Deployment**: We support Rootless (default/user) and Rootfull (system)
-  deployment via subpackages.
+- **Scripts**: The main automation logic is in `scripts/flatpak-automatic.sh`.
+- **Systemd**: Units are located in `systemd/`.
+- **Configuration**: Default environment variables are in `sysconfig/flatpak-automatic`.
+- **Packaging**: The RPM spec and linting configurations are in `rpm/`.
 
 ### 4. Testing Your Changes
 
@@ -65,11 +67,10 @@ provided `make` targets:
 
    This builds the RPMs and runs `rpmlint` against the resulting packages.
 
-1. **Local Install Test**: Test both rootless and rootfull installations if
-   possible.
+1. **Local Install Test**:
 
    ```bash
-   # Test local installation of Quadlets to a temporary directory
+   # Test local installation to a temporary directory
    make install DESTDIR=./test-install
    ```
 
@@ -100,10 +101,10 @@ format:
 Where:
 
 - `<type>`: `feat` | `fix` | `chore` | `refactor` | `docs` | `ci`
-- `<version>`: Target release version (e.g., `v0.4.0`)
-- `<short-description>`: Kebab-case description (e.g., `add-ollama-healthcheck`)
+- `<version>`: Target release version (e.g., `v2.0.0`)
+- `<short-description>`: Kebab-case description (e.g., `update-docs`)
 
-Example: `feat/v0.4.0-add-ollama-healthcheck`
+Example: `docs/v2.0.0-update-contributing-guide`
 
 ### 2. Commit Guidelines
 
@@ -122,7 +123,7 @@ tool validates branch names, versions, and changelog entries.
 ./scripts/gitops-pr-cli-tool.sh -b main -h <your-branch-name>
 
 # Example
-./scripts/gitops-pr-cli-tool.sh -b main -h feat/v0.4.0-new-feature
+./scripts/gitops-pr-cli-tool.sh -b main -h docs/v2.0.0-update-contributing-guide
 ```
 
 Manual PR creation via the GitHub UI or `gh pr create` is discouraged as it
@@ -131,4 +132,4 @@ bypasses critical project validations.
 ## ⚖️ License
 
 By contributing, you agree that your contributions will be licensed under the
-**MIT** license, as specified in the `LICENSE` file.
+**GPL-3.0-or-later** license, as specified in the `LICENSE` file.
