@@ -19,7 +19,7 @@ Requires:       s-nail
 Requires:       systemd
 
 %description
-Automates Flatpak updates with pre/post Snapper snapshots and email alerts.
+Automates Flatpak updates with pre-update and post-update Snapper snapshots and email alerts.
 Includes integrated logic to avoid unnecessary snapshots, calculates update
 counts for email subjects, and provides universal compatibility by 
 automatically detecting Btrfs/Snapper support before execution.
@@ -50,8 +50,6 @@ fi
 if %{systemd_runtime_check}; then
     systemctl daemon-reload >/dev/null 2>&1 || :
 fi
-
-%preun
 
 %files
 %{_bindir}/flatpak-automatic

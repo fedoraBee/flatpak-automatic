@@ -1,7 +1,7 @@
 # Makefile for flatpak-automatic
 
 NAME := flatpak-automatic
-VERSION := 1.1.0
+VERSION := 1.1.0-rc1
 RPM_VERSION := $(subst -,~,$(VERSION))
 BUILD_DIR := $(CURDIR)/rpmbuild
 RPM_DIR := $(BUILD_DIR)/RPMS/noarch
