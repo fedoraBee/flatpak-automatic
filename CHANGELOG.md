@@ -10,6 +10,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **CI/CD**: Added Lychee automated link checker workflow to validate
+  documentation.
+
 - **CI/CD**: Expanded `renovate.json` to enable automerging for minor and patch
   updates on GitHub Actions.
 
@@ -17,12 +20,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **CI/CD**: Added Lychee automated link checker workflow to validate
+  documentation.
+
 - **Documentation**: Synchronized `README.md` and `DEVELOPMENT.md` with the new
   GitHub Pages root URL architecture.
 
 ## [1.1.3] - 2026-04-22
 
 ### Changed
+
+- **CI/CD**: Added Lychee automated link checker workflow to validate
+  documentation.
 
 - **Build System**: Refactored CI/CD deployment architecture to use a `public/`
   staging directory for GitHub Pages.
@@ -33,12 +42,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **CI/CD**: Added Lychee automated link checker workflow to validate
+  documentation.
+
 - **Consistency**: Replaced legacy `flatpak-auto-update` references with
   `flatpak-automatic` across sysconfig and automation scripts.
 
 ## [1.1.1] - 2026-04-22
 
 ### Changed
+
+- **CI/CD**: Added Lychee automated link checker workflow to validate
+  documentation.
 
 - **Build System**: Modernized the RPM build process using a `.spec.in` template
   and a centralized `.rpmbuild` directory.
@@ -56,6 +71,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.0] - 2026-04-22
 
 ### Changed
+
+- **CI/CD**: Added Lychee automated link checker workflow to validate
+  documentation.
 
 - **Documentation**: Updated `CONTRIBUTING.md` and `bug_report.md` to align with
   project dependencies (Flatpak, Snapper, systemd) and remove legacy references.
@@ -85,6 +103,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **CI/CD**: Added Lychee automated link checker workflow to validate
+  documentation.
+
 - **Variable Refactoring:** Standardized environment variables to **UPPERCASE**
   (`EMAIL_TO`, `EMAIL_FROM`, etc.).
 - **Metadata Sync:** Optimized the `.spec` file to include all new documentation
@@ -93,6 +114,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.2] - 2026-03-29
 
 ### Changed
+
+- **CI/CD**: Added Lychee automated link checker workflow to validate
+  documentation.
 
 - **Internal Refactor:** Improved shell logic consistency and variable
   validation.
