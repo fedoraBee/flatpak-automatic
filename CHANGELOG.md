@@ -10,6 +10,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
+  deployment failure.
+
 - **CI/CD**: Added Lychee automated link checker workflow to validate
   documentation.
 
@@ -20,6 +23,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
+  deployment failure.
+
 - **CI/CD**: Added Lychee automated link checker workflow to validate
   documentation.
 
@@ -29,6 +35,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.3] - 2026-04-22
 
 ### Changed
+
+- **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
+  deployment failure.
 
 - **CI/CD**: Added Lychee automated link checker workflow to validate
   documentation.
@@ -42,6 +51,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
+  deployment failure.
+
 - **CI/CD**: Added Lychee automated link checker workflow to validate
   documentation.
 
@@ -51,6 +63,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.1] - 2026-04-22
 
 ### Changed
+
+- **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
+  deployment failure.
 
 - **CI/CD**: Added Lychee automated link checker workflow to validate
   documentation.
@@ -71,6 +86,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.0] - 2026-04-22
 
 ### Changed
+
+- **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
+  deployment failure.
 
 - **CI/CD**: Added Lychee automated link checker workflow to validate
   documentation.
@@ -103,6 +121,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
+  deployment failure.
+
 - **CI/CD**: Added Lychee automated link checker workflow to validate
   documentation.
 
@@ -114,6 +135,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.2] - 2026-03-29
 
 ### Changed
+
+- **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
+  deployment failure.
 
 - **CI/CD**: Added Lychee automated link checker workflow to validate
   documentation.
