@@ -61,8 +61,9 @@ This will:
 
 To host this as a DNF repository on GitHub:
 
-1. The repository structure in `repo` is automatically deployed to the
-   `gh-pages` branch by the CI workflow on each tag release.
+1. The `repo` structure is staged into `public/rpms/` and deployed to the root
+   of the `gh-pages` branch alongside the `index.html` landing page by the CI
+   workflow.
 2. Users can then add the repository by creating a `.repo` file pointing to the
    raw GitHub Pages URL.
 

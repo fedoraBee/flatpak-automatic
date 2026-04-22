@@ -25,7 +25,7 @@ RPM-based distributions.
 
 Packages are distributed via a dedicated DNF repository hosted on GitHub Pages:
 
-👉 <https://fedorabee.github.io/flatpak-automatic/rpms/>
+👉 <https://fedorabee.github.io/flatpak-automatic/>
 
 ### 1. Add the Repository
 
@@ -116,7 +116,7 @@ Makefile, RPM spec, and CHANGELOG.
 
 ## 🔗 Resources
 
-- 🌐 DNF Repository: <https://fedorabee.github.io/flatpak-automatic/rpms/>
+- 🌐 Project Website & Repo: <https://fedorabee.github.io/flatpak-automatic/>
 - 💻 Development: <https://github.com/fedoraBee/flatpak-automatic>
 
 ## ⚠️ Disclaimer
