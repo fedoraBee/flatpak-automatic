@@ -15,7 +15,10 @@
 set -euo pipefail
 
 CONFIG_FILE="/etc/sysconfig/flatpak-automatic"
-[ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE" # shellcheck disable=SC1090
+if [ -f "$CONFIG_FILE" ]; then
+    # shellcheck disable=SC1090
+    source "$CONFIG_FILE"
+fi
 
 # Defaults
 ENABLE_EMAIL="${ENABLE_EMAIL:-yes}"

@@ -1,20 +1,17 @@
-# Define version macro if not passed from command line
-%if 0%{?_version:1}
-%define version_macro %{_version}
-%else
-%define version_macro 1.0.3
-%endif
+%{!?_version: %define _version X.Y.Z}
 
 Name:           flatpak-automatic
-Version:        %{version_macro}
+Version:        %{_version}
 Release:        1%{?dist}
 Summary:        Automated Flatpak updates with optional snapshots and mail notifications
+
 License:        GPL-3.0-or-later
 URL:            https://github.com/fedoraBee/flatpak-automatic
-BuildArch:      noarch
+Source0:        https://github.com/fedoraBee/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 
-# Source is created by 'make rpm'
-Source0:        %{name}-%{version}.tar.gz
+BuildArch:      noarch
+BuildRequires:  make
+BuildRequires:  systemd-rpm-macros
 
 Requires:       flatpak
 Requires:       snapper
@@ -35,6 +32,26 @@ automatically detecting Btrfs/Snapper support before execution.
 
 %install
 make install DESTDIR=%{buildroot} PREFIX=%{_prefix} SYSCONFDIR=%{_sysconfdir}
+
+%check
+# Basic verification of installed files in BuildRoot
+#test -f ...
+
+%global systemd_runtime_check [ -d /run/systemd/system ] && command -v systemctl >/dev/null 2>&1
+
+
+%post
+# Reload for the generator to pick up new user-level Quadlets
+if %{systemd_runtime_check}; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+fi
+
+%postun
+if %{systemd_runtime_check}; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+fi
+
+%preun
 
 %files
 %{_bindir}/flatpak-automatic

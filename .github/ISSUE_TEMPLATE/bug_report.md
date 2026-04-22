@@ -10,10 +10,9 @@ labels: bug
 ## Environment
 
 - OS Version: (e.g., Fedora 41)
-- Package Version: (e.g., flatpak-automatic-0.1.0-1)
-- Deployment Type: Rootless (dedicated user) / Rootless (current user) /
-  Rootfull
-- Podman Version: `podman --version`
+- Package Version: (e.g., flatpak-automatic-1.0.3-1)
+- Flatpak Version: `flatpak --version`
+- Snapper Version: `snapper --version`
 
 ## Steps to Reproduce
 
@@ -24,6 +23,6 @@ labels: bug
 happen.
 
 **Actual Behavior** What actually happened? Include logs if possible
-(`journalctl --user -u open-webui`).
+(`sudo journalctl -u flatpak-automatic.service`).
 
 **Additional Context** Add any other context about the problem here.

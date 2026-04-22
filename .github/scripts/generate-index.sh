@@ -14,17 +14,17 @@ cat <<EOF > "$OUTPUT_FILE"
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Podman AI Stack Repository</title>
+    <title>Flatpak Automatic Repository</title>
 </head>
 <body>
-    <h1>Podman AI Stack Repository</h1>
+    <h1>Flatpak Automatic Repository</h1>
     <p>Browse the repository:</p>
     <ul>
 EOF
 
 # Add links for each subdirectory
-# Note: Since this index.html will be inside 'rpms/' on the web server, 
-# and it scans 'rpmbuild/repo/' which is the same as 'rpms/', 
+# Note: Since this index.html will be inside 'rpms/' on the web server,
+# and it scans 'rpmbuild/repo/' which is the same as 'rpms/',
 # the links should be relative or absolute from root.
 for dir in "$DEPLOY_DIR"/*/; do
     dir_name=$(basename "$dir")
