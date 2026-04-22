@@ -1,4 +1,5 @@
 rpmbuild/
+.rpmbuild/
 .codex
 .vscode/
 .gemini/
