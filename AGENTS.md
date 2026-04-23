@@ -1,8 +1,8 @@
 # Flatpak Automatic: Technical Manifest
 
 Flatpak Automatic is a secure, configurable, and systemd-native automation
-wrapper for Flatpak updates. It integrates Snapper for atomic-like rollbacks
-and systemd for reliable scheduling on Fedora and other RPM-based distributions.
+wrapper for Flatpak updates. It integrates Snapper for atomic-like rollbacks and
+systemd for reliable scheduling on Fedora and other RPM-based distributions.
 
 ## 🏗 Architectural Overview
 
@@ -11,11 +11,12 @@ components:
 
 ### 1. Automation Script (`/usr/bin/flatpak-automatic`)
 
-- **Update Logic**: Handles the `flatpak update` process with dry-run checks
-  to avoid unnecessary operations.
-- **Snapshot Integration**: Automatically creates Snapper pre/post snapshots
-  if Btrfs and Snapper are detected.
-- **Notification System**: Sends update reports via local mail (`s-nail`/`mailx`).
+- **Update Logic**: Handles the `flatpak update` process with dry-run checks to
+  avoid unnecessary operations.
+- **Snapshot Integration**: Automatically creates Snapper pre/post snapshots if
+  Btrfs and Snapper are detected.
+- **Notification System**: Sends update reports via local mail
+  (`s-nail`/`mailx`).
 
 ### 2. Systemd Integration
 
@@ -69,7 +70,9 @@ To deploy changes locally for testing:
 
 - **Branching Strategy (Mandatory)**  
   All features, bug fixes, and other changes must be developed in a new branch.
-  Never commit directly to `main`.
+  Never commit directly to `main`. Branch protection rules MUST be configured on
+  `main` to require status checks (`lint-code`, `lint-python`, `lint-spec`,
+  `build-packages`, `smoke-test`) and mandatory Pull Requests.
 
   Branch names must follow:
 
@@ -91,6 +94,8 @@ To deploy changes locally for testing:
 
   - markdownlint
   - shellcheck
+  - lint-python
+  - shfmt
   - rpmlint
   - RPM build and smoke tests
 

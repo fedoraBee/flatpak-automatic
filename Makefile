@@ -2,7 +2,7 @@
 
 NAME := flatpak-automatic
 EPOCH := 1
-VERSION := 1.2.10
+VERSION := 1.2.11
 REL_NUM := 3
 DATE := $(shell LC_ALL=C date +"%a %b %d %Y")
 AUTHOR := "fedoraBee <9395414+fedoraBee@users.noreply.github.com>"

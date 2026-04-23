@@ -35,6 +35,25 @@ jobs:
           config: rpm/.markdownlint.jsonc
           globs: "**/*.md"
 
+      - name: Install shfmt
+        run: sudo apt-get install -y shfmt
+
+      - name: Check Shell Formatting
+        run: shfmt -d -i 4 -ci scripts/
+
+
+
+  lint-python:
+    name: Lint Python Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+      - name: Run Ruff
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: 'format --check'
+
   lint-actions:
     name: Lint GitHub Workflows
     runs-on: ubuntu-latest
@@ -128,6 +147,7 @@ jobs:
         with:
           name: rpms
           path: .rpmbuild/RPMS/noarch/*.rpm
+          retention-days: 5
 
   # --- Testing Stage ---
   smoke-test:
@@ -244,6 +264,7 @@ jobs:
         with:
           name: public-site
           path: public/
+          retention-days: 5
 
   # --- Final Release Stage ---
   publish-release:
