@@ -41,3 +41,4 @@ repos:
     hooks:
       - id: prettier
         types_or: [markdown]
+        args: ["--prose-wrap", "always", "--print-width", "80"]

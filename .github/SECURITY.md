@@ -22,8 +22,8 @@ not report vulnerabilities via public issues, social media, or public email.**
 Please use the **GitHub Private Vulnerability Reporting** feature:
 
 1. Navigate to the
-   [Security Tab](https://github.com/fedoraBee/flatpak-automatic/security) of this
-   repository.
+   [Security Tab](https://github.com/fedoraBee/flatpak-automatic/security) of
+   this repository.
 2. Click on **Advisories** in the left sidebar.
 3. Click **Report a vulnerability** to open a private draft advisory.
 
