@@ -3,7 +3,7 @@
 setup() {
     export ENABLE_SNAPSHOTS="no"
     export ENABLE_EMAIL="no"
-    
+
     # Mock flatpak binary
     mkdir -p "$BATS_TEST_DIRNAME/bin"
     cat << 'EOF' > "$BATS_TEST_DIRNAME/bin/flatpak"
