@@ -60,19 +60,17 @@ To deploy changes locally for testing:
 
 ## 🤖 CLI Guidelines
 
-- **Self-Correction**
-  After modifying `AGENTS.md`, immediately re-read it to ensure the active
-  context reflects the latest project guidelines.
+- **Self-Correction** After modifying `AGENTS.md`, immediately re-read it to
+  ensure the active context reflects the latest project guidelines.
 
-- **Professionalism**
-  Maintain high engineering standards. Write clean, idiomatic code, communicate
-  clearly, and verify all changes before completion.
+- **Professionalism** Maintain high engineering standards. Write clean,
+  idiomatic code, communicate clearly, and verify all changes before completion.
 
-- **Branching Strategy (Mandatory)**
-  All features, bug fixes, and other changes must be developed in a new branch.
-  Never commit directly to `main`. Branch protection rules MUST be configured on
-  `main` to require status checks (`lint-code`, `lint-python`, `lint-spec`,
-  `build-packages`, `smoke-test`) and mandatory Pull Requests.
+- **Branching Strategy (Mandatory)** All features, bug fixes, and other changes
+  must be developed in a new branch. Never commit directly to `main`. Branch
+  protection rules MUST be configured on `main` to require status checks
+  (`lint-code`, `lint-python`, `lint-spec`, `build-packages`, `smoke-test`) and
+  mandatory Pull Requests.
 
   Branch names must follow:
 
@@ -83,14 +81,14 @@ To deploy changes locally for testing:
   - `<type>`: feat | fix | chore | refactor | docs | ci
   - `<version>`: target release version
 
-- **Pull Request Workflow (Mandatory)**
-  Each branch must open a descriptive Pull Request (PR).
+- **Pull Request Workflow (Mandatory)** Each branch must open a descriptive Pull
+  Request (PR).
 
   PR creation MUST be performed using the GitOps PR CLI tool provided in this
   repository (located at scripts/gitops-pr-cli-tool.sh).
 
-- **CI Requirements**
-  All Pull Requests must pass CI checks before merging. This includes:
+- **CI Requirements** All Pull Requests must pass CI checks before merging. This
+  includes:
 
   - markdownlint
   - shellcheck
@@ -99,25 +97,21 @@ To deploy changes locally for testing:
   - rpmlint
   - RPM build and smoke tests
 
-- **Atomic Commits**
-  Commit frequently with small, logical, atomic changes.
+- **Atomic Commits** Commit frequently with small, logical, atomic changes.
 
-- **Testing**
-  Thoroughly test all changes before committing:
+- **Testing** Thoroughly test all changes before committing:
 
   - Build RPMs using `make rpm`
   - Verify systemd integration and timer scheduling
   - Validate scripts and error handling
 
-- **Verification**
-  After modifying the RPM spec or Makefile:
+- **Verification** After modifying the RPM spec or Makefile:
 
   - Verify file paths
   - Validate installation logic
   - Ensure resulting RPM behaves as expected
 
-- **Documentation**
-  Keep documentation consistent and up to date:
+- **Documentation** Keep documentation consistent and up to date:
 
   - Update `DEVELOPMENT.md` for build steps and prerequisites
   - Update `README.md` for installation and user-facing changes
@@ -129,16 +123,15 @@ To deploy changes locally for testing:
   - Update `CHANGELOG.md` using the "Keep a Changelog" format.
   - The `CHANGELOG.md` is the **single source of truth** for release notes.
 
-- **Versioning Discipline**
-  Any version bump (including patch releases) must be synchronized across:
+- **Versioning Discipline** Any version bump (including patch releases) must be
+  synchronized across:
 
   - `Makefile` (`VERSION` variable)
   - `rpm/flatpak-automatic.spec` (`Version` field - automatically updated by
     `scripts/update-rpm-metadata.py` from `Makefile`)
   - `CHANGELOG.md` (New version heading)
 
-- **Script Requirements**
-  All scripts must be:
+- **Script Requirements** All scripts must be:
 
   - Idempotent
   - Safe to re-run
@@ -154,3 +147,19 @@ To deploy changes locally for testing:
 
 **Note:** All changes made to this instruction file must also be reflected in
 `AGENTS.md`.
+
+## Architecture & Execution Flow
+
+```mermaid
+graph TD
+    A[Systemd Timer] -->|Triggers| B(Systemd Service)
+    B --> C{Dry Run Check}
+    C -->|Updates Available| D[Pre-Snapshot]
+    C -->|No Updates| Z[Exit 0]
+    D --> E[Flatpak Update]
+    E --> F[Post-Snapshot]
+    F --> G{Email Enabled?}
+    G -->|Yes| H[Send Email Alert]
+    G -->|No| I[Exit 0]
+    H --> I
+```

@@ -122,3 +122,32 @@ Makefile, RPM spec, and CHANGELOG.
 
 This is an independent project and not affiliated with Fedora or the Flatpak
 project. Use at your own discretion.
+
+## Troubleshooting & Runbook
+
+If you encounter issues with `flatpak-automatic`, follow these steps to diagnose
+and resolve them:
+
+### 1. Viewing Logs
+
+Since the script integrates natively with systemd, the best place to check for
+failures or warnings is the system journal:
+
+```bash
+journalctl -u flatpak-automatic.service -e
+```
+
+### 2. Snapper Config Errors
+
+If the health check reports `FAIL: snapper config 'root' is invalid or missing`,
+you need to initialize a Snapper configuration for your root filesystem:
+
+```bash
+sudo snapper -c root create-config /
+```
+
+### 3. Email/Mailx Authentication Failures
+
+If you have `ENABLE_EMAIL=yes` but are not receiving notifications, check your
+`s-nail` configuration. The mail client relies on `/etc/mail.rc`. Ensure your
+SMTP server, port, and authentication credentials are set up correctly.
