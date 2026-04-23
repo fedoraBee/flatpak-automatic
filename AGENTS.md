@@ -77,7 +77,6 @@ To deploy changes locally for testing:
   `<type>/v<version>-<short-description>`
 
   Where:
-
   - `<type>`: feat | fix | chore | refactor | docs | ci
   - `<version>`: target release version
 
@@ -89,7 +88,6 @@ To deploy changes locally for testing:
 
 - **CI Requirements** All Pull Requests must pass CI checks before merging. This
   includes:
-
   - markdownlint
   - shellcheck
   - lint-python
@@ -100,39 +98,33 @@ To deploy changes locally for testing:
 - **Atomic Commits** Commit frequently with small, logical, atomic changes.
 
 - **Testing** Thoroughly test all changes before committing:
-
   - Build RPMs using `make rpm`
   - Verify systemd integration and timer scheduling
   - Validate scripts and error handling
 
 - **Verification** After modifying the RPM spec or Makefile:
-
   - Verify file paths
   - Validate installation logic
   - Ensure resulting RPM behaves as expected
 
 - **Documentation** Keep documentation consistent and up to date:
-
   - Update `DEVELOPMENT.md` for build steps and prerequisites
   - Update `README.md` for installation and user-facing changes
 
   **Changelog (Mandatory)**
 
   For every feature, fix, or release:
-
   - Update `CHANGELOG.md` using the "Keep a Changelog" format.
   - The `CHANGELOG.md` is the **single source of truth** for release notes.
 
 - **Versioning Discipline** Any version bump (including patch releases) must be
   synchronized across:
-
   - `Makefile` (`VERSION` variable)
   - `rpm/flatpak-automatic.spec` (`Version` field - automatically updated by
     `scripts/update-rpm-metadata.py` from `Makefile`)
   - `CHANGELOG.md` (New version heading)
 
 - **Script Requirements** All scripts must be:
-
   - Idempotent
   - Safe to re-run
   - Failure-tolerant with proper error handling

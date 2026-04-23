@@ -42,7 +42,8 @@ pre-commit run --all-files
 
 - **Scripts**: The main automation logic is in `scripts/flatpak-automatic.sh`.
 - **Systemd**: Units are located in `systemd/`.
-- **Configuration**: Default environment variables are in `sysconfig/flatpak-automatic`.
+- **Configuration**: Default environment variables are in
+  `sysconfig/flatpak-automatic`.
 - **Packaging**: The RPM spec and linting configurations are in `rpm/`.
 
 ### 4. Testing Your Changes
