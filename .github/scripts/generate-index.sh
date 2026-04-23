@@ -1,5 +1,22 @@
 #!/bin/bash
 OUTPUT_FILE="public/index.html"
+RPM_DIR="public/rpms"
+
+VERSIONS_HTML=""
+if [ -d "$RPM_DIR" ]; then
+    # Sort versions descending (-r) so newest is on top
+    for version_path in $(ls -d "$RPM_DIR"/v* 2>/dev/null | sort -rV); do
+        version=$(basename "$version_path")
+        VERSIONS_HTML+="<h3>$version</h3><ul>"
+        for channel_path in $(ls -d "$version_path"/* 2>/dev/null); do
+            channel=$(basename "$channel_path")
+            VERSIONS_HTML+="<li><a href=\"rpms/$version/$channel/\">Channel: $channel</a></li>"
+        done
+        VERSIONS_HTML+="</ul>"
+    done
+else
+    VERSIONS_HTML="<p>No versions found.</p>"
+fi
 
 cat <<EOF_HTML > "$OUTPUT_FILE"
 <!DOCTYPE html>
@@ -13,6 +30,7 @@ cat <<EOF_HTML > "$OUTPUT_FILE"
         .container { background: white; padding: 2.5rem; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; margin-top: 0; }
         h2 { color: #34495e; margin-top: 1.5rem; }
+        h3 { color: #2980b9; margin-top: 1.0rem; margin-bottom: 0.2rem; }
         a { color: #3498db; text-decoration: none; font-weight: 500; }
         a:hover { text-decoration: underline; color: #2980b9; }
         .code-block { background: #282c34; color: #abb2bf; padding: 1.2rem; border-radius: 6px; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.9em; }
@@ -40,6 +58,16 @@ EOF
 
 sudo dnf makecache
 sudo dnf install flatpak-automatic</div>
+        </div>
+
+        <div class="card">
+            <h2>🗂️ Available Versions & Channels</h2>
+            ${VERSIONS_HTML}
+            <h3>latest</h3>
+            <ul>
+                <li><a href="rpms/latest/stable/">Channel: stable</a></li>
+                <li><a href="rpms/latest/testing/">Channel: testing</a></li>
+            </ul>
         </div>
 
         <div class="card">
