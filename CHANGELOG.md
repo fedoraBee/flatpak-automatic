@@ -6,6 +6,15 @@ The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.7] - 2026-04-23
+
+### Added
+
+- **UI/UX**: Added native dark mode support (`prefers-color-scheme`) to the
+  repository index page.
+- **UI/UX**: Enhanced repository index to display collapsible lists of actual
+  RPM files using HTML5 `<details>` and `<summary>` tags.
+
 ## [1.1.6] - 2026-04-23
 
 ### Added

@@ -10,7 +10,15 @@ if [ -d "$RPM_DIR" ]; then
         VERSIONS_HTML+="<h3>$version</h3><ul>"
         for channel_path in $(ls -d "$version_path"/* 2>/dev/null); do
             channel=$(basename "$channel_path")
-            VERSIONS_HTML+="<li><a href=\"rpms/$version/$channel/\">Channel: $channel</a></li>"
+            VERSIONS_HTML+="<details><summary>Channel: $channel</summary><ul>"
+            # List actual RPM files if they exist
+            for rpm_file in $(ls "$channel_path"/*.rpm 2>/dev/null); do
+                rpm_name=$(basename "$rpm_file")
+                VERSIONS_HTML+="<li><a href=\"rpms/$version/$channel/$rpm_name\">$rpm_name</a></li>"
+            done
+            # Fallback to directory link
+            VERSIONS_HTML+="<li><a href=\"rpms/$version/$channel/\">Browse Full Directory</a></li>"
+            VERSIONS_HTML+="</ul></details>"
         done
         VERSIONS_HTML+="</ul>"
     done
@@ -37,6 +45,22 @@ cat <<EOF_HTML > "$OUTPUT_FILE"
         .card { border: 1px solid #eaeaea; padding: 1.5rem; margin-top: 1.5rem; border-radius: 8px; background: #fafafa; }
         ul { padding-left: 1.5rem; }
         li { margin-bottom: 0.5rem; }
+    
+        details { background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 0.5rem; padding: 0.5rem; }
+        summary { font-weight: 500; cursor: pointer; color: #2980b9; user-select: none; outline: none; }
+        @media (prefers-color-scheme: dark) {
+            body { background: #121212; color: #e0e0e0; }
+            .container { background: #1e1e1e; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+            h1 { color: #ffffff; border-bottom-color: #333; }
+            h2 { color: #eeeeee; }
+            h3 { color: #64b5f6; }
+            a { color: #64b5f6; }
+            a:hover { color: #90caf9; }
+            .card { background: #252525; border-color: #333; }
+            .code-block { background: #111; border: 1px solid #333; }
+            details { background: #2a2a2a; border-color: #444; }
+            summary { color: #90caf9; }
+        }
     </style>
 </head>
 <body>
@@ -64,10 +88,18 @@ sudo dnf install flatpak-automatic</div>
             <h2>🗂️ Available Versions & Channels</h2>
             ${VERSIONS_HTML}
             <h3>latest</h3>
-            <ul>
-                <li><a href="rpms/latest/stable/">Channel: stable</a></li>
-                <li><a href="rpms/latest/testing/">Channel: testing</a></li>
-            </ul>
+            <details>
+                <summary>Channel: stable</summary>
+                <ul>
+                    <li><a href="rpms/latest/stable/">Browse Full Directory</a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>Channel: testing</summary>
+                <ul>
+                    <li><a href="rpms/latest/testing/">Browse Full Directory</a></li>
+                </ul>
+            </details>
         </div>
 
         <div class="card">
