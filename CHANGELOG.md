@@ -6,6 +6,19 @@ The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.9] - 2026-04-23
+
+### Changed
+
+- **CI/CD**: Moved `rpmlint` execution into the primary build job to resolve
+  cryptographic isolation errors, bypassing the need for a standalone linting
+  job.
+
+### Fixed
+
+- **CI/CD**: Injected missing GPG import logic into the `build-html-artifact`
+  job to successfully sign DNF repository metadata during release tags.
+
 ## [1.2.8] - 2026-04-23
 
 ### Fixed
