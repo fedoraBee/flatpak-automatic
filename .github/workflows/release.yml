@@ -78,6 +78,13 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git config --global --add safe.directory '*'
 
+      - name: Fetch existing gh-pages content
+        uses: actions/checkout@v5
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: public
+
       - name: Prepare Public Directory
         run: |
           mkdir -p public/rpms
