@@ -36,17 +36,17 @@ def main():
     env = Environment(loader=FileSystemLoader('.github/templates'))
     template = env.get_template('index.html.j2')
     github_repo = os.environ.get('GITHUB_REPOSITORY', 'fedoraBee/flatpak-automatic')
-        build_sha = os.environ.get('GITHUB_SHA', 'unknown')
-        build_run_id = os.environ.get('GITHUB_RUN_ID', 'unknown')
-        build_date = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
-        
-        html_out = template.render(
-            versions=versions,
-            github_repo=github_repo,
-            build_sha=build_sha,
-            build_run_id=build_run_id,
-            build_date=build_date
-        )
+    build_sha = os.environ.get('GITHUB_SHA', 'unknown')
+    build_run_id = os.environ.get('GITHUB_RUN_ID', 'unknown')
+    build_date = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
+    
+    html_out = template.render(
+        versions=versions,
+        github_repo=github_repo,
+        build_sha=build_sha,
+        build_run_id=build_run_id,
+        build_date=build_date
+    )
     
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     with open(output_file, 'w', encoding='utf-8') as f:
