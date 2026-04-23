@@ -19,6 +19,8 @@
     
         details { background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 0.5rem; padding: 0.5rem; }
         summary { font-weight: 500; cursor: pointer; color: #2980b9; user-select: none; outline: none; }
+        .badge-latest { background: #27ae60; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.6em; vertical-align: middle; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-latest-sm { background: #3498db; color: white; padding: 1px 5px; border-radius: 3px; font-size: 0.7em; margin-left: 6px; font-weight: bold; text-transform: uppercase; }
         @media (prefers-color-scheme: dark) {
             body { background: #121212; color: #e0e0e0; }
             .container { background: #1e1e1e; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -49,6 +51,13 @@ baseurl=https://fedorabee.github.io/flatpak-automatic/rpms/latest/stable/
 enabled=1
 gpgcheck=1
 gpgkey=https://fedorabee.github.io/flatpak-automatic/rpms/gpg.key
+
+[flatpak-automatic-testing]
+name=Flatpak Automatic - Testing
+baseurl=https://fedorabee.github.io/flatpak-automatic/rpms/latest/testing/
+enabled=0
+gpgcheck=1
+gpgkey=https://fedorabee.github.io/flatpak-automatic/rpms/gpg.key
 EOF
 
 sudo dnf makecache
@@ -57,20 +66,8 @@ sudo dnf install flatpak-automatic</div>
 
         <div class="card">
             <h2>🗂️ Available Versions & Channels</h2>
-            <h3>v1.1</h3><ul><details><summary>Channel: stable</summary><ul><li><a href="rpms/v1.1/stable/flatpak-automatic-1.1.5-1.fc43.noarch.rpm">flatpak-automatic-1.1.5-1.fc43.noarch.rpm</a></li><li><a href="rpms/v1.1/stable/">Browse Full Directory</a></li></ul></details><details><summary>Channel: testing</summary><ul><li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.1-1.fc43.noarch.rpm">flatpak-automatic-1.1.1-1.fc43.noarch.rpm</a></li><li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.6-1.fc43.noarch.rpm">flatpak-automatic-1.1.6-1.fc43.noarch.rpm</a></li><li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.7-1.fc43.noarch.rpm">flatpak-automatic-1.1.7-1.fc43.noarch.rpm</a></li><li><a href="rpms/v1.1/testing/">Browse Full Directory</a></li></ul></details></ul>
-            <h3>latest</h3>
-            <details>
-                <summary>Channel: stable</summary>
-                <ul>
-                    <li><a href="rpms/latest/stable/">Browse Full Directory</a></li>
-                </ul>
-            </details>
-            <details>
-                <summary>Channel: testing</summary>
-                <ul>
-                    <li><a href="rpms/latest/testing/">Browse Full Directory</a></li>
-                </ul>
-            </details>
+            <h3>v1.1 <span class="badge-latest">LATEST</span></h3><ul><details><summary>Channel: stable</summary><ul><li><a href="rpms/v1.1/stable/flatpak-automatic-1.1.5-1.fc43.noarch.rpm">flatpak-automatic-1.1.5-1.fc43.noarch.rpm</a> <span class="badge-latest-sm">latest patch</span></li></ul></details><details><summary>Channel: testing</summary><ul><li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.8-1.fc43.noarch.rpm">flatpak-automatic-1.1.8-1.fc43.noarch.rpm</a> <span class="badge-latest-sm">latest patch</span></li><li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.7-1.fc43.noarch.rpm">flatpak-automatic-1.1.7-1.fc43.noarch.rpm</a></li><li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.6-1.fc43.noarch.rpm">flatpak-automatic-1.1.6-1.fc43.noarch.rpm</a></li><li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.1-1.fc43.noarch.rpm">flatpak-automatic-1.1.1-1.fc43.noarch.rpm</a></li></ul></details></ul>
+            
         </div>
 
         <div class="card">
