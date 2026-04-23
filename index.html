@@ -16,6 +16,22 @@
         .card { border: 1px solid #eaeaea; padding: 1.5rem; margin-top: 1.5rem; border-radius: 8px; background: #fafafa; }
         ul { padding-left: 1.5rem; }
         li { margin-bottom: 0.5rem; }
+    
+        details { background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 0.5rem; padding: 0.5rem; }
+        summary { font-weight: 500; cursor: pointer; color: #2980b9; user-select: none; outline: none; }
+        @media (prefers-color-scheme: dark) {
+            body { background: #121212; color: #e0e0e0; }
+            .container { background: #1e1e1e; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+            h1 { color: #ffffff; border-bottom-color: #333; }
+            h2 { color: #eeeeee; }
+            h3 { color: #64b5f6; }
+            a { color: #64b5f6; }
+            a:hover { color: #90caf9; }
+            .card { background: #252525; border-color: #333; }
+            .code-block { background: #111; border: 1px solid #333; }
+            details { background: #2a2a2a; border-color: #444; }
+            summary { color: #90caf9; }
+        }
     </style>
 </head>
 <body>
@@ -41,12 +57,20 @@ sudo dnf install flatpak-automatic</div>
 
         <div class="card">
             <h2>🗂️ Available Versions & Channels</h2>
-            <h3>v1.1</h3><ul><li><a href="rpms/v1.1/stable/">Channel: stable</a></li><li><a href="rpms/v1.1/testing/">Channel: testing</a></li></ul>
+            <h3>v1.1</h3><ul><details><summary>Channel: stable</summary><ul><li><a href="rpms/v1.1/stable/flatpak-automatic-1.1.5-1.fc43.noarch.rpm">flatpak-automatic-1.1.5-1.fc43.noarch.rpm</a></li><li><a href="rpms/v1.1/stable/">Browse Full Directory</a></li></ul></details><details><summary>Channel: testing</summary><ul><li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.1-1.fc43.noarch.rpm">flatpak-automatic-1.1.1-1.fc43.noarch.rpm</a></li><li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.6-1.fc43.noarch.rpm">flatpak-automatic-1.1.6-1.fc43.noarch.rpm</a></li><li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.7-1.fc43.noarch.rpm">flatpak-automatic-1.1.7-1.fc43.noarch.rpm</a></li><li><a href="rpms/v1.1/testing/">Browse Full Directory</a></li></ul></details></ul>
             <h3>latest</h3>
-            <ul>
-                <li><a href="rpms/latest/stable/">Channel: stable</a></li>
-                <li><a href="rpms/latest/testing/">Channel: testing</a></li>
-            </ul>
+            <details>
+                <summary>Channel: stable</summary>
+                <ul>
+                    <li><a href="rpms/latest/stable/">Browse Full Directory</a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>Channel: testing</summary>
+                <ul>
+                    <li><a href="rpms/latest/testing/">Browse Full Directory</a></li>
+                </ul>
+            </details>
         </div>
 
         <div class="card">
