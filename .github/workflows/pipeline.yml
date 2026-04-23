@@ -1,0 +1,219 @@
+name: Pipeline
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  actions: read
+  checks: write
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  ci-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: './scripts'
+      - name: Run Markdownlint
+        uses: DavidAnson/markdownlint-cli2-action@v23
+        with:
+          config: rpm/.markdownlint.jsonc
+          globs: "**/*.md"
+
+  ci-actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Install Actionlint
+        run: |
+          curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.8/actionlint_1.7.8_linux_amd64.tar.gz -o /tmp/actionlint.tar.gz
+          tar -xzf /tmp/actionlint.tar.gz -C /tmp actionlint
+          install -m 0755 /tmp/actionlint /usr/local/bin/actionlint
+      - name: Run Actionlint
+        run: actionlint -color
+
+  ci-lint-spec:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        run: dnf install -y rpmlint make python3
+      - name: Configure RPM _topdir
+        run: echo "%_topdir ${{ github.workspace }}/.rpmbuild" > ~/.rpmmacros
+      - name: Lint RPM Spec
+        run: make lint-spec
+
+  build-rpms:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    outputs:
+      rpm_artifact_id: ${{ steps.upload_rpms.outputs.artifact-id }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        run: dnf install -y python3 rpm-build systemd-rpm-macros make tar gnupg2 rpm-sign which
+      - name: Build RPM
+        run: make rpm
+      - name: Import GPG Key & Sign
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          mkdir -p ~/.gnupg && chmod 700 ~/.gnupg
+          echo "use-agent" > ~/.gnupg/gpg.conf
+          echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
+          gpg-connect-agent reloadagent /bye
+          preset_passphrase_bin="$(find /usr/lib* -name gpg-preset-passphrase 2>/dev/null | head -n 1)"
+          keygrip="$(gpg --with-keygrip -K | awk '/Keygrip =/ {print $3; exit}')"
+          "$preset_passphrase_bin" --passphrase "${{ secrets.GPG_PASSPHRASE }}" --preset "$keygrip"
+          echo "%_signature gpg" > ~/.rpmmacros
+          echo "%_gpg_name ${{ vars.GPG_KEY_ID }}" >> ~/.rpmmacros
+          echo "%__gpg $(which gpg)" >> ~/.rpmmacros
+          GPG_TTY="$(tty || echo /dev/null)" && export GPG_TTY
+          make rpm-sign GPG_KEY_ID=${{ vars.GPG_KEY_ID }}
+      - name: Upload RPM Artifacts
+        id: upload_rpms
+        uses: actions/upload-artifact@v6
+        with:
+          name: rpms
+          path: .rpmbuild/RPMS/noarch/*.rpm
+
+  lint-rpm:
+    needs: build-rpms
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Download RPM Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: rpms
+          path: .rpmbuild/RPMS/noarch
+      - name: Install dependencies
+        run: dnf install -y rpmlint make
+      - name: Lint RPM Artifacts
+        run: make lint-rpm
+
+  smoke-test:
+    needs: build-rpms
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        fedora_version: [40, 41, 42, rawhide]
+    container:
+      image: fedora:${{ matrix.fedora_version }}
+      options: --privileged
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        run: dnf install -y curl unzip systemd shadow-utils util-linux
+      - name: Download RPM Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: rpms
+          path: rpms
+      - name: Install RPM
+        run: dnf install -y rpms/flatpak-automatic-[0-9].*.noarch.rpm
+      - name: Verify Installation
+        run: |
+          test -f /etc/sysconfig/flatpak-automatic
+          test -f /usr/lib/systemd/system/flatpak-automatic.timer
+          test -f /usr/lib/systemd/system/flatpak-automatic.service
+          test -f /usr/bin/flatpak-automatic
+      - name: Systemd Syntax Check
+        run: |
+          systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.timer
+          systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.service
+
+  build-html-artifact:
+    needs: build-rpms
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        run: |
+          dnf install -y python3 make createrepo_c git rsync nodejs
+          pip install jinja2
+          npm install -g htmlhint
+      - name: Download RPM Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: rpms
+          path: .rpmbuild/RPMS/noarch
+      - name: Update RPM Repository
+        run: |
+          CHANNEL=stable
+          ref_name="${{ github.ref_name }}"
+          case "$ref_name" in
+            *rc*|*beta*|*alpha*|*test*) CHANNEL=testing ;;
+          esac
+          make rpm-repo GPG_KEY_ID=${{ vars.GPG_KEY_ID }} CHANNEL=$CHANNEL
+      - name: Fetch existing gh-pages content
+        uses: actions/checkout@v5
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: public
+      - name: Prepare Public Directory
+        run: |
+          mkdir -p public/rpms
+          cp -r repo/* public/rpms/
+      - name: Generate Static Index
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: python3 .github/scripts/generate-index.py
+      - name: Lint HTML
+        run: htmlhint public/index.html
+      - name: Upload Public Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: public-site
+          path: public/
+
+  deploy-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [lint-rpm, smoke-test, build-html-artifact]
+    runs-on: ubuntu-latest
+    environment: gh-pages
+    steps:
+      - name: Download Public Site
+        uses: actions/download-artifact@v4
+        with:
+          name: public-site
+          path: public
+      - name: Download RPMs
+        uses: actions/download-artifact@v4
+        with:
+          name: rpms
+          path: rpms
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: public
+          keep_files: true
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: rpms/*.rpm
