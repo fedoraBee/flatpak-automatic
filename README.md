@@ -1,7 +1,6 @@
 # Flatpak Automatic
 
-[![CI](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/ci.yml/badge.svg)](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/ci.yml)
-[![Release](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/release.yml/badge.svg)](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/release.yml)
+[![Pipeline](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml)
 
 Flatpak Automatic provides a secure, configurable, and systemd-native automation
 wrapper for Flatpak updates.
