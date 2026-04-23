@@ -86,8 +86,7 @@ jobs:
           echo "%__gpg $(which gpg)" >> ~/.rpmmacros
           GPG_TTY="$(tty || echo /dev/null)" && export GPG_TTY
           make rpm-sign GPG_KEY_ID=${{ vars.GPG_KEY_ID }}
-      - name: Lint RPM Artifacts
-        run: make lint-rpm
+          make lint-rpm
       - name: Upload RPM Artifacts
         id: upload_rpms
         uses: actions/upload-artifact@v6
