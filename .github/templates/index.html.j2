@@ -21,6 +21,7 @@
         summary { font-weight: 500; cursor: pointer; color: #2980b9; user-select: none; outline: none; }
         .badge-latest { background: #27ae60; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.6em; vertical-align: middle; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         .badge-latest-sm { background: #3498db; color: white; padding: 1px 5px; border-radius: 3px; font-size: 0.7em; margin-left: 6px; font-weight: bold; text-transform: uppercase; }
+        .footer { margin-top: 2rem; text-align: center; font-size: 0.85em; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 1rem; }
         @media (prefers-color-scheme: dark) {
             body { background: #121212; color: #e0e0e0; }
             .container { background: #1e1e1e; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -33,6 +34,7 @@
             .code-block { background: #111; border: 1px solid #333; }
             details { background: #2a2a2a; border-color: #444; }
             summary { color: #90caf9; }
+            .footer { color: #888; border-top-color: #333; }
         }
     </style>
 </head>
@@ -97,6 +99,10 @@ sudo dnf install flatpak-automatic</div>
                 <li><a href="https://github.com/fedoraBee/flatpak-automatic">GitHub Source Code &amp; Documentation</a></li>
                 <li><a href="https://github.com/fedoraBee/flatpak-automatic/issues">Report an Issue</a></li>
             </ul>
+        </div>
+        
+        <div class="footer">
+            <p>Generated on <strong>{{ build_date }}</strong> | Commit: <a href="https://github.com/{{ github_repo }}/commit/{{ build_sha }}">{{ build_sha[:7] }}</a> | Run ID: {{ build_run_id }}</p>
         </div>
     </div>
 </body>
