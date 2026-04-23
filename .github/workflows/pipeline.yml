@@ -236,8 +236,8 @@ jobs:
 
       - name: Run Accessibility Audit
         run: |
-          echo '{"chromeLaunchConfig": {"args": ["--no-sandbox", "--disable-setuid-sandbox"]}}' > .pa11yrc
-          pa11y public/index.html
+          echo '{"chromeLaunchConfig": {"args": ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]}}' > pa11y-config.json
+          pa11y --config pa11y-config.json public/index.html
 
       - name: Archive Public Site
         uses: actions/upload-artifact@v6
