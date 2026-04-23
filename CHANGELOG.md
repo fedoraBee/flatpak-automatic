@@ -6,12 +6,20 @@ The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-04-23
+
+### Fixed
+
+- **CI/CD**: Resolved `pa11y` accessibility audit failure by migrating from the
+  deprecated `--chrome-launch-config` CLI flag to a localized `.pa11yrc`
+  configuration file.
+
 ## [1.3.0] - 2026-04-23
 
 ### Added
 
-- **CI/CD**: Integrated `pa11y` into the repository site build process to enforce
-  WCAG accessibility standards on the generated index page.
+- **CI/CD**: Integrated `pa11y` into the repository site build process to
+  enforce WCAG accessibility standards on the generated index page.
 
 ### Changed
 
@@ -25,8 +33,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - **CI/CD**: Resolved `unknown-key` errors in `rpmlint` by importing the public
   GPG key into the RPM database during the build process.
-- **CI/CD**: Injected missing GPG import logic into the `build-web-assets`
-  job to successfully sign DNF repository metadata during release tags.
+- **CI/CD**: Injected missing GPG import logic into the `build-web-assets` job
+  to successfully sign DNF repository metadata during release tags.
 
 ## [1.2.8] - 2026-04-23
 
