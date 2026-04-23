@@ -23,7 +23,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          dnf install -y python3 make rpm-build systemd-rpm-macros createrepo_c gnupg2 rpm-sign git rsync which
+          dnf install -y python3 make rpm-build systemd-rpm-macros createrepo_c gnupg2 rpm-sign git rsync which nodejs
+          pip install jinja2
+          npm install -g htmlhint
 
       - name: Build RPM
         run: make rpm
@@ -91,9 +93,14 @@ jobs:
           cp -r repo/* public/rpms/
 
       - name: Generate Static Index
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
-          chmod +x .github/scripts/generate-index.sh
-          .github/scripts/generate-index.sh
+          python3 .github/scripts/generate-index.py
+
+      - name: Lint HTML
+        run: htmlhint public/index.html
 
       - name: Debug Repository Contents
         run: ls -R public
