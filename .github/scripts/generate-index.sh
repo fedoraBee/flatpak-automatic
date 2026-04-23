@@ -17,7 +17,7 @@ if [ -d "$RPM_DIR" ]; then
         
         for channel_path in $(ls -d "$version_path"/* 2>/dev/null); do
             channel=$(basename "$channel_path")
-            VERSIONS_HTML+="<details><summary>Channel: $channel</summary><ul>"
+            VERSIONS_HTML+="<details><summary>Channel: $channel</summary><ul class=\"rpm-list\">"
             
             rpm_files=($(ls "$channel_path"/*.rpm 2>/dev/null | sort -rV))
             if [ ${#rpm_files[@]} -gt 0 ]; then
@@ -64,6 +64,7 @@ cat <<EOF_HTML > "$OUTPUT_FILE"
         li { margin-bottom: 0.5rem; }
     
         details { background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 0.5rem; padding: 0.5rem; }
+        .rpm-list { max-height: 280px; overflow-y: auto; margin-top: 0.5rem; padding-right: 0.5rem; }
         summary { font-weight: 500; cursor: pointer; color: #2980b9; user-select: none; outline: none; }
         .badge-latest { background: #27ae60; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.6em; vertical-align: middle; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         .badge-latest-sm { background: #3498db; color: white; padding: 1px 5px; border-radius: 3px; font-size: 0.7em; margin-left: 6px; font-weight: bold; text-transform: uppercase; }
