@@ -6,7 +6,7 @@ setup() {
 
     # Mock flatpak binary
     mkdir -p "$BATS_TEST_DIRNAME/bin"
-    cat << 'EOF' > "$BATS_TEST_DIRNAME/bin/flatpak"
+    cat <<'EOF' >"$BATS_TEST_DIRNAME/bin/flatpak"
 #!/bin/bash
 echo "Nothing to do"
 EOF
