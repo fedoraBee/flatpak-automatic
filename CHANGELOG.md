@@ -6,17 +6,26 @@ The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.9] - 2026-04-23
+## [1.3.0] - 2026-04-23
+
+### Added
+
+- **CI/CD**: Integrated `pa11y` into the repository site build process to enforce
+  WCAG accessibility standards on the generated index page.
 
 ### Changed
 
+- **CI/CD**: Refactored the primary pipeline (`pipeline.yml`) with descriptive
+  job naming, structural reorganization, and improved internal documentation.
 - **CI/CD**: Moved `rpmlint` execution into the primary build job to resolve
   cryptographic isolation errors, bypassing the need for a standalone linting
   job.
 
 ### Fixed
 
-- **CI/CD**: Injected missing GPG import logic into the `build-html-artifact`
+- **CI/CD**: Resolved `unknown-key` errors in `rpmlint` by importing the public
+  GPG key into the RPM database during the build process.
+- **CI/CD**: Injected missing GPG import logic into the `build-web-assets`
   job to successfully sign DNF repository metadata during release tags.
 
 ## [1.2.8] - 2026-04-23
