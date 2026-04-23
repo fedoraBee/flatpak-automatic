@@ -40,6 +40,55 @@ SNAPPER_PRE_CMD="${SNAPPER_PRE_CMD:-snapper -c \"\$SNAPPER_CONFIG\" create --typ
 SNAPPER_POST_CMD="${SNAPPER_POST_CMD:-snapper -c \"\$SNAPPER_CONFIG\" create --type post --pre-number \"\$PRE_NUM\" --description \"\$SNAPPER_DESC_POST\"}"
 SNAPPER_DELETE_CMD="${SNAPPER_DELETE_CMD:-snapper -c \"\$SNAPPER_CONFIG\" delete \"\$PRE_NUM\"}"
 
+# Logging functions
+log_info() { logger -p user.info -t flatpak-automatic "$1"; echo "INFO: $1"; }
+log_warn() { logger -p user.warning -t flatpak-automatic "$1"; echo "WARNING: $1" >&2; }
+log_err() { logger -p user.err -t flatpak-automatic "$1"; echo "ERROR: $1" >&2; }
+
+# Health check
+run_health_check() {
+    log_info "Running flatpak-automatic health check..."
+    local fail=0
+    
+    if command -v flatpak >/dev/null 2>&1; then log_info "PASS: flatpak binary found"; else log_err "FAIL: flatpak binary not found"; fail=1; fi
+    if command -v s-nail >/dev/null 2>&1; then log_info "PASS: s-nail binary found"; else log_warn "WARN: s-nail binary not found (email will fail if enabled)"; fi
+    
+    if [[ "$ENABLE_SNAPSHOTS" == "yes" ]]; then
+        if snapper -c "$SNAPPER_CONFIG" get-config >/dev/null 2>&1; then
+            log_info "PASS: snapper config '$SNAPPER_CONFIG' is valid"
+        else
+            log_err "FAIL: snapper config '$SNAPPER_CONFIG' is invalid or missing"
+            fail=1
+        fi
+    fi
+    
+    if [[ "$ENABLE_EMAIL" == "yes" ]]; then
+        if [[ -n "${EMAIL_TO:-}" && -n "${EMAIL_FROM:-}" ]]; then
+            log_info "PASS: Email configuration present"
+        else
+            log_err "FAIL: EMAIL_TO or EMAIL_FROM is missing"
+            fail=1
+        fi
+    fi
+    
+    if [[ $fail -eq 0 ]]; then
+        log_info "Health check passed!"
+    else
+        log_err "Health check failed!"
+        exit $fail
+    fi
+    
+}
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --check|-c) run_health_check ;;
+        *) ;;
+    esac
+    shift
+done
+
 # Validation for email if enabled
 if [[ "$ENABLE_EMAIL" == "yes" ]]; then
     : "${EMAIL_TO:? "Set EMAIL_TO in $CONFIG_FILE or disable ENABLE_EMAIL"}"
@@ -67,7 +116,7 @@ send_notification() {
 # Safety Check: Disable snapshots if Snapper config is invalid or Btrfs is missing
 if [[ "$ENABLE_SNAPSHOTS" == "yes" ]]; then
     if ! snapper -c "$SNAPPER_CONFIG" get-config >/dev/null 2>&1; then
-        echo "WARNING: Snapper config '$SNAPPER_CONFIG' invalid or missing. Disabling snapshots." >&2
+        log_warn "Snapper config \'$SNAPPER_CONFIG\' invalid or missing. Disabling snapshots."
         ENABLE_SNAPSHOTS="no"
     fi
 fi
