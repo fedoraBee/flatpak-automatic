@@ -60,15 +60,15 @@ To deploy changes locally for testing:
 
 ## 🤖 CLI Guidelines
 
-- **Self-Correction**  
+- **Self-Correction**
   After modifying `AGENTS.md`, immediately re-read it to ensure the active
   context reflects the latest project guidelines.
 
-- **Professionalism**  
+- **Professionalism**
   Maintain high engineering standards. Write clean, idiomatic code, communicate
   clearly, and verify all changes before completion.
 
-- **Branching Strategy (Mandatory)**  
+- **Branching Strategy (Mandatory)**
   All features, bug fixes, and other changes must be developed in a new branch.
   Never commit directly to `main`. Branch protection rules MUST be configured on
   `main` to require status checks (`lint-code`, `lint-python`, `lint-spec`,
@@ -83,13 +83,13 @@ To deploy changes locally for testing:
   - `<type>`: feat | fix | chore | refactor | docs | ci
   - `<version>`: target release version
 
-- **Pull Request Workflow (Mandatory)**  
+- **Pull Request Workflow (Mandatory)**
   Each branch must open a descriptive Pull Request (PR).
 
   PR creation MUST be performed using the GitOps PR CLI tool provided in this
   repository (located at scripts/gitops-pr-cli-tool.sh).
 
-- **CI Requirements**  
+- **CI Requirements**
   All Pull Requests must pass CI checks before merging. This includes:
 
   - markdownlint
@@ -99,24 +99,24 @@ To deploy changes locally for testing:
   - rpmlint
   - RPM build and smoke tests
 
-- **Atomic Commits**  
+- **Atomic Commits**
   Commit frequently with small, logical, atomic changes.
 
-- **Testing**  
+- **Testing**
   Thoroughly test all changes before committing:
 
   - Build RPMs using `make rpm`
   - Verify systemd integration and timer scheduling
   - Validate scripts and error handling
 
-- **Verification**  
+- **Verification**
   After modifying the RPM spec or Makefile:
 
   - Verify file paths
   - Validate installation logic
   - Ensure resulting RPM behaves as expected
 
-- **Documentation**  
+- **Documentation**
   Keep documentation consistent and up to date:
 
   - Update `DEVELOPMENT.md` for build steps and prerequisites
@@ -129,7 +129,7 @@ To deploy changes locally for testing:
   - Update `CHANGELOG.md` using the "Keep a Changelog" format.
   - The `CHANGELOG.md` is the **single source of truth** for release notes.
 
-- **Versioning Discipline**  
+- **Versioning Discipline**
   Any version bump (including patch releases) must be synchronized across:
 
   - `Makefile` (`VERSION` variable)
@@ -137,7 +137,7 @@ To deploy changes locally for testing:
     `scripts/update-rpm-metadata.py` from `Makefile`)
   - `CHANGELOG.md` (New version heading)
 
-- **Script Requirements**  
+- **Script Requirements**
   All scripts must be:
 
   - Idempotent

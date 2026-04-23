@@ -49,10 +49,10 @@ log_err() { logger -p user.err -t flatpak-automatic "$1"; echo "ERROR: $1" >&2; 
 run_health_check() {
     log_info "Running flatpak-automatic health check..."
     local fail=0
-    
+
     if command -v flatpak >/dev/null 2>&1; then log_info "PASS: flatpak binary found"; else log_err "FAIL: flatpak binary not found"; fail=1; fi
     if command -v s-nail >/dev/null 2>&1; then log_info "PASS: s-nail binary found"; else log_warn "WARN: s-nail binary not found (email will fail if enabled)"; fi
-    
+
     if [[ "$ENABLE_SNAPSHOTS" == "yes" ]]; then
         if snapper -c "$SNAPPER_CONFIG" get-config >/dev/null 2>&1; then
             log_info "PASS: snapper config '$SNAPPER_CONFIG' is valid"
@@ -61,7 +61,7 @@ run_health_check() {
             fail=1
         fi
     fi
-    
+
     if [[ "$ENABLE_EMAIL" == "yes" ]]; then
         if [[ -n "${EMAIL_TO:-}" && -n "${EMAIL_FROM:-}" ]]; then
             log_info "PASS: Email configuration present"
@@ -70,14 +70,14 @@ run_health_check() {
             fail=1
         fi
     fi
-    
+
     if [[ $fail -eq 0 ]]; then
         log_info "Health check passed!"
     else
         log_err "Health check failed!"
         exit $fail
     fi
-    
+
 }
 
 # Parse arguments
@@ -100,13 +100,13 @@ send_notification() {
     local subject_template="$1"
     local recipient="$2"
     local body_template="$3"
-    
+
     # Evaluate templates to resolve variables like $UPDATE_COUNT and $UPDATE_OUT
     local subject
     local body
     subject=$(eval "echo \"$subject_template\"")
     body=$(eval "echo \"$body_template\"")
-    
+
     (
         set -- "$subject" "$recipient"
         printf "%s\n" "$body" | eval "$MAIL_CMD"
