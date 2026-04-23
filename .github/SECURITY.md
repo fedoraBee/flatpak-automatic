@@ -33,16 +33,16 @@ To help us investigate quickly, please follow the structure in our
 [Security Advisory Template](https://github.com/fedoraBee/flatpak-automatic/blob/main/.github/SECURITY_ADVISORY_TEMPLATE.md).
 Specifically, include:
 
-* **Impact:** Technical description of the risk.
-* **Environment:** Details from your `.version_manifest`.
-* **Proof of Concept:** Steps to reproduce the issue privately.
+- **Impact:** Technical description of the risk.
+- **Environment:** Details from your `.version_manifest`.
+- **Proof of Concept:** Steps to reproduce the issue privately.
 
 ### What to Expect
 
-* **Acknowledgement:** You can expect a response within **48 hours** confirming
+- **Acknowledgement:** You can expect a response within **48 hours** confirming
   receipt of your report.
-* **Updates:** We provide progress updates at least once a week during
+- **Updates:** We provide progress updates at least once a week during
   investigation and patching.
-* **Disclosure:** Once a fix is ready, we will coordinate with you to publish a
+- **Disclosure:** Once a fix is ready, we will coordinate with you to publish a
   Security Advisory and credit your contribution via the **MT-Tools** disclosure
   process.
