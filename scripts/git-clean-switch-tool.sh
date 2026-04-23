@@ -16,7 +16,7 @@ BACKUP_BRANCH=""
 DRY_RUN=false
 
 usage() {
-  cat <<EOF
+    cat <<EOF
 Git Clean & Switch Tool
 
 Usage: $(basename "$0") [options]
@@ -40,14 +40,36 @@ EOF
 # Parse args
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        -b|--base)    BASE_BRANCH="$2"; shift 2 ;;
-        -t|--target)  TARGET_BRANCH="$2"; shift 2 ;;
-        -B|--backup)  BACKUP_BRANCH="$2"; shift 2 ;;
-        -r|--remote)  REMOTE="$2"; shift 2 ;;
-        --dry-run)    DRY_RUN=true; shift ;;
-        -h|--help)    usage; exit 0 ;;
-        -*)           echo "❌ Unknown option: $1"; usage; exit 1 ;;
-        *)            shift ;;
+        -b | --base)
+            BASE_BRANCH="$2"
+            shift 2
+            ;;
+        -t | --target)
+            TARGET_BRANCH="$2"
+            shift 2
+            ;;
+        -B | --backup)
+            BACKUP_BRANCH="$2"
+            shift 2
+            ;;
+        -r | --remote)
+            REMOTE="$2"
+            shift 2
+            ;;
+        --dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -h | --help)
+            usage
+            exit 0
+            ;;
+        -*)
+            echo "❌ Unknown option: $1"
+            usage
+            exit 1
+            ;;
+        *) shift ;;
     esac
 done
 
@@ -85,28 +107,28 @@ echo "🔍 Starting git sync and reset sequence..."
 # 1. Switch to BASE branch to prepare for reset and backup
 echo "🔀 Switching to base branch: $BASE_BRANCH"
 git checkout "$BASE_BRANCH" || {
-  echo "❌ Failed to checkout base branch: $BASE_BRANCH. Ensure it exists locally."
-  exit 1
+    echo "❌ Failed to checkout base branch: $BASE_BRANCH. Ensure it exists locally."
+    exit 1
 }
 
 # 2. Create backup of BASE branch *before* it's reset
 echo "📦 Creating backup branch: $BACKUP_BRANCH from $BASE_BRANCH"
 git branch -f "$BACKUP_BRANCH" "$BASE_BRANCH" || {
-  echo "❌ Failed to create backup branch: $BACKUP_BRANCH."
-  exit 1
+    echo "❌ Failed to create backup branch: $BACKUP_BRANCH."
+    exit 1
 }
 
 # 3. Fetch latest from remote and hard reset BASE branch
 echo "📡 Fetching from $REMOTE..."
 git fetch "$REMOTE" || {
-  echo "❌ Failed to fetch from $REMOTE."
-  exit 1
+    echo "❌ Failed to fetch from $REMOTE."
+    exit 1
 }
 
 echo "🔄 Resetting $BASE_BRANCH to $REMOTE/$BASE_BRANCH..."
 git reset --hard "$REMOTE/$BASE_BRANCH" || {
-  echo "❌ Failed to reset $BASE_BRANCH to $REMOTE/$BASE_BRANCH."
-  exit 1
+    echo "❌ Failed to reset $BASE_BRANCH to $REMOTE/$BASE_BRANCH."
+    exit 1
 }
 
 # 4. Clean untracked files in BASE branch
@@ -116,8 +138,8 @@ git clean -fd
 # 5. Switch to TARGET branch (creating it from the now updated BASE_BRANCH)
 echo "🌱 Switching to target branch: $TARGET_BRANCH (from $BASE_BRANCH)"
 git checkout -B "$TARGET_BRANCH" || {
-  echo "❌ Failed to checkout $TARGET_BRANCH."
-  exit 1
+    echo "❌ Failed to checkout $TARGET_BRANCH."
+    exit 1
 }
 
 echo "✅ Git reset and dev setup complete."

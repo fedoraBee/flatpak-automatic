@@ -6,7 +6,7 @@ set -euo pipefail
 # Release-aware + RPM + CI integration
 # -----------------------------
 
-if ! command -v gh &> /dev/null; then
+if ! command -v gh &>/dev/null; then
     echo "❌ Error: GitHub CLI (gh) is not installed."
     exit 1
 fi
@@ -15,7 +15,7 @@ fi
 # Usage
 # -----------------------------
 usage() {
-  cat <<EOF
+    cat <<EOF
 GitOps PR CLI Tool v3 (Template-aware)
 
 Usage:
@@ -53,16 +53,44 @@ DRY_RUN=false
 # -----------------------------
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        -b|--base)      BASE_BRANCH="$2"; shift 2 ;;
-        -t|--target)    TARGET_BRANCH="$2"; shift 2 ;;
-        -T|--title)     PR_TITLE="$2"; shift 2 ;;
-        -m|--message)   PR_BODY="$2"; shift 2 ;;
-        -R|--reviewers) REVIEWERS="$2"; shift 2 ;;
-        -r|--remote)    REMOTE="$2"; shift 2 ;;
-        --dry-run)      DRY_RUN=true; shift ;;
-        -h|--help)      usage; exit 0 ;;
-        -*)             echo "Unknown option: $1"; usage; exit 1 ;;
-        *)              shift ;;
+        -b | --base)
+            BASE_BRANCH="$2"
+            shift 2
+            ;;
+        -t | --target)
+            TARGET_BRANCH="$2"
+            shift 2
+            ;;
+        -T | --title)
+            PR_TITLE="$2"
+            shift 2
+            ;;
+        -m | --message)
+            PR_BODY="$2"
+            shift 2
+            ;;
+        -R | --reviewers)
+            REVIEWERS="$2"
+            shift 2
+            ;;
+        -r | --remote)
+            REMOTE="$2"
+            shift 2
+            ;;
+        --dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -h | --help)
+            usage
+            exit 0
+            ;;
+        -*)
+            echo "Unknown option: $1"
+            usage
+            exit 1
+            ;;
+        *) shift ;;
     esac
 done
 

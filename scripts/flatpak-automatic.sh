@@ -41,16 +41,28 @@ SNAPPER_POST_CMD="${SNAPPER_POST_CMD:-snapper -c \"\$SNAPPER_CONFIG\" create --t
 SNAPPER_DELETE_CMD="${SNAPPER_DELETE_CMD:-snapper -c \"\$SNAPPER_CONFIG\" delete \"\$PRE_NUM\"}"
 
 # Logging functions
-log_info() { logger -p user.info -t flatpak-automatic "$1"; echo "INFO: $1"; }
-log_warn() { logger -p user.warning -t flatpak-automatic "$1"; echo "WARNING: $1" >&2; }
-log_err() { logger -p user.err -t flatpak-automatic "$1"; echo "ERROR: $1" >&2; }
+log_info() {
+    logger -p user.info -t flatpak-automatic "$1"
+    echo "INFO: $1"
+}
+log_warn() {
+    logger -p user.warning -t flatpak-automatic "$1"
+    echo "WARNING: $1" >&2
+}
+log_err() {
+    logger -p user.err -t flatpak-automatic "$1"
+    echo "ERROR: $1" >&2
+}
 
 # Health check
 run_health_check() {
     log_info "Running flatpak-automatic health check..."
     local fail=0
 
-    if command -v flatpak >/dev/null 2>&1; then log_info "PASS: flatpak binary found"; else log_err "FAIL: flatpak binary not found"; fail=1; fi
+    if command -v flatpak >/dev/null 2>&1; then log_info "PASS: flatpak binary found"; else
+        log_err "FAIL: flatpak binary not found"
+        fail=1
+    fi
     if command -v s-nail >/dev/null 2>&1; then log_info "PASS: s-nail binary found"; else log_warn "WARN: s-nail binary not found (email will fail if enabled)"; fi
 
     if [[ "$ENABLE_SNAPSHOTS" == "yes" ]]; then
@@ -83,7 +95,7 @@ run_health_check() {
 # Parse arguments
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --check|-c) run_health_check ;;
+        --check | -c) run_health_check ;;
         *) ;;
     esac
     shift
