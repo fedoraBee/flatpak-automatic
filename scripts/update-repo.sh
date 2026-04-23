@@ -80,10 +80,10 @@ if [ -n "$GPG_KEY_ID" ]; then
     # Ensure fresh signature
     rm -f "$VERSION_DIR/repodata/repomd.xml.asc"
     gpg --detach-sign --armor --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" "$VERSION_DIR/repodata/repomd.xml"
-    
+
     # Auto-export the public key to the repo root for users to download
     echo "Exporting public key to $REPO_ROOT/gpg.key..."
-    gpg --armor --export "$GPG_KEY_ID" > "$REPO_ROOT/gpg.key"
+    gpg --armor --export "$GPG_KEY_ID" >"$REPO_ROOT/gpg.key"
 else
     echo "Warning: No GPG key available. Repository metadata will not be signed."
     # Legacy fallback: If there's a manual key lying around, copy it anyway

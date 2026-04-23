@@ -2,7 +2,7 @@
 
 NAME := flatpak-automatic
 EPOCH := 1
-VERSION := 1.2.10
+VERSION := 1.2.11
 REL_NUM := 3
 DATE := $(shell LC_ALL=C date +"%a %b %d %Y")
 AUTHOR := "fedoraBee <9395414+fedoraBee@users.noreply.github.com>"
@@ -51,7 +51,7 @@ install:
 	install -p -m 644 systemd/flatpak-automatic.timer $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.timer
 
 rpm-build:
-	@echo "Building RPM for $(NAME) $(EPOCH):$(VERSION)-$(REL_NUM)..."	
+	@echo "Building RPM for $(NAME) $(EPOCH):$(VERSION)-$(REL_NUM)..."
 	tar -czf $(TOPDIR)/SOURCES/$(NAME)-$(VERSION).tar.gz --exclude='.git' --exclude=.rpmbuild .
 	rpmbuild --define "_topdir $(TOPDIR)" -ba $(TOPDIR)/SPECS/$(NAME).spec
 	@echo "RPM build complete. Output located in $(TOPDIR)/RPMS/noarch/"

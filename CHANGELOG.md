@@ -6,6 +6,17 @@ The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.11] - 2026-04-23
+
+### Added
+
+- **CI/CD**: Added Ruff (Python) and shfmt (Bash) linting to
+  `.pre-commit-config.yaml` and pipeline.
+- **CI/CD**: Enforced artifact retention policies (5 days) in `pipeline.yml` to
+  prevent storage bloat.
+- **Documentation**: Formally documented strict branch protection requirements
+  in `AGENTS.md`.
+
 ## [1.2.10] - 2026-04-23
 
 ### Added
