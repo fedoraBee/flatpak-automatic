@@ -6,6 +6,17 @@ The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.8] - 2026-04-23
+
+### Changed
+
+- **UI/UX**: Refactored `generate-index.sh` to dynamically tag the newest
+  version folder and patch RPMs as 'LATEST'.
+- **UI/UX**: Removed dead directory links for empty channels and replaced them
+  with inline indicators.
+- **Documentation**: Updated index.html installation instructions to include the
+  testing channel.
+
 ## [1.1.7] - 2026-04-23
 
 ### Added
