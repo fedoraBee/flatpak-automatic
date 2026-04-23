@@ -8,16 +8,33 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.2.9] - 2026-04-23
 
+### Fixed
+
+- **CI/CD**: Fixed browser launch failure in `pa11y` by explicitly passing a
+  configuration file via the `--config` flag and adding
+  `--disable-dev-shm-usage`.
+- **CI/CD**: Resolved `pa11y` accessibility audit failure by migrating from the
+  deprecated `--chrome-launch-config` CLI flag to a localized `.pa11yrc`
+  configuration file.
+- **UI/UX**: Adjusted repository index colors (links, badges, footers) to meet
+  WCAG 2.1 AA contrast requirements.
+- **CI/CD**: Resolved `unknown-key` errors in `rpmlint` by importing the public
+  GPG key into the RPM database during the build process.
+- **CI/CD**: Injected missing GPG import logic into the `build-web-assets` job
+  to successfully sign DNF repository metadata during release tags.
+
+### Added
+
+- **CI/CD**: Integrated `pa11y` into the repository site build process to
+  enforce WCAG accessibility standards on the generated index page.
+
 ### Changed
 
+- **CI/CD**: Refactored the primary pipeline (`pipeline.yml`) with descriptive
+  job naming, structural reorganization, and improved internal documentation.
 - **CI/CD**: Moved `rpmlint` execution into the primary build job to resolve
   cryptographic isolation errors, bypassing the need for a standalone linting
   job.
-
-### Fixed
-
-- **CI/CD**: Injected missing GPG import logic into the `build-html-artifact`
-  job to successfully sign DNF repository metadata during release tags.
 
 ## [1.2.8] - 2026-04-23
 
