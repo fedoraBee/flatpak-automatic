@@ -7,11 +7,17 @@ The format is based on
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.3.0] - 2026-04-23
-### Fixed
-- **CI/CD**: Fixed browser launch failure in `pa11y` by explicitly passing a configuration file via the `--config` flag and adding `--disable-dev-shm-usage`.
-- **CI/CD**: Resolved `pa11y` accessibility audit failure by migrating from the deprecated `--chrome-launch-config` CLI flag to a localized `.pa11yrc` configuration file.
-- **UI/UX**: Adjusted repository index colors (links, badges, footers) to meet WCAG 2.1 AA contrast requirements.
 
+### Fixed
+
+- **CI/CD**: Fixed browser launch failure in `pa11y` by explicitly passing a
+  configuration file via the `--config` flag and adding
+  `--disable-dev-shm-usage`.
+- **CI/CD**: Resolved `pa11y` accessibility audit failure by migrating from the
+  deprecated `--chrome-launch-config` CLI flag to a localized `.pa11yrc`
+  configuration file.
+- **UI/UX**: Adjusted repository index colors (links, badges, footers) to meet
+  WCAG 2.1 AA contrast requirements.
 
 ### Added
 
