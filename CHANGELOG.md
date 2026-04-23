@@ -6,6 +6,14 @@ The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.12] - 2026-04-23
+
+### Added
+
+- **Testing**: Added BATS testing framework for shell script logic validation.
+- **Testing**: Integrated `pytest` to validate Python parsing scripts.
+- **CI/CD**: Added `make test` target and integrated it into `pipeline.yml`.
+
 ## [1.2.11] - 2026-04-23
 
 ### Added

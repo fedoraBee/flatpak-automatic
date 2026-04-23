@@ -5,3 +5,4 @@
 .geminiignore
 GEMINI.md
 SUGGESTIONS.md
+.ruff_cache/
