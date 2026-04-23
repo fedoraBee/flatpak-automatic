@@ -45,16 +45,16 @@ def generate_rpm_changelog(changelog_in, current_epoch, current_version, current
     version_pattern = re.compile(r'## \[([\w\.\-]+)\] - (\d{4}-\d{2}-\d{2})')
     author = get_git_info()
     sections = version_pattern.split(content)
-    
+
     rpm_changelog = []
-    
+
     for i in range(1, len(sections), 3):
         md_version = sections[i]
         date_str = sections[i+1]
         text = sections[i+2].strip()
-        
+
         rpm_date = format_date(date_str)
-        
+
         lines = text.split('\n')
         entries = []
         for line in lines:
@@ -78,11 +78,11 @@ def generate_rpm_changelog(changelog_in, current_epoch, current_version, current
             rpm_changelog.append(f"* {rpm_date} {author} {current_epoch}:{md_version}-{current_rel}")
         else:
             rpm_changelog.append(f"* {rpm_date} {author} {md_version}")
-            
+
         for entry in formatted_entries:
             rpm_changelog.append(entry)
         rpm_changelog.append("")
-    
+
     return '\n'.join(rpm_changelog)
 
 def build_spec_file(spec_in, spec_out, epoch, version, rel_num, changelog_content):
@@ -109,12 +109,12 @@ def build_spec_file(spec_in, spec_out, epoch, version, rel_num, changelog_conten
 
     with open(spec_out, 'w') as f:
         f.write(spec_text)
-    
+
     print(f"Successfully generated complete spec at: {spec_out}")
 
 def main():
     parser = argparse.ArgumentParser(description='Compile an RPM .spec file with EVR injection and Markdown changelog parsing.')
-    
+
     # Define arguments with sensible RPM defaults
     parser.add_argument('--epoch', default='0', help='RPM Epoch (Default: 0)')
     parser.add_argument('--version', help='RPM Version (Fallback: extracted from Makefile)')
@@ -134,25 +134,25 @@ def main():
         if not version:
             print("Error: Could not find VERSION in Makefile and --version was not passed.", file=sys.stderr)
             sys.exit(1)
-            
+
     # Standardize RPM version format (RPM doesn't like hyphens in the version string)
     version = version.replace("-", "~")
 
     # 1. Generate the Changelog string
     rpm_changelog_content = generate_rpm_changelog(
-        args.changelog_in, 
-        args.epoch, 
-        version, 
+        args.changelog_in,
+        args.epoch,
+        version,
         args.rel_num
     )
 
     # 2. Compile the final Spec file
     build_spec_file(
-        args.spec_in, 
-        args.spec_out, 
-        args.epoch, 
-        version, 
-        args.rel_num, 
+        args.spec_in,
+        args.spec_out,
+        args.epoch,
+        version,
+        args.rel_num,
         rpm_changelog_content
     )
 

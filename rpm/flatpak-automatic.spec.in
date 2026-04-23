@@ -21,7 +21,7 @@ Requires:       systemd
 Automates Flatpak updates with snapshots taken before and after the update
 process via Snapper, along with email alerts.
 Includes integrated logic to avoid unnecessary snapshots, calculates update
-counts for email subjects, and provides universal compatibility by 
+counts for email subjects, and provides universal compatibility by
 automatically detecting Btrfs/Snapper support before execution.
 
 %prep

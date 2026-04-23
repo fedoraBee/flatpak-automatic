@@ -111,18 +111,18 @@ jobs:
         run: |
           # Import Private Key
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-          
+
           # Configure GPG Agent for automated signing
           mkdir -p ~/.gnupg && chmod 700 ~/.gnupg
           echo "use-agent" > ~/.gnupg/gpg.conf
           echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
           gpg-connect-agent reloadagent /bye
-          
+
           # Preset passphrase to bypass interactive prompts
           preset_passphrase_bin="$(find /usr/lib* -name gpg-preset-passphrase 2>/dev/null | head -n 1)"
           keygrip="$(gpg --with-keygrip -K | awk '/Keygrip =/ {print $3; exit}')"
           "$preset_passphrase_bin" --passphrase "${{ secrets.GPG_PASSPHRASE }}" --preset "$keygrip"
-          
+
           # IMPORTANT: Register Public Key in RPM Database to fix 'unknown-key' error in rpmlint
           gpg --export --armor ${{ vars.GPG_KEY_ID }} > /tmp/RPM-GPG-KEY
           rpm --import /tmp/RPM-GPG-KEY
