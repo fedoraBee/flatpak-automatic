@@ -8,3 +8,4 @@ SUGGESTIONS.md
 .ruff_cache/
 node_modules/
 .debbuild/
+.debian/

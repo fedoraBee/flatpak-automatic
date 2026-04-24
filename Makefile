@@ -97,4 +97,6 @@ test:
 
 deb:
 	@echo "Building Debian package..."
+	cp -r .debian debian
 	dpkg-buildpackage -us -uc -b
+	rm -rf debian
