@@ -1,0 +1,13 @@
+Source: flatpak-automatic
+Section: admin
+Priority: optional
+Maintainer: GitOps DevSecOps Team <noreply@github.com>
+Build-Depends: debhelper (>= 11)
+Standards-Version: 4.5.0
+
+Package: flatpak-automatic
+Architecture: all
+Depends: ${misc:Depends}, bash, flatpak, systemd
+Description: Automated Flatpak updates via systemd
+ A simple script and systemd service/timer to automatically
+ update Flatpak applications.
