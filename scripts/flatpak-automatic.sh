@@ -69,7 +69,7 @@ run_health_check() {
         log_err "FAIL: flatpak binary not found"
         fail=1
     fi
-    if command -v s-nail >/dev/null 2>&1; then log_info "PASS: s-nail binary found"; else log_warn "WARN: s-nail binary not found (email will fail if enabled)"; fi
+    if command -v s-nail >/dev/null 2>&1 || command -v mailx >/dev/null 2>&1 || command -v mail >/dev/null 2>&1; then log_info "PASS: mail client found"; else log_warn "WARN: mail client not found (email will fail if enabled)"; fi
 
     if [[ "$ENABLE_SNAPSHOTS" == "yes" ]]; then
         if snapper -c "$SNAPPER_CONFIG" get-config >/dev/null 2>&1; then
