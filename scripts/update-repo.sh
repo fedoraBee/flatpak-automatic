@@ -65,10 +65,10 @@ shopt -u nullglob
 if [ ${#RPMS[@]} -gt 0 ]; then
     echo "Copying RPMs to $RPM_VERSION_DIR..."
     cp "${RPMS[@]}" "$RPM_VERSION_DIR/"
-    
+
     echo "Updating RPM metadata in $RPM_VERSION_DIR..."
     createrepo_c --update "$RPM_VERSION_DIR"
-    
+
     if [ -n "$GPG_KEY_ID" ]; then
         echo "Signing RPM metadata in $RPM_VERSION_DIR..."
         rm -f "$RPM_VERSION_DIR/repodata/repomd.xml.asc"
@@ -106,7 +106,7 @@ shopt -u nullglob
 if [ ${#DEBS[@]} -gt 0 ]; then
     echo "Copying DEBs to $DEB_VERSION_DIR..."
     cp "${DEBS[@]}" "$DEB_VERSION_DIR/"
-    
+
     echo "Updating APT metadata in $DEB_VERSION_DIR..."
     (cd "$DEB_VERSION_DIR" && dpkg-scanpackages . /dev/null >Packages && gzip -9c Packages >Packages.gz && apt-ftparchive release . >Release)
 
@@ -143,4 +143,3 @@ else
 fi
 
 echo "Repository update complete in $REPO_ROOT"
-

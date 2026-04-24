@@ -80,7 +80,7 @@ sudo apt-get install flatpak-automatic</div>
             {% if versions %}
                 {% for version in versions %}
                     <h3>{{ version.name }} {% if version.is_first %}<span class="badge-latest">LATEST</span>{% endif %}</h3>
-                    
+
                     {% if version.rpm_channels %}
                     <h4>RPM Packages</h4>
                     <ul>

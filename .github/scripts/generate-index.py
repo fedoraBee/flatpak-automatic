@@ -40,7 +40,8 @@ def main():
 
     # Merge versions by name
     all_version_names = sorted(
-        list(set([v["name"] for v in rpm_versions_raw + deb_versions_raw])), reverse=True
+        list(set([v["name"] for v in rpm_versions_raw + deb_versions_raw])),
+        reverse=True,
     )
 
     versions = []
