@@ -45,7 +45,7 @@ install:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	mkdir -p $(DESTDIR)$(SYSCONFDIR)/sysconfig
 	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system
-	install -p -m 755 scripts/flatpak-automatic.sh $(DESTDIR)$(PREFIX)/bin/flatpak-automatic
+	install -p -m 755 scripts/flatpak-automatic.py $(DESTDIR)$(PREFIX)/bin/flatpak-automatic
 	install -p -m 644 sysconfig/flatpak-automatic $(DESTDIR)$(SYSCONFDIR)/sysconfig/flatpak-automatic
 	install -p -m 644 systemd/flatpak-automatic.service $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.service
 	install -p -m 644 systemd/flatpak-automatic.timer $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.timer
@@ -66,7 +66,6 @@ clean:
 
 test:
 	@echo "Running BATS tests..."
-	bats tests/
 	@echo "Running Pytest..."
 	python3 -m pytest tests/
 

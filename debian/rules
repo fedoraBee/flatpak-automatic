@@ -5,7 +5,7 @@
 override_dh_auto_install:
 	mkdir -p debian/flatpak-automatic/usr/bin
 	mkdir -p debian/flatpak-automatic/etc/default
-	install -m 755 scripts/flatpak-automatic.sh debian/flatpak-automatic/usr/bin/flatpak-automatic
+	install -m 755 scripts/flatpak-automatic.py debian/flatpak-automatic/usr/bin/flatpak-automatic
 	install -m 644 sysconfig/flatpak-automatic debian/flatpak-automatic/etc/default/flatpak-automatic
 
 override_dh_auto_test:
