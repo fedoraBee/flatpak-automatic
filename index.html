@@ -41,25 +41,25 @@
 <body>
     <div class="container">
         <h1>Flatpak Automatic</h1>
-        <p>Welcome to the official DNF repository for <strong>Flatpak Automatic</strong>. This project provides a secure, configurable, and systemd-native automation wrapper for Flatpak updates with Snapper snapshot integration.</p>
+        <p>Welcome to the official repository for <strong>Flatpak Automatic</strong>. This project provides a secure, configurable, and systemd-native automation wrapper for Flatpak updates with Snapper snapshot integration.</p>
 
         <div class="card">
-            <h2>📦 Installation</h2>
+            <h2>📦 Installation (RPM-based)</h2>
             <p>Run the following commands to add the repository and install the package on Fedora or compatible RPM-based systems:</p>
             <div class="code-block">sudo tee /etc/yum.repos.d/flatpak-automatic.repo &lt;&lt;'EOF'
 [flatpak-automatic]
 name=Flatpak Automatic - Stable
-baseurl=https://fedorabee.github.io/flatpak-automatic/rpms/latest/stable/
+baseurl=https://fedoraBee.github.io/flatpak-automatic/rpms/latest/stable/
 enabled=1
 gpgcheck=1
-gpgkey=https://fedorabee.github.io/flatpak-automatic/rpms/gpg.key
+gpgkey=https://fedoraBee.github.io/flatpak-automatic/gpt.key
 
 [flatpak-automatic-testing]
 name=Flatpak Automatic - Testing
-baseurl=https://fedorabee.github.io/flatpak-automatic/rpms/latest/testing/
+baseurl=https://fedoraBee.github.io/flatpak-automatic/rpms/latest/testing/
 enabled=0
 gpgcheck=1
-gpgkey=https://fedorabee.github.io/flatpak-automatic/rpms/gpg.key
+gpgkey=https://fedoraBee.github.io/flatpak-automatic/gpt.key
 EOF
 
 sudo dnf makecache
@@ -67,17 +67,33 @@ sudo dnf install flatpak-automatic</div>
         </div>
 
         <div class="card">
+            <h2>📦 Installation (Debian-based)</h2>
+            <p>Run the following commands to add the repository and install the package on Ubuntu, Debian, or compatible systems:</p>
+            <div class="code-block">curl -fsSL https://fedoraBee.github.io/flatpak-automatic/gpt.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://fedoraBee.github.io/flatpak-automatic/debs/latest/stable /" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
+sudo apt-get update
+sudo apt-get install flatpak-automatic</div>
+        </div>
+
+        <div class="card">
             <h2>🗂️ Available Versions & Channels</h2>
             
                 
                     <h3>v1.3 <span class="badge-latest">LATEST</span></h3>
+
+                    
+                    <h4>RPM Packages</h4>
                     <ul>
                     
                         <details><summary>Channel: testing</summary><ul class="rpm-list">
                         
                             
-                                <li><a href="rpms/v1.3/testing/flatpak-automatic-1.3.5-1.fc43.noarch.rpm">flatpak-automatic-1.3.5-1.fc43.noarch.rpm</a>
+                                <li><a href="rpms/v1.3/testing/flatpak-automatic-1.3.6-1.fc43.noarch.rpm">flatpak-automatic-1.3.6-1.fc43.noarch.rpm</a>
                                  <span class="badge-latest-sm">latest patch</span>
+                                </li>
+                            
+                                <li><a href="rpms/v1.3/testing/flatpak-automatic-1.3.5-1.fc43.noarch.rpm">flatpak-automatic-1.3.5-1.fc43.noarch.rpm</a>
+                                
                                 </li>
                             
                                 <li><a href="rpms/v1.3/testing/flatpak-automatic-1.3.0-1.fc43.noarch.rpm">flatpak-automatic-1.3.0-1.fc43.noarch.rpm</a>
@@ -88,8 +104,29 @@ sudo dnf install flatpak-automatic</div>
                         </ul></details>
                     
                     </ul>
+                    
+
+                    
+                    <h4>Debian Packages</h4>
+                    <ul>
+                    
+                        <details><summary>Channel: testing</summary><ul class="rpm-list">
+                        
+                            
+                                <li><a href="debs/v1.3/testing/flatpak-automatic_1.3.6-1_all.deb">flatpak-automatic_1.3.6-1_all.deb</a>
+                                 <span class="badge-latest-sm">latest patch</span>
+                                </li>
+                            
+                        
+                        </ul></details>
+                    
+                    </ul>
+                    
                 
                     <h3>v1.2 </h3>
+
+                    
+                    <h4>RPM Packages</h4>
                     <ul>
                     
                         <details><summary>Channel: testing</summary><ul class="rpm-list">
@@ -107,8 +144,14 @@ sudo dnf install flatpak-automatic</div>
                         </ul></details>
                     
                     </ul>
+                    
+
+                    
                 
                     <h3>v1.1 </h3>
+
+                    
+                    <h4>RPM Packages</h4>
                     <ul>
                     
                         <details><summary>Channel: stable</summary><ul class="rpm-list">
@@ -144,6 +187,9 @@ sudo dnf install flatpak-automatic</div>
                         </ul></details>
                     
                     </ul>
+                    
+
+                    
                 
             
         </div>
@@ -151,22 +197,15 @@ sudo dnf install flatpak-automatic</div>
         <div class="card">
             <h2>🔗 Resources</h2>
             <ul>
-                <li><a href="rpms/gpg.key">Download Repository GPG Key</a></li>
+                <li><a href="gpt.key">Download Repository GPG Key (gpt.key)</a></li>
                 <li><a href="https://github.com/fedoraBee/flatpak-automatic">GitHub Source Code &amp; Documentation</a></li>
                 <li><a href="https://github.com/fedoraBee/flatpak-automatic/issues">Report an Issue</a></li>
             </ul>
         </div>
 
         <div class="footer">
-            <p>Generated on <strong>2026-04-24 13:16:45 UTC</strong> | Commit: <a href="https://github.com/fedoraBee/flatpak-automatic/commit/6bdf91336a5fbcc7466c481c709f5c946ca600f8">6bdf913</a> | Run ID: 24891331325</p>
+            <p>Generated on <strong>2026-04-24 14:41:10 UTC</strong> | Commit: <a href="https://github.com/fedoraBee/flatpak-automatic/commit/5894467518980382332a89f4fe099b81402fcf0f">5894467</a> | Run ID: 24895095072</p>
         </div>
     </div>
 </body>
 </html>
-
-
-<h3>Debian / Ubuntu (APT)</h3>
-<pre><code>curl -fsSL https://fedorabee.github.io/flatpak-automatic/rpms/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://fedorabee.github.io/flatpak-automatic/rpms/latest/stable /" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
-sudo apt-get update
-sudo apt-get install flatpak-automatic</code></pre>

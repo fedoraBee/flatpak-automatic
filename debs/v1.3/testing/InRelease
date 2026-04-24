@@ -1,0 +1,27 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Date: Fri, 24 Apr 2026 14:41:09 +0000
+MD5Sum:
+ 047555751aeff4d4bf78cd64a0875afd              556 Packages
+ e74959d547b19d31d066bb5bc66ef6a7              401 Packages.gz
+ eed804cd352e558ba5e3367f29682056               38 Release
+SHA1:
+ bdccd3d645fca37f5e7e3766de4151a26e4b3174              556 Packages
+ d68b372b49d70e17e8b3aa6c30b93e6f769ab17f              401 Packages.gz
+ 0d3e49a23b31d120a94c95f0eee7cfa9724e8744               38 Release
+SHA256:
+ 7e696ab821f1146d54e18754899cd009fe051fa76840064924b754fed8321795              556 Packages
+ dfd23990a1a6163d6f43f0b06decc06ca5ad94eead0be1b524e6fc97ce7b8b5e              401 Packages.gz
+ a8b694cb93349194a71a691b655931ad4ea2b212ed51da9dff5d35a39de572fb               38 Release
+SHA512:
+ a45b989580cd68016119b12f4f4eb72c0243a48bacf12d250e0cc6c67b77e0fae2dc5ba641715d0192cc0c1993274a1338d794bc0ef1cbe8ad2993ed1980ec21              556 Packages
+ 260f42e77835f012c7f00739bfb8dc6c3d9295666727c65d2661b103876d791175c2dfec301230b7fa82847b35ae8e37be687831e92fa22a91484ca4349ec7d4              401 Packages.gz
+ 6c3d97095c227f9375fb9b1356e603b08ba560d1cd71818901ede4e10b1d0c50c632df231764c7e5b58c4351d9a8a5939ce67f14248ea20995861decce69e58b               38 Release
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSRCfK5ypdCEF7qio5R9PQXhPgciQUCaeuBBQAKCRBR9PQXhPgc
+iW90AQC6zMfkk8gtgWuBXKM740J0fFrdDcqZXCWoC/vO6b0d+wEA0HZBaL63+Bqh
+h+UioqmwDgVg95JvgUa12LdeEgVvzQs=
+=zmIG
+-----END PGP SIGNATURE-----
