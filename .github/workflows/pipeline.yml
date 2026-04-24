@@ -49,6 +49,11 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
+      - name: Validate tbump versioning configuration
+        run: |
+          pipx install tbump
+          tbump --non-interactive --dry-run 1.4.7
+
       - name: Run Ruff
         uses: astral-sh/ruff-action@v3
         with:
