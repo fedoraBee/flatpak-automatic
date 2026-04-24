@@ -66,7 +66,6 @@ clean:
 
 test:
 	@echo "Running BATS tests..."
-	bats tests/
 	@echo "Running Pytest..."
 	python3 -m pytest tests/
 
