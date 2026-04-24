@@ -204,7 +204,7 @@ def main():
             f"flatpak-automatic ({version}-{args.rel_num}) unstable; urgency=medium\n\n"
         )
         f.write(f"  * Sync with CHANGELOG.md release {version}\n\n")
-        f.write(f" -- GitOps Patcher <noreply@github.com>  {date_str}\n")
+        f.write(f" -- GitOps DevSecOps Team <noreply@github.com>  {date_str}\n")
 
 
 if __name__ == "__main__":

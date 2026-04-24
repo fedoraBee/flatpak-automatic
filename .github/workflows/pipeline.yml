@@ -150,13 +150,16 @@ jobs:
     name: Build & Verify DEBs
     needs: [lint-code, lint-actions, lint-spec]
     runs-on: ubuntu-latest
+    container: debian:latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
       - name: Install Build Dependencies
-        run: sudo apt-get update && sudo apt-get install -y dpkg-dev debhelper make python3 tar build-essential
+        run: apt-get update && apt-get install -y dpkg-dev debhelper make python3 tar build-essential lintian
       - name: Compile Packages
         run: make deb
+      - name: Run Lintian
+        run: lintian debs/*.deb
       - name: Archive DEB Artifacts
         uses: actions/upload-artifact@v6
         with:
