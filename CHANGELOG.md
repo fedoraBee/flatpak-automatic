@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.5] - 2026-04-24
+
+### Changed
+
+- **Systemd**: Standardized service configuration paths by adding dual
+  `EnvironmentFile` directives (`/etc/sysconfig` and `/etc/default`) to natively
+  support both RPM and Debian-based systems.
+
 ## [1.4.4] - 2026-04-24
 
 ### Fixed
