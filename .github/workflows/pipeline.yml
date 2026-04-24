@@ -103,9 +103,9 @@ jobs:
       - name: Install Test Dependencies
         run: |
           if command -v dnf >/dev/null 2>&1; then
-            dnf install -y bats python3-pytest make
+            dnf install -y bats python3-pytest make hostname util-linux
           else
-            apt-get update && apt-get install -y bats python3-pytest make
+            apt-get update && apt-get install -y bats python3-pytest make hostname bsdutils
           fi
       - name: Run Tests
         run: make test
