@@ -59,10 +59,14 @@ jobs:
           git branch -u origin/main main
           tbump --non-interactive --dry-run 1.4.7
 
-      - name: Run Ruff
+      - name: Run Ruff Lint
         uses: astral-sh/ruff-action@v3
         with:
-          args: 'format --check'
+          args: 'check scripts/ tests/'
+      - name: Run Ruff Format
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: 'format --check scripts/ tests/'
 
   lint-actions:
     name: Lint GitHub Workflows
