@@ -154,7 +154,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v5
       - name: Install Build Dependencies
-        run: sudo apt-get update && sudo apt-get install -y dpkg-dev debhelper make python3 tar
+        run: sudo apt-get update && sudo apt-get install -y dpkg-dev debhelper make python3 tar build-essential
       - name: Compile Packages
         run: make deb
       - name: Archive DEB Artifacts
