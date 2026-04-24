@@ -12,6 +12,7 @@ VERSION=${2:-"1.1.0"}
 CHANNEL=${3:-"stable"}
 GPG_KEY_ID=${4}
 REPO_ROOT=${5:-"repo"} # Defaults to creating a 'repo' folder in current directory
+DEB_SOURCE_DIR="debs"
 
 # --- Functions ---
 usage() {
@@ -70,9 +71,22 @@ else
     exit 1
 fi
 
+shopt -s nullglob
+DEBS=("$DEB_SOURCE_DIR"/*.deb)
+shopt -u nullglob
+if [ ${#DEBS[@]} -gt 0 ]; then
+    echo "Copying DEBs to $VERSION_DIR..."
+    cp "${DEBS[@]}" "$VERSION_DIR/"
+fi
+
 # Update repository metadata for the versioned channel
 echo "Updating metadata in $VERSION_DIR..."
 createrepo_c --update "$VERSION_DIR"
+
+if [ ${#DEBS[@]} -gt 0 ]; then
+    echo "Updating APT metadata in $VERSION_DIR..."
+    (cd "$VERSION_DIR" && dpkg-scanpackages . /dev/null >Packages && gzip -9c Packages >Packages.gz && apt-ftparchive release . >Release)
+fi
 
 # Sign repository metadata if a GPG key is available
 if [ -n "$GPG_KEY_ID" ]; then
@@ -80,6 +94,13 @@ if [ -n "$GPG_KEY_ID" ]; then
     # Ensure fresh signature
     rm -f "$VERSION_DIR/repodata/repomd.xml.asc"
     gpg --detach-sign --armor --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" "$VERSION_DIR/repodata/repomd.xml"
+
+    if [ ${#DEBS[@]} -gt 0 ]; then
+        echo "Signing APT metadata..."
+        rm -f "$VERSION_DIR/Release.gpg" "$VERSION_DIR/InRelease"
+        gpg --detach-sign --armor --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$VERSION_DIR/Release.gpg" "$VERSION_DIR/Release"
+        gpg --clearsign --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$VERSION_DIR/InRelease" "$VERSION_DIR/Release"
+    fi
 
     # Auto-export the public key to the repo root for users to download
     echo "Exporting public key to $REPO_ROOT/gpg.key..."

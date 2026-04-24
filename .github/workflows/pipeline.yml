@@ -223,7 +223,7 @@ jobs:
 
       - name: Install Web Dependencies
         run: |
-          dnf install -y python3 python3-pip make createrepo_c git rsync nodejs gnupg2 which chromium
+          dnf install -y python3 python3-pip make createrepo_c git rsync nodejs gnupg2 which chromium dpkg-dev apt
           python3 -m pip install jinja2
           npm install -g htmlhint pa11y
 
