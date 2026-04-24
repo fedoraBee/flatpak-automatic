@@ -1,7 +1,7 @@
 #!/bin/bash
 ################################################################################
 # Flatpak Automatic
-# Version: 1.0.3
+# Version: 1.4.5
 # Author: fedoraBee
 # Source: https://github.com/fedoraBee/flatpak-automatic
 #
