@@ -5,10 +5,10 @@ Maintainer: GitOps DevSecOps Team <noreply@github.com>
 Installed-Size: 38
 Depends: flatpak, systemd
 Filename: ./flatpak-automatic_1.3.6-1_all.deb
-Size: 9624
-MD5sum: 0dfe95343b1de47300633f1e2552f6b6
-SHA1: 3de72068697fe198c86c1042e6c2324c6e0fed02
-SHA256: c1133488c9cfde7dfa509d4bf5b9a38d642b5fd8c8c7832738255e3d76af3ef4
+Size: 9632
+MD5sum: 508261cde11f2bc52ccc428beb5caf36
+SHA1: b742fed9db80b9613a5c283416bb921c8f4f94e0
+SHA256: bb4bd9cf8df4b2eecdfe47597d585efc2d661336bcc2d1f001e7fbb833f6a8b4
 Section: admin
 Priority: optional
 Description: Automated Flatpak updates via systemd

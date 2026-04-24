@@ -52,14 +52,14 @@ name=Flatpak Automatic - Stable
 baseurl=https://fedoraBee.github.io/flatpak-automatic/rpms/latest/stable/
 enabled=1
 gpgcheck=1
-gpgkey=https://fedoraBee.github.io/flatpak-automatic/gpt.key
+gpgkey=https://fedoraBee.github.io/flatpak-automatic/gpg.key
 
 [flatpak-automatic-testing]
 name=Flatpak Automatic - Testing
 baseurl=https://fedoraBee.github.io/flatpak-automatic/rpms/latest/testing/
 enabled=0
 gpgcheck=1
-gpgkey=https://fedoraBee.github.io/flatpak-automatic/gpt.key
+gpgkey=https://fedoraBee.github.io/flatpak-automatic/gpg.key
 EOF
 
 sudo dnf makecache
@@ -69,7 +69,7 @@ sudo dnf install flatpak-automatic</div>
         <div class="card">
             <h2>📦 Installation (Debian-based)</h2>
             <p>Run the following commands to add the repository and install the package on Ubuntu, Debian, or compatible systems:</p>
-            <div class="code-block">curl -fsSL https://fedoraBee.github.io/flatpak-automatic/gpt.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
+            <div class="code-block">curl -fsSL https://fedoraBee.github.io/flatpak-automatic/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://fedoraBee.github.io/flatpak-automatic/debs/latest/stable /" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
 sudo apt-get update
 sudo apt-get install flatpak-automatic</div>
@@ -197,14 +197,14 @@ sudo apt-get install flatpak-automatic</div>
         <div class="card">
             <h2>🔗 Resources</h2>
             <ul>
-                <li><a href="gpt.key">Download Repository GPG Key (gpt.key)</a></li>
+                <li><a href="gpg.key">Download Repository GPG Key (gpg.key)</a></li>
                 <li><a href="https://github.com/fedoraBee/flatpak-automatic">GitHub Source Code &amp; Documentation</a></li>
                 <li><a href="https://github.com/fedoraBee/flatpak-automatic/issues">Report an Issue</a></li>
             </ul>
         </div>
 
         <div class="footer">
-            <p>Generated on <strong>2026-04-24 14:41:10 UTC</strong> | Commit: <a href="https://github.com/fedoraBee/flatpak-automatic/commit/5894467518980382332a89f4fe099b81402fcf0f">5894467</a> | Run ID: 24895095072</p>
+            <p>Generated on <strong>2026-04-24 15:02:52 UTC</strong> | Commit: <a href="https://github.com/fedoraBee/flatpak-automatic/commit/ffafb559be8a40308e888c76ac8c282e287ece26">ffafb55</a> | Run ID: 24896192646</p>
         </div>
     </div>
 </body>
