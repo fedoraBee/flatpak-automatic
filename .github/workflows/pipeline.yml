@@ -73,6 +73,7 @@ jobs:
   lint-spec:
     name: Lint RPM Specification
     runs-on: ubuntu-latest
+    container: fedora:latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
@@ -103,6 +104,7 @@ jobs:
     name: Build & Verify RPMs
     needs: [lint-code, lint-actions, lint-spec]
     runs-on: ubuntu-latest
+    container: fedora:latest
     environment: ${{ startsWith(github.ref, 'refs/tags/v') && 'gh-pages' || '' }}
     outputs:
       rpm_artifact_id: ${{ steps.upload_rpms.outputs.artifact-id }}
