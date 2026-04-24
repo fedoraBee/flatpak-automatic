@@ -17,9 +17,9 @@ all:
 	@echo "Nothing to build. Use 'make install' or 'make rpm'."
 
 prep:
-	@echo "Preparing RPM build environment..."
+	@echo "Preparing build environments..."
 	mkdir -p $(TOPDIR)/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-	@echo "Generating RPM changelog..."
+	@echo "Generating package metadata..."
 	$(CURDIR)/scripts/update-package-metadata.py --epoch $(EPOCH) --version $(VERSION) --rel-num $(REL_NUM) --spec-in $(CURDIR)/rpm/$(NAME).spec.in --spec-out $(TOPDIR)/SPECS/$(NAME).spec --makefile $(CURDIR)/Makefile --date "$(DATE)" --changelog-in $(CURDIR)/CHANGELOG.md
 rpm: prep rpm-build
 
@@ -95,7 +95,7 @@ test:
 	@echo "Running Pytest..."
 	python3 -m pytest tests/
 
-deb:
+deb: prep
 	@echo "Building Debian package..."
 	dpkg-buildpackage -us -uc -b
 	mkdir -p debs
