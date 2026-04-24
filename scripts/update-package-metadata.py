@@ -192,16 +192,18 @@ def main():
         rpm_changelog_content,
     )
 
-
-if __name__ == "__main__":
-    main()
-
-    # --- Debian Changelog Generation ---
+    # 3. Generate Debian Changelog
     os.makedirs("debian", exist_ok=True)
     with open("debian/changelog", "w") as f:
         date_str = datetime.datetime.now(datetime.timezone.utc).strftime(
             "%a, %d %b %Y %H:%M:%S %z"
         )
-        f.write(f"flatpak-automatic ({VERSION}-1) unstable; urgency=medium\n\n")
-        f.write(f"  * Sync with CHANGELOG.md release {VERSION}\n\n")
+        f.write(
+            f"flatpak-automatic ({version}-{args.rel_num}) unstable; urgency=medium\n\n"
+        )
+        f.write(f"  * Sync with CHANGELOG.md release {version}\n\n")
         f.write(f" -- GitOps Patcher <noreply@github.com>  {date_str}\n")
+
+
+if __name__ == "__main__":
+    main()
