@@ -8,9 +8,12 @@ SUGGESTIONS.md
 .ruff_cache/
 node_modules/
 .debbuild/
-.debian/changelog
-.debian/.debhelper/
-.debian/flatpak-automatic/
-.debian/files
-.debian/*.log
-.debian/*.substvars
+
+# Debian build artifacts
+debs/
+debian/.debhelper/
+debian/flatpak-automatic/
+debian/files
+debian/*.log
+debian/*.substvars
+debian/debhelper-build-stamp

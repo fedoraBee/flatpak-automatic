@@ -97,6 +97,6 @@ test:
 
 deb:
 	@echo "Building Debian package..."
-	cp -r .debian debian
 	dpkg-buildpackage -us -uc -b
-	rm -rf debian
+	mkdir -p debs
+	mv ../flatpak-automatic_* debs/ || true

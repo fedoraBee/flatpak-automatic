@@ -208,8 +208,8 @@ if ! grep -q "@@VERSION@@" "$SPEC_TEMPLATE"; then
 fi
 echo "✅ RPM spec template is valid"
 
-if [ ! -f ".debian/control" ]; then
-    echo "❌ .debian/control is missing. PR blocked."
+if [ ! -f "debian/control" ]; then
+    echo "❌ debian/control is missing. PR blocked."
     exit 1
 fi
 echo "✅ Debian packaging skeleton is present"

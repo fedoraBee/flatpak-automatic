@@ -193,8 +193,8 @@ def main():
     )
 
     # 3. Generate Debian Changelog
-    os.makedirs(".debian", exist_ok=True)
-    with open(".debian/changelog", "w") as f:
+    os.makedirs("debian", exist_ok=True)
+    with open("debian/changelog", "w") as f:
         date_str = (
             __import__("datetime")
             .datetime.now(__import__("datetime").timezone.utc)
