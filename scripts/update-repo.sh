@@ -8,20 +8,20 @@ set -e
 
 # --- Configuration ---
 RPM_SOURCE_DIR=${1:-".rpmbuild/RPMS/noarch"}
-VERSION=${2:-"1.1.0"}
-CHANNEL=${3:-"stable"}
-GPG_KEY_ID=${4}
-REPO_ROOT=${5:-"repo"} # Defaults to creating a 'repo' folder in current directory
-DEB_SOURCE_DIR="debs"
+DEB_SOURCE_DIR=${2:-"debs"}
+VERSION=${3:-"1.1.0"}
+CHANNEL=${4:-"stable"}
+GPG_KEY_ID=${5}
+REPO_ROOT=${6:-"repo"} # Defaults to creating a 'repo' folder in current directory
 
 # --- Functions ---
 usage() {
-    echo "Usage: $0 [rpm_source_dir] [version] [channel] [gpg_key_id] [repo_root]"
-    echo "Example: $0 .rpmbuild/RPMS/noarch 1.1.0 stable 9B99A03F6577BF59 ./repo"
+    echo "Usage: $0 [rpm_source_dir] [deb_source_dir] [version] [channel] [gpg_key_id] [repo_root]"
+    echo "Example: $0 .rpmbuild/RPMS/noarch debs 1.1.0 stable 9B99A03F6577BF59 ./repo"
 }
 
 check_dependencies() {
-    local deps=("createrepo_c" "gpg" "rpm")
+    local deps=("createrepo_c" "gpg" "rpm" "dpkg-scanpackages" "apt-ftparchive")
     for dep in "${deps[@]}"; do
         if ! command -v "$dep" >/dev/null 2>&1; then
             echo "Error: Required command '$dep' not found. Please install it."
@@ -44,84 +44,103 @@ fi
 
 # Calculate versioned directory name (vMAJOR.MINOR)
 MAJOR_MINOR=$(echo "$VERSION" | cut -d. -f1,2)
-VERSION_DIR="$REPO_ROOT/v$MAJOR_MINOR/$CHANNEL"
-LATEST_DIR="$REPO_ROOT/latest/$CHANNEL"
 
-echo "Updating DNF repository..."
+# --- RPM Repository Update ---
+RPM_VERSION_DIR="$REPO_ROOT/rpms/v$MAJOR_MINOR/$CHANNEL"
+RPM_LATEST_DIR="$REPO_ROOT/rpms/latest/$CHANNEL"
+
+echo "Updating RPM repository..."
 echo "  Source RPMs: $RPM_SOURCE_DIR"
 echo "  Version:     $VERSION (v$MAJOR_MINOR)"
 echo "  Channel:     $CHANNEL"
-echo "  Repo Root:   $REPO_ROOT"
-[ -n "$GPG_KEY_ID" ] && echo "  Signing Key: $GPG_KEY_ID" || echo "  Signing Key: [NONE]"
+echo "  Repo Root:   $REPO_ROOT/rpms"
 
-# Ensure directories exist
-mkdir -p "$VERSION_DIR"
-mkdir -p "$LATEST_DIR"
+mkdir -p "$RPM_VERSION_DIR"
+mkdir -p "$RPM_LATEST_DIR"
 
-# Safely check for and copy RPMs to prevent literal '*.rpm' expansion errors
 shopt -s nullglob
 RPMS=("$RPM_SOURCE_DIR"/*.rpm)
 shopt -u nullglob
 
 if [ ${#RPMS[@]} -gt 0 ]; then
-    echo "Copying RPMs to $VERSION_DIR..."
-    cp "${RPMS[@]}" "$VERSION_DIR/"
+    echo "Copying RPMs to $RPM_VERSION_DIR..."
+    cp "${RPMS[@]}" "$RPM_VERSION_DIR/"
+    
+    echo "Updating RPM metadata in $RPM_VERSION_DIR..."
+    createrepo_c --update "$RPM_VERSION_DIR"
+    
+    if [ -n "$GPG_KEY_ID" ]; then
+        echo "Signing RPM metadata in $RPM_VERSION_DIR..."
+        rm -f "$RPM_VERSION_DIR/repodata/repomd.xml.asc"
+        gpg --detach-sign --armor --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" "$RPM_VERSION_DIR/repodata/repomd.xml"
+    fi
+
+    echo "Syncing RPM $RPM_VERSION_DIR to $RPM_LATEST_DIR..."
+    if command -v rsync >/dev/null 2>&1; then
+        rsync -av --delete "$RPM_VERSION_DIR/" "$RPM_LATEST_DIR/"
+    else
+        rm -rf "${RPM_LATEST_DIR:?}"/*
+        cp -r "$RPM_VERSION_DIR/"* "$RPM_LATEST_DIR/"
+    fi
 else
-    echo "Error: No RPMs found in $RPM_SOURCE_DIR"
-    exit 1
+    echo "Warning: No RPMs found in $RPM_SOURCE_DIR. Skipping RPM repo update."
 fi
+
+# --- DEB Repository Update ---
+DEB_VERSION_DIR="$REPO_ROOT/debs/v$MAJOR_MINOR/$CHANNEL"
+DEB_LATEST_DIR="$REPO_ROOT/debs/latest/$CHANNEL"
+
+echo "Updating DEB repository..."
+echo "  Source DEBs: $DEB_SOURCE_DIR"
+echo "  Version:     $VERSION (v$MAJOR_MINOR)"
+echo "  Channel:     $CHANNEL"
+echo "  Repo Root:   $REPO_ROOT/debs"
+
+mkdir -p "$DEB_VERSION_DIR"
+mkdir -p "$DEB_LATEST_DIR"
 
 shopt -s nullglob
 DEBS=("$DEB_SOURCE_DIR"/*.deb)
 shopt -u nullglob
-if [ ${#DEBS[@]} -gt 0 ]; then
-    echo "Copying DEBs to $VERSION_DIR..."
-    cp "${DEBS[@]}" "$VERSION_DIR/"
-fi
-
-# Update repository metadata for the versioned channel
-echo "Updating metadata in $VERSION_DIR..."
-createrepo_c --update "$VERSION_DIR"
 
 if [ ${#DEBS[@]} -gt 0 ]; then
-    echo "Updating APT metadata in $VERSION_DIR..."
-    (cd "$VERSION_DIR" && dpkg-scanpackages . /dev/null >Packages && gzip -9c Packages >Packages.gz && apt-ftparchive release . >Release)
+    echo "Copying DEBs to $DEB_VERSION_DIR..."
+    cp "${DEBS[@]}" "$DEB_VERSION_DIR/"
+    
+    echo "Updating APT metadata in $DEB_VERSION_DIR..."
+    (cd "$DEB_VERSION_DIR" && dpkg-scanpackages . /dev/null >Packages && gzip -9c Packages >Packages.gz && apt-ftparchive release . >Release)
+
+    if [ -n "$GPG_KEY_ID" ]; then
+        echo "Signing APT metadata in $DEB_VERSION_DIR..."
+        rm -f "$DEB_VERSION_DIR/Release.gpg" "$DEB_VERSION_DIR/InRelease"
+        gpg --detach-sign --armor --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$DEB_VERSION_DIR/Release.gpg" "$DEB_VERSION_DIR/Release"
+        gpg --clearsign --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$DEB_VERSION_DIR/InRelease" "$DEB_VERSION_DIR/Release"
+    fi
+
+    echo "Syncing DEB $DEB_VERSION_DIR to $DEB_LATEST_DIR..."
+    if command -v rsync >/dev/null 2>&1; then
+        rsync -av --delete "$DEB_VERSION_DIR/" "$DEB_LATEST_DIR/"
+    else
+        rm -rf "${DEB_LATEST_DIR:?}"/*
+        cp -r "$DEB_VERSION_DIR/"* "$DEB_LATEST_DIR/"
+    fi
+else
+    echo "Warning: No DEBs found in $DEB_SOURCE_DIR. Skipping DEB repo update."
 fi
 
-# Sign repository metadata if a GPG key is available
+# --- GPG Key Export ---
 if [ -n "$GPG_KEY_ID" ]; then
-    echo "Signing metadata in $VERSION_DIR with GPG key: $GPG_KEY_ID"
-    # Ensure fresh signature
-    rm -f "$VERSION_DIR/repodata/repomd.xml.asc"
-    gpg --detach-sign --armor --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" "$VERSION_DIR/repodata/repomd.xml"
-
-    if [ ${#DEBS[@]} -gt 0 ]; then
-        echo "Signing APT metadata..."
-        rm -f "$VERSION_DIR/Release.gpg" "$VERSION_DIR/InRelease"
-        gpg --detach-sign --armor --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$VERSION_DIR/Release.gpg" "$VERSION_DIR/Release"
-        gpg --clearsign --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$VERSION_DIR/InRelease" "$VERSION_DIR/Release"
-    fi
-
-    # Auto-export the public key to the repo root for users to download
-    echo "Exporting public key to $REPO_ROOT/gpg.key..."
-    gpg --armor --export "$GPG_KEY_ID" >"$REPO_ROOT/gpg.key"
+    echo "Exporting public key to $REPO_ROOT/gpt.key..."
+    gpg --armor --export "$GPG_KEY_ID" >"$REPO_ROOT/gpt.key"
+    # Also keep gpg.key for compatibility if needed, but user asked for gpt.key
+    cp "$REPO_ROOT/gpt.key" "$REPO_ROOT/gpg.key"
 else
-    echo "Warning: No GPG key available. Repository metadata will not be signed."
-    # Legacy fallback: If there's a manual key lying around, copy it anyway
     if [ -f "gpg.key" ]; then
-        echo "Copying existing gpg.key to repo root..."
-        cp "gpg.key" "$REPO_ROOT/"
+        echo "Copying existing gpg.key to $REPO_ROOT/gpt.key..."
+        cp "gpg.key" "$REPO_ROOT/gpt.key"
+        cp "gpg.key" "$REPO_ROOT/gpg.key"
     fi
-fi
-
-# Sync the versioned channel to the 'latest' pointer
-echo "Syncing $VERSION_DIR to $LATEST_DIR..."
-if command -v rsync >/dev/null 2>&1; then
-    rsync -av --delete "$VERSION_DIR/" "$LATEST_DIR/"
-else
-    # Fallback to rm/cp if rsync is not available
-    rm -rf "${LATEST_DIR:?}"/*
-    cp -r "$VERSION_DIR/"* "$LATEST_DIR/"
 fi
 
 echo "Repository update complete in $REPO_ROOT"
+

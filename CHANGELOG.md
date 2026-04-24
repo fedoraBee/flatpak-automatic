@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.6] - 2026-04-24
+
+### Changed
+
+- **Repository**: Refactored repository structure to use separate `rpms/` and
+  `debs/` subdirectories.
+- **Repository**: Moved repository GPG key to `gpt.key` at the root for unified
+  access.
+- **Web**: Enhanced repository index page to display both RPM and Debian
+  packages in distinct sections.
+- **CI/CD**: Updated pipeline to handle the new disjunct repository structure
+  and ensure proper staging for GitHub Pages.
+- **Documentation**: Updated `README.md` and `DEVELOPMENT.md` with new
+  installation instructions and repository layout details.
+
 ## [1.3.5] - 2026-04-24
 
 ### Fixed

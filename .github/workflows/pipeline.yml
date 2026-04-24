@@ -289,8 +289,7 @@ jobs:
 
       - name: Stage Public Files
         run: |
-          mkdir -p public/rpms
-          cp -r repo/* public/rpms/
+          cp -r repo/* public/
 
       - name: Generate Index Page
         env:

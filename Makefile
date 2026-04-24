@@ -2,7 +2,7 @@
 
 NAME := flatpak-automatic
 EPOCH := 1
-VERSION := 1.3.5
+VERSION := 1.3.6
 REL_NUM := 1
 DATE := $(shell LC_ALL=C date +"%a %b %d %Y")
 AUTHOR := "fedoraBee <9395414+fedoraBee@users.noreply.github.com>"
@@ -84,7 +84,7 @@ rpm-sign:
 CHANNEL ?= $(or $(channel),stable)
 
 rpm-repo:
-	$(CURDIR)/scripts/update-repo.sh $(TOPDIR)/RPMS/noarch $(VERSION) $(CHANNEL) "$(GPG_KEY_ID)" $(CURDIR)/repo
+	$(CURDIR)/scripts/update-repo.sh $(TOPDIR)/RPMS/noarch $(CURDIR)/debs $(VERSION) $(CHANNEL) "$(GPG_KEY_ID)" $(CURDIR)/repo
 
 clean:
 	rm -rf $(TOPDIR) .debbuild *.deb
