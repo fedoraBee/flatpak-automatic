@@ -288,7 +288,7 @@ jobs:
           path: public
 
       - name: Export Public GPG Key
-        run: gpg --armor --export ${{ vars.GPG_KEY_ID }} > public/gpt.key
+        run: gpg --armor --export ${{ vars.GPG_KEY_ID }} > public/gpg.key
 
       - name: Stage Public Files
         run: |

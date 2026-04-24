@@ -52,14 +52,14 @@ name=Flatpak Automatic - Stable
 baseurl=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/rpms/latest/stable/
 enabled=1
 gpgcheck=1
-gpgkey=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpt.key
+gpgkey=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpg.key
 
 [flatpak-automatic-testing]
 name=Flatpak Automatic - Testing
 baseurl=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/rpms/latest/testing/
 enabled=0
 gpgcheck=1
-gpgkey=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpt.key
+gpgkey=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpg.key
 EOF
 
 sudo dnf makecache
@@ -69,7 +69,7 @@ sudo dnf install flatpak-automatic</div>
         <div class="card">
             <h2>📦 Installation (Debian-based)</h2>
             <p>Run the following commands to add the repository and install the package on Ubuntu, Debian, or compatible systems:</p>
-            <div class="code-block">curl -fsSL https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpt.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
+            <div class="code-block">curl -fsSL https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/debs/latest/stable /" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
 sudo apt-get update
 sudo apt-get install flatpak-automatic</div>
@@ -127,7 +127,7 @@ sudo apt-get install flatpak-automatic</div>
         <div class="card">
             <h2>🔗 Resources</h2>
             <ul>
-                <li><a href="gpt.key">Download Repository GPG Key (gpt.key)</a></li>
+                <li><a href="gpg.key">Download Repository GPG Key (gpg.key)</a></li>
                 <li><a href="https://github.com/{{ github_repo }}">GitHub Source Code &amp; Documentation</a></li>
                 <li><a href="https://github.com/{{ github_repo }}/issues">Report an Issue</a></li>
             </ul>
