@@ -128,18 +128,5 @@ else
     echo "Warning: No DEBs found in $DEB_SOURCE_DIR. Skipping DEB repo update."
 fi
 
-# --- GPG Key Export ---
-if [ -n "$GPG_KEY_ID" ]; then
-    echo "Exporting public key to $REPO_ROOT/gpt.key..."
-    gpg --armor --export "$GPG_KEY_ID" >"$REPO_ROOT/gpt.key"
-    # Also keep gpg.key for compatibility if needed, but user asked for gpt.key
-    cp "$REPO_ROOT/gpt.key" "$REPO_ROOT/gpg.key"
-else
-    if [ -f "gpg.key" ]; then
-        echo "Copying existing gpg.key to $REPO_ROOT/gpt.key..."
-        cp "gpg.key" "$REPO_ROOT/gpt.key"
-        cp "gpg.key" "$REPO_ROOT/gpg.key"
-    fi
-fi
 
 echo "Repository update complete in $REPO_ROOT"

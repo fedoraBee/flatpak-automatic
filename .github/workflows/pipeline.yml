@@ -287,6 +287,9 @@ jobs:
           ref: gh-pages
           path: public
 
+      - name: Export Public GPG Key
+        run: gpg --armor --export ${{ vars.GPG_KEY_ID }} > public/gpt.key
+
       - name: Stage Public Files
         run: |
           cp -r repo/* public/
