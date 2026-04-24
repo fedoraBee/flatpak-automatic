@@ -29,10 +29,12 @@ class SnapperManager:
                 )
                 self.interface = dbus.Interface(self.proxy, "org.opensuse.Snapper")
             except Exception as e:
+                # Graceful degradation for systems lacking Snapper (e.g., standard Ubuntu)
                 print(
-                    f"Warning: Failed to connect to Snapper DBus interface: {e}",
+                    f"Notice: Snapper DBus unavailable. Bypassing snapshots gracefully. ({type(e).__name__})",
                     file=sys.stderr,
                 )
+                self.interface = None
 
     def create_timeline_snapshot(self, description="Pre-Flatpak Update"):
         if not self.interface:
