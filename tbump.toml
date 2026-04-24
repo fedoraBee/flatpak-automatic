@@ -17,7 +17,7 @@ src = "Makefile"
 search = "VERSION := {current_version}"
 
 [[file]]
-src = "scripts/flatpak-automatic.sh"
+src = "scripts/flatpak-automatic.py"
 search = "# Version: {current_version}"
 
 [[file]]
