@@ -89,13 +89,24 @@ jobs:
 
   # --- Build and Validation Stage ---
   unit-tests:
-    name: Run Unit Tests
+    name: Run Unit Tests (${{ matrix.os }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [fedora:latest, debian:latest]
+    container:
+      image: ${{ matrix.os }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
       - name: Install Test Dependencies
-        run: sudo apt-get update && sudo apt-get install -y bats python3-pytest
+        run: |
+          if command -v dnf >/dev/null 2>&1; then
+            dnf install -y bats python3-pytest make hostname util-linux
+          else
+            apt-get update && apt-get install -y bats python3-pytest make hostname bsdutils
+          fi
       - name: Run Tests
         run: make test
 
