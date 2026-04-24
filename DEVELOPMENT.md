@@ -57,7 +57,7 @@ This will:
 3. Run `createrepo_c --update` on the RPM directory.
 4. Run `dpkg-scanpackages` and `apt-ftparchive` on the DEB directory.
 5. Generate signed metadata if a GPG key is provided.
-6. Export the public GPG key as `repo/gpt.key`.
+6. Export the public GPG key as `repo/gpg.key`.
 7. Sync the content to `repo/rpms/latest/<CHANNEL>/` and
    `repo/debs/latest/<CHANNEL>/`.
 
@@ -69,7 +69,7 @@ To host this as a repository on GitHub:
    `gh-pages` branch alongside the `index.html` landing page by the CI workflow.
 2. The `repo/` contains `rpms/` and `debs/` subdirectories for each package
    type.
-3. The GPG public key is available as `gpt.key` at the root of the `gh-pages`
+3. The GPG public key is available as `gpg.key` at the root of the `gh-pages`
    branch.
 4. Users can then add the repository by creating a `.repo` or `.list` file
    pointing to the raw GitHub Pages URL.

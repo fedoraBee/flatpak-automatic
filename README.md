@@ -35,14 +35,14 @@ name=Flatpak Automatic - Stable
 baseurl=https://fedorabee.github.io/flatpak-automatic/rpms/latest/stable/
 enabled=1
 gpgcheck=1
-gpgkey=https://fedorabee.github.io/flatpak-automatic/gpt.key
+gpgkey=https://fedorabee.github.io/flatpak-automatic/gpg.key
 
 [flatpak-automatic-testing]
 name=Flatpak Automatic - Testing
 baseurl=https://fedorabee.github.io/flatpak-automatic/rpms/latest/testing/
 enabled=0
 gpgcheck=1
-gpgkey=https://fedorabee.github.io/flatpak-automatic/gpt.key
+gpgkey=https://fedorabee.github.io/flatpak-automatic/gpg.key
 EOF
 ```
 
@@ -62,7 +62,7 @@ sudo systemctl enable --now flatpak-automatic.timer
 ## 🔐 GPG Key
 
 The GPG key is available at
-<https://fedorabee.github.io/flatpak-automatic/gpt.key>.
+<https://fedorabee.github.io/flatpak-automatic/gpg.key>.
 
 Fingerprint:
 
@@ -106,7 +106,7 @@ The package repository contains:
 - RPM packages: `flatpak-automatic` (in `/rpms`)
 - Debian packages: `flatpak-automatic` (in `/debs`)
 - Repository metadata
-- GPG signing key (`gpt.key`)
+- GPG signing key (`gpg.key`)
 
 ## GitOps PR CLI Tool
 
@@ -156,7 +156,7 @@ SMTP server, port, and authentication credentials are set up correctly.
 ### Debian / Ubuntu (APT)
 
 ```bash
-KEY="https://fedorabee.github.io/flatpak-automatic/gpt.key"
+KEY="https://fedorabee.github.io/flatpak-automatic/gpg.key"
 REPO="https://fedorabee.github.io/flatpak-automatic/debs/latest/stable"
 RING="/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg"
 
