@@ -2,7 +2,7 @@
 
 NAME := flatpak-automatic
 EPOCH := 1
-VERSION := 1.4.0
+VERSION := 1.4.1
 REL_NUM := 1
 DATE := $(shell LC_ALL=C date +"%a %b %d %Y")
 AUTHOR := "fedoraBee <9395414+fedoraBee@users.noreply.github.com>"
@@ -51,35 +51,10 @@ install:
 	install -p -m 644 systemd/flatpak-automatic.timer $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.timer
 
 rpm-build:
-	@echo "Building RPM for $(NAME) $(EPOCH):$(VERSION)-$(REL_NUM)..."
-	tar -czf $(TOPDIR)/SOURCES/$(NAME)-$(VERSION).tar.gz --exclude='.git' --exclude=.rpmbuild .
-	rpmbuild --define "_topdir $(TOPDIR)" -ba $(TOPDIR)/SPECS/$(NAME).spec
-	@echo "RPM build complete. Output located in $(TOPDIR)/RPMS/noarch/"
+	@./scripts/build-rpm-local.sh "$(NAME)" "$(EPOCH)" "$(VERSION)" "$(REL_NUM)" "$(TOPDIR)"
 
 rpm-sign:
-	@echo "Signing RPM packages..."
-	@for f in $(TOPDIR)/RPMS/noarch/*.rpm; do \
-        if [ -f "$$f" ]; then \
-            echo "Signing $$f..."; \
-            if [ -n "$(GPG_KEY_ID)" ]; then \
-                rpmsign --addsign "$$f" --define "_gpg_name $(GPG_KEY_ID)" || { \
-                    echo "Conflict detected, removing old signature and re-signing..."; \
-                    rpmsign --delsign "$$f"; \
-                    rpmsign --addsign "$$f" --define "_gpg_name $(GPG_KEY_ID)"; \
-                }; \
-            elif [ "$$(rpm --eval '%{?_gpg_name}')" != "%{?_gpg_name}" ]; then \
-                rpmsign --addsign "$$f" || { \
-                    echo "Conflict detected, removing old signature and re-signing..."; \
-                    rpmsign --delsign "$$f"; \
-                    rpmsign --addsign "$$f"; \
-                }; \
-            else \
-                echo "Error: GPG_KEY_ID is not set and %_gpg_name macro is not defined."; \
-                echo "Use: make rpm-sign GPG_KEY_ID=<your-key-id> or configure ~/.rpmmacros"; \
-                exit 1; \
-            fi; \
-        fi; \
-    done
+	@./scripts/sign-rpm.sh "$(TOPDIR)" "$(GPG_KEY_ID)"
 
 CHANNEL ?= $(or $(channel),stable)
 
@@ -96,7 +71,4 @@ test:
 	python3 -m pytest tests/
 
 deb: prep
-	@echo "Building Debian package..."
-	dpkg-buildpackage -us -uc -b
-	mkdir -p debs
-	mv ../flatpak-automatic_* debs/ || true
+	@./scripts/build-deb-local.sh
