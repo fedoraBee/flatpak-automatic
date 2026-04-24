@@ -53,9 +53,9 @@ jobs:
         run: |
           pipx install tbump
           git config --global user.email "ci@example.com"
-    git config --global user.name "CI System"
-    git checkout -b ci-validation-branch
-    tbump --non-interactive --dry-run 1.4.7
+          git config --global user.name "CI System"
+          git checkout -b ci-validation-branch
+          tbump --non-interactive --dry-run 1.4.7
 
       - name: Run Ruff
         uses: astral-sh/ruff-action@v3
