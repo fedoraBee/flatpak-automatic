@@ -109,7 +109,7 @@ deb:
 	echo "Priority: optional" >> $(CURDIR)/.debbuild/DEBIAN/control
 	echo "Architecture: all" >> $(CURDIR)/.debbuild/DEBIAN/control
 	echo "Depends: flatpak, snapper, s-nail, systemd" >> $(CURDIR)/.debbuild/DEBIAN/control
-	echo "Maintainer: $(AUTHOR)" >> $(CURDIR)/.debbuild/DEBIAN/control
+	echo Maintainer: $(AUTHOR) >> $(CURDIR)/.debbuild/DEBIAN/control
 	echo "Description: Automated Flatpak updates with optional snapshots and mail notifications" >> $(CURDIR)/.debbuild/DEBIAN/control
 	echo "#!/bin/sh" > $(CURDIR)/.debbuild/DEBIAN/postinst
 	echo "set -e" >> $(CURDIR)/.debbuild/DEBIAN/postinst
