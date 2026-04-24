@@ -141,7 +141,7 @@ fi
 
 # 0. Dry run check
 # Optimization: Check if updates exist before doing anything with Snapper
-DRY_RUN_OUT=$(flatpak update --dry-run --noninteractive 2>&1) || true
+DRY_RUN_OUT=$(flatpak update --dry-run --columns=application,branch,version --noninteractive 2>&1) || true
 if [[ "$DRY_RUN_OUT" =~ "Nothing to do" ]] || [[ "$DRY_RUN_OUT" =~ "No updates" ]]; then
     exit 0
 fi
