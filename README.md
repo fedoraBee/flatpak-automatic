@@ -151,3 +151,16 @@ sudo snapper -c root create-config /
 If you have `ENABLE_EMAIL=yes` but are not receiving notifications, check your
 `s-nail` configuration. The mail client relies on `/etc/mail.rc`. Ensure your
 SMTP server, port, and authentication credentials are set up correctly.
+
+### Debian / Ubuntu (APT)
+
+```bash
+KEY="https://fedorabee.github.io/flatpak-automatic/rpms/gpg.key"
+REPO="https://fedorabee.github.io/flatpak-automatic/rpms/latest/stable"
+RING="/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg"
+
+curl -fsSL $KEY | sudo gpg --dearmor -o $RING
+echo "deb [signed-by=$RING] $REPO /" | \
+sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
+sudo apt update && sudo apt install -y flatpak-automatic
+```

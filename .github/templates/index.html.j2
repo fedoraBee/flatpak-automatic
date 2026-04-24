@@ -107,3 +107,10 @@ sudo dnf install flatpak-automatic</div>
     </div>
 </body>
 </html>
+
+
+<h3>Debian / Ubuntu (APT)</h3>
+<pre><code>curl -fsSL https://fedorabee.github.io/flatpak-automatic/rpms/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://fedorabee.github.io/flatpak-automatic/rpms/latest/stable /" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
+sudo apt-get update
+sudo apt-get install flatpak-automatic</code></pre>

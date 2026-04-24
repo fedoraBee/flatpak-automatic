@@ -79,7 +79,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install Build Tools
-        run: dnf install -y rpmlint make python3
+        run: dnf install -y rpmlint make python3 dpkg-dev debhelper
 
       - name: Initialize RPM Environment
         run: echo "%_topdir ${{ github.workspace }}/.rpmbuild" > ~/.rpmmacros
@@ -100,7 +100,7 @@ jobs:
         run: make test
 
 
-  build-packages:
+  build-rpm:
     name: Build & Verify RPMs
     needs: [lint-code, lint-actions, lint-spec]
     runs-on: ubuntu-latest
@@ -111,50 +111,33 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
-
       - name: Install Build Dependencies
         run: dnf install -y python3 rpm-build systemd-rpm-macros make tar gnupg2 rpm-sign which rpmlint dpkg fakeroot
-
       - name: Compile Packages
-        run: |
-          make rpm
-          make deb
-
+        run: make rpm
       - name: Configure GPG Signing Key
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          # Import Private Key
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-
-          # Configure GPG Agent for automated signing
           mkdir -p ~/.gnupg && chmod 700 ~/.gnupg
           echo "use-agent" > ~/.gnupg/gpg.conf
           echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
           gpg-connect-agent reloadagent /bye
-
-          # Preset passphrase to bypass interactive prompts
           preset_passphrase_bin="$(find /usr/lib* -name gpg-preset-passphrase 2>/dev/null | head -n 1)"
           keygrip="$(gpg --with-keygrip -K | awk '/Keygrip =/ {print $3; exit}')"
           "$preset_passphrase_bin" --passphrase "${{ secrets.GPG_PASSPHRASE }}" --preset "$keygrip"
-
-          # IMPORTANT: Register Public Key in RPM Database to fix 'unknown-key' error in rpmlint
           gpg --export --armor ${{ vars.GPG_KEY_ID }} > /tmp/RPM-GPG-KEY
           rpm --import /tmp/RPM-GPG-KEY
-
-          # Define RPM Macros
           echo "%_signature gpg" > ~/.rpmmacros
           echo "%_gpg_name ${{ vars.GPG_KEY_ID }}" >> ~/.rpmmacros
           echo "%__gpg $(which gpg)" >> ~/.rpmmacros
-
       - name: Sign RPM Packages
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
           GPG_TTY="$(tty || echo /dev/null)" && export GPG_TTY
           make rpm-sign GPG_KEY_ID=${{ vars.GPG_KEY_ID }}
-
       - name: Audit Build Artifacts
         run: make lint-rpm
-
       - name: Archive RPM Artifacts
         id: upload_rpms
         uses: actions/upload-artifact@v6
@@ -163,48 +146,71 @@ jobs:
           path: .rpmbuild/RPMS/noarch/*.rpm
           retention-days: 5
 
+  build-deb:
+    name: Build & Verify DEBs
+    needs: [lint-code, lint-actions, lint-spec]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+      - name: Install Build Dependencies
+        run: sudo apt-get update && sudo apt-get install -y dpkg-dev debhelper make python3 tar build-essential
+      - name: Compile Packages
+        run: make deb
       - name: Archive DEB Artifacts
         uses: actions/upload-artifact@v6
         with:
           name: debs
-          path: "*.deb"
+          path: "debs/*.deb"
           retention-days: 5
 
   # --- Testing Stage ---
   smoke-test:
-    name: Smoke Test (Fedora ${{ matrix.fedora_version }})
-    needs: build-packages
+    name: Smoke Test (${{ matrix.os }})
+    needs: [build-rpm, build-deb]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        fedora_version: [40, 41, 42, rawhide]
+        os: [fedora:40, fedora:41, ubuntu:latest, debian:latest]
     container:
-      image: fedora:${{ matrix.fedora_version }}
+      image: ${{ matrix.os }}
       options: --privileged
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
-
       - name: Install Runtime Dependencies
-        run: dnf install -y curl unzip systemd shadow-utils util-linux
-
+        run: |
+          if [ -f /etc/debian_version ]; then
+            apt-get update && apt-get install -y curl unzip systemd
+          else
+            dnf install -y curl unzip systemd shadow-utils util-linux
+          fi
       - name: Retrieve RPM Artifacts
+        if: contains(matrix.os, 'fedora')
         uses: actions/download-artifact@v4
         with:
           name: rpms
           path: rpms
-
+      - name: Retrieve DEB Artifacts
+        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'debian')
+        uses: actions/download-artifact@v4
+        with:
+          name: debs
+          path: debs
       - name: Execute Package Installation
-        run: dnf install -y rpms/flatpak-automatic-[0-9].*.noarch.rpm
-
+        run: |
+          if [ -f /etc/debian_version ]; then
+            apt-get install -y ./debs/*.deb
+          else
+            dnf install -y rpms/flatpak-automatic-[0-9].*.noarch.rpm
+          fi
       - name: Validate Filesystem Integrity
         run: |
           test -f /etc/sysconfig/flatpak-automatic
           test -f /usr/lib/systemd/system/flatpak-automatic.timer
           test -f /usr/lib/systemd/system/flatpak-automatic.service
           test -f /usr/bin/flatpak-automatic
-
       - name: Verify Systemd Unit Syntax
         run: |
           systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.timer
@@ -213,7 +219,7 @@ jobs:
   # --- Deployment Preparation Stage ---
   build-web-assets:
     name: Generate Repository Site
-    needs: build-packages
+    needs: [build-rpm, build-deb]
     runs-on: ubuntu-latest
     environment: ${{ startsWith(github.ref, 'refs/tags/v') && 'gh-pages' || '' }}
     steps:
