@@ -6,6 +6,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.5] - 2026-04-24
+
+### Fixed
+
+- **CI/CD**: Made `smoke-test` filesystem and systemd integrity checks
+  distro-aware to properly validate `/etc/default` paths on Debian/Ubuntu.
+
+## [1.3.4] - 2026-04-24
+
+### Fixed
+
+- **Debian**: Fixed malformed syntax in `lintian-overrides` file by removing
+  brackets and type specifiers.
+
+## [1.3.3] - 2026-04-24
+
+### Fixed
+
+- **Debian**: Removed essential package `bash` from `Depends`.
+- **Debian**: Added machine-readable `debian/copyright` file to comply with
+  policy.
+- **Debian**: Added `lintian-overrides` to safely ignore man page and bug
+  tracker warnings.
+
+## [1.3.2] - 2026-04-24
+
+### Fixed
+
+- **Debian**: Fixed Debian Policy violation by moving sysconfig to
+  `/etc/default` in `debian/rules`.
+- **Debian**: Aligned maintainer email in auto-generated `debian/changelog` with
+  `debian/control`.
+- **CI/CD**: Containerized `build-deb` job with `debian:latest` and integrated
+  `lintian`.
+
 ## [1.3.1] - 2026-04-24
 
 ### Added

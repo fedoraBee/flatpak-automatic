@@ -150,13 +150,16 @@ jobs:
     name: Build & Verify DEBs
     needs: [lint-code, lint-actions, lint-spec]
     runs-on: ubuntu-latest
+    container: debian:latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
       - name: Install Build Dependencies
-        run: sudo apt-get update && sudo apt-get install -y dpkg-dev debhelper make python3 tar build-essential
+        run: apt-get update && apt-get install -y dpkg-dev debhelper make python3 tar build-essential lintian
       - name: Compile Packages
         run: make deb
+      - name: Run Lintian
+        run: lintian debs/*.deb
       - name: Archive DEB Artifacts
         uses: actions/upload-artifact@v6
         with:
@@ -207,14 +210,25 @@ jobs:
           fi
       - name: Validate Filesystem Integrity
         run: |
-          test -f /etc/sysconfig/flatpak-automatic
-          test -f /usr/lib/systemd/system/flatpak-automatic.timer
-          test -f /usr/lib/systemd/system/flatpak-automatic.service
+          if [ -f /etc/debian_version ]; then
+            test -f /etc/default/flatpak-automatic
+            test -f /lib/systemd/system/flatpak-automatic.timer || test -f /usr/lib/systemd/system/flatpak-automatic.timer
+            test -f /lib/systemd/system/flatpak-automatic.service || test -f /usr/lib/systemd/system/flatpak-automatic.service
+          else
+            test -f /etc/sysconfig/flatpak-automatic
+            test -f /usr/lib/systemd/system/flatpak-automatic.timer
+            test -f /usr/lib/systemd/system/flatpak-automatic.service
+          fi
           test -f /usr/bin/flatpak-automatic
       - name: Verify Systemd Unit Syntax
         run: |
-          systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.timer
-          systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.service
+          if [ -f /etc/debian_version ]; then
+            systemd-analyze verify /lib/systemd/system/flatpak-automatic.timer || systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.timer
+            systemd-analyze verify /lib/systemd/system/flatpak-automatic.service || systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.service
+          else
+            systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.timer
+            systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.service
+          fi
 
   # --- Deployment Preparation Stage ---
   build-web-assets:
