@@ -14,7 +14,13 @@
 ################################################################################
 set -euo pipefail
 
-CONFIG_FILE="/etc/sysconfig/flatpak-automatic"
+# Configuration paths (Debian / Red Hat)
+if [ -f "/etc/default/flatpak-automatic" ]; then
+    CONFIG_FILE="/etc/default/flatpak-automatic"
+else
+    CONFIG_FILE="/etc/sysconfig/flatpak-automatic"
+fi
+
 if [ -f "$CONFIG_FILE" ]; then
     # shellcheck disable=SC1090
     source "$CONFIG_FILE"
