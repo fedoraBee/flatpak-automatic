@@ -1,0 +1,4 @@
+# We do not provide a man page for this background utility yet
+flatpak-automatic binary: no-manual-page [usr/bin/flatpak-automatic]
+# This is a GitHub-hosted package, so we don't close ITP bugs on the Debian tracker
+flatpak-automatic source: initial-upload-closes-no-bugs [usr/share/doc/flatpak-automatic/changelog.Debian.gz:1]
