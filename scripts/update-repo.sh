@@ -87,43 +87,54 @@ else
 fi
 
 # --- DEB Repository Update ---
-DEB_VERSION_DIR="$REPO_ROOT/debs/v$MAJOR_MINOR/$CHANNEL"
-DEB_LATEST_DIR="$REPO_ROOT/debs/latest/$CHANNEL"
-
-echo "Updating DEB repository..."
+echo "Updating DEB repository (Enterprise Structure)..."
 echo "  Source DEBs: $DEB_SOURCE_DIR"
-echo "  Version:     $VERSION (v$MAJOR_MINOR)"
+echo "  Version:     $VERSION"
 echo "  Channel:     $CHANNEL"
 echo "  Repo Root:   $REPO_ROOT/debs"
-
-mkdir -p "$DEB_VERSION_DIR"
-mkdir -p "$DEB_LATEST_DIR"
 
 shopt -s nullglob
 DEBS=("$DEB_SOURCE_DIR"/*.deb)
 shopt -u nullglob
 
 if [ ${#DEBS[@]} -gt 0 ]; then
-    echo "Copying DEBs to $DEB_VERSION_DIR..."
-    cp "${DEBS[@]}" "$DEB_VERSION_DIR/"
+    POOL_DIR="$REPO_ROOT/debs/pool/main/f/flatpak-automatic"
+    DIST_DIR="$REPO_ROOT/debs/dists/$CHANNEL"
+    BIN_DIR="$DIST_DIR/main/binary-all"
 
-    echo "Updating APT metadata in $DEB_VERSION_DIR..."
-    (cd "$DEB_VERSION_DIR" && dpkg-scanpackages . /dev/null >Packages && gzip -9c Packages >Packages.gz && apt-ftparchive release . >Release)
+    mkdir -p "$POOL_DIR"
+    mkdir -p "$BIN_DIR"
+
+    echo "Copying DEBs to pool..."
+    cp "${DEBS[@]}" "$POOL_DIR/"
+
+    echo "Generating APT metadata in $DIST_DIR..."
+    cd "$REPO_ROOT/debs"
+
+    cat <<EOF >apt-release.conf
+APT::FTPArchive::Release::Origin "fedoraBee";
+APT::FTPArchive::Release::Label "Flatpak Automatic";
+APT::FTPArchive::Release::Suite "$CHANNEL";
+APT::FTPArchive::Release::Codename "$CHANNEL";
+APT::FTPArchive::Release::Architectures "all";
+APT::FTPArchive::Release::Components "main";
+APT::FTPArchive::Release::Description "Flatpak Automatic DEB Repository";
+EOF
+
+    apt-ftparchive packages "pool/main" >"$BIN_DIR/Packages"
+    gzip -9c "$BIN_DIR/Packages" >"$BIN_DIR/Packages.gz"
+
+    apt-ftparchive -c apt-release.conf release "$DIST_DIR" >"$DIST_DIR/Release"
 
     if [ -n "$GPG_KEY_ID" ]; then
-        echo "Signing APT metadata in $DEB_VERSION_DIR..."
-        rm -f "$DEB_VERSION_DIR/Release.gpg" "$DEB_VERSION_DIR/InRelease"
-        gpg --detach-sign --armor --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$DEB_VERSION_DIR/Release.gpg" "$DEB_VERSION_DIR/Release"
-        gpg --clearsign --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$DEB_VERSION_DIR/InRelease" "$DEB_VERSION_DIR/Release"
+        echo "Signing APT metadata in $DIST_DIR..."
+        rm -f "$DIST_DIR/Release.gpg" "$DIST_DIR/InRelease"
+        gpg --detach-sign --armor --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$DIST_DIR/Release.gpg" "$DIST_DIR/Release"
+        gpg --clearsign --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$DIST_DIR/InRelease" "$DIST_DIR/Release"
     fi
 
-    echo "Syncing DEB $DEB_VERSION_DIR to $DEB_LATEST_DIR..."
-    if command -v rsync >/dev/null 2>&1; then
-        rsync -av --delete "$DEB_VERSION_DIR/" "$DEB_LATEST_DIR/"
-    else
-        rm -rf "${DEB_LATEST_DIR:?}"/*
-        cp -r "$DEB_VERSION_DIR/"* "$DEB_LATEST_DIR/"
-    fi
+    rm -f apt-release.conf
+    cd - >/dev/null
 else
     echo "Warning: No DEBs found in $DEB_SOURCE_DIR. Skipping DEB repo update."
 fi

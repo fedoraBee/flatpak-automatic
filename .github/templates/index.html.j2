@@ -70,7 +70,7 @@ sudo dnf install flatpak-automatic</div>
             <h2>📦 Installation (Debian-based)</h2>
             <p>Run the following commands to add the repository and install the package on Ubuntu, Debian, or compatible systems:</p>
             <div class="code-block">curl -fsSL https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/debs/latest/stable /" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
+echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/debs stable main" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
 sudo apt-get update
 sudo apt-get install flatpak-automatic</div>
         </div>
@@ -107,7 +107,7 @@ sudo apt-get install flatpak-automatic</div>
                         <details><summary>Channel: {{ channel.name }}</summary><ul class="rpm-list">
                         {% if channel.packages %}
                             {% for pkg in channel.packages %}
-                                <li><a href="debs/{{ version.name }}/{{ channel.name }}/{{ pkg }}">{{ pkg }}</a>
+                                <li><a href="debs/pool/main/f/flatpak-automatic/{{ pkg }}">{{ pkg }}</a>
                                 {% if version.is_first and loop.first %} <span class="badge-latest-sm">latest patch</span>{% endif %}
                                 </li>
                             {% endfor %}

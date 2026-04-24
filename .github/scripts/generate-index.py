@@ -36,7 +36,25 @@ def main():
         return versions
 
     rpm_versions_raw = get_packages("rpms", ".rpm")
-    deb_versions_raw = get_packages("debs", ".deb")
+    import re
+
+    deb_versions_raw = []
+    pool_dir = os.path.join(repo_root, "debs", "pool", "main", "f", "flatpak-automatic")
+    if os.path.isdir(pool_dir):
+        deb_pkgs = sorted(
+            [f for f in os.listdir(pool_dir) if f.endswith(".deb")], reverse=True
+        )
+        versions_dict = {}
+        for pkg in deb_pkgs:
+            m = re.search(r"_(\d+\.\d+\.\d+)", pkg)
+            v_name = "v" + m.group(1) if m else "unknown"
+            if v_name not in versions_dict:
+                versions_dict[v_name] = []
+            versions_dict[v_name].append(pkg)
+        for v_name, pkgs in versions_dict.items():
+            deb_versions_raw.append(
+                {"name": v_name, "channels": [{"name": "stable", "packages": pkgs}]}
+            )
 
     # Merge versions by name
     all_version_names = sorted(

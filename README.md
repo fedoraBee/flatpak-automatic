@@ -157,11 +157,11 @@ SMTP server, port, and authentication credentials are set up correctly.
 
 ```bash
 KEY="https://fedorabee.github.io/flatpak-automatic/gpg.key"
-REPO="https://fedorabee.github.io/flatpak-automatic/debs/latest/stable"
+REPO="https://fedorabee.github.io/flatpak-automatic/debs"
 RING="/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg"
 
 curl -fsSL $KEY | sudo gpg --dearmor -o $RING
-echo "deb [signed-by=$RING] $REPO /" | \
+echo "deb [signed-by=$RING] $REPO stable main" | \
 sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
 sudo apt update && sudo apt install -y flatpak-automatic
 ```
