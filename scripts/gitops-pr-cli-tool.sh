@@ -211,8 +211,8 @@ echo "✅ RPM spec template is valid"
 # -----------------------------
 # Validate Python Script Presence
 # -----------------------------
-if [[ ! -f "scripts/update-rpm-metadata.py" ]]; then
-    echo "❌ scripts/update-rpm-metadata.py is missing. PR blocked."
+if [[ ! -f "scripts/update-package-metadata.py" ]]; then
+    echo "❌ scripts/update-package-metadata.py is missing. PR blocked."
     exit 1
 fi
 echo "✅ Metadata generator script found"
