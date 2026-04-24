@@ -80,6 +80,7 @@ jobs:
 
       - name: Install Build Tools
         run: dnf install -y rpmlint make python3
+          apt-get update -y && apt-get install -y apt-utils
 
       - name: Initialize RPM Environment
         run: echo "%_topdir ${{ github.workspace }}/.rpmbuild" > ~/.rpmmacros
@@ -114,6 +115,7 @@ jobs:
 
       - name: Install Build Dependencies
         run: dnf install -y python3 rpm-build systemd-rpm-macros make tar gnupg2 rpm-sign which rpmlint dpkg fakeroot
+          apt-get update -y && apt-get install -y apt-utils
 
       - name: Compile Packages
         run: |
@@ -188,6 +190,7 @@ jobs:
 
       - name: Install Runtime Dependencies
         run: dnf install -y curl unzip systemd shadow-utils util-linux
+          apt-get update -y && apt-get install -y apt-utils
 
       - name: Retrieve RPM Artifacts
         uses: actions/download-artifact@v4
@@ -197,6 +200,7 @@ jobs:
 
       - name: Execute Package Installation
         run: dnf install -y rpms/flatpak-automatic-[0-9].*.noarch.rpm
+          apt-get update -y && apt-get install -y apt-utils
 
       - name: Validate Filesystem Integrity
         run: |
@@ -224,6 +228,7 @@ jobs:
       - name: Install Web Dependencies
         run: |
           dnf install -y python3 python3-pip make createrepo_c git rsync nodejs gnupg2 which chromium dpkg-dev apt
+          apt-get update -y && apt-get install -y apt-utils
           python3 -m pip install jinja2
           npm install -g htmlhint pa11y
 
