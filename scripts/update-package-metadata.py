@@ -195,8 +195,10 @@ def main():
     # 3. Generate Debian Changelog
     os.makedirs("debian", exist_ok=True)
     with open("debian/changelog", "w") as f:
-        date_str = datetime.datetime.now(datetime.timezone.utc).strftime(
-            "%a, %d %b %Y %H:%M:%S %z"
+        date_str = (
+            __import__("datetime")
+            .datetime.now(__import__("datetime").timezone.utc)
+            .strftime("%a, %d %b %Y %H:%M:%S %z")
         )
         f.write(
             f"flatpak-automatic ({version}-{args.rel_num}) unstable; urgency=medium\n\n"
