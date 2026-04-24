@@ -113,10 +113,12 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install Build Dependencies
-        run: dnf install -y python3 rpm-build systemd-rpm-macros make tar gnupg2 rpm-sign which rpmlint
+        run: dnf install -y python3 rpm-build systemd-rpm-macros make tar gnupg2 rpm-sign which rpmlint dpkg fakeroot
 
-      - name: Compile RPM Packages
-        run: make rpm
+      - name: Compile Packages
+        run: |
+          make rpm
+          make deb
 
       - name: Configure GPG Signing Key
         if: startsWith(github.ref, 'refs/tags/v')
@@ -159,6 +161,13 @@ jobs:
         with:
           name: rpms
           path: .rpmbuild/RPMS/noarch/*.rpm
+          retention-days: 5
+
+      - name: Archive DEB Artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: debs
+          path: "*.deb"
           retention-days: 5
 
   # --- Testing Stage ---
@@ -223,6 +232,12 @@ jobs:
         with:
           name: rpms
           path: .rpmbuild/RPMS/noarch
+
+      - name: Retrieve DEB Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: debs
+          path: debs
 
       - name: Configure Repository Signing
         if: startsWith(github.ref, 'refs/tags/v')
@@ -298,6 +313,12 @@ jobs:
           name: rpms
           path: rpms
 
+      - name: Retrieve DEB Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: debs
+          path: debs
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -309,4 +330,6 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: rpms/*.rpm
+          files: |
+            rpms/*.rpm
+            debs/*.deb
