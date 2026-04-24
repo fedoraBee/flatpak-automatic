@@ -13,6 +13,8 @@ BuildRequires:  make
 BuildRequires:  systemd-rpm-macros
 
 Requires:       flatpak
+Requires:       python3
+Requires:       python3-dbus
 Requires:       snapper
 Requires:       s-nail
 Requires:       systemd
