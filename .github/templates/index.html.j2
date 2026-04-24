@@ -41,25 +41,25 @@
 <body>
     <div class="container">
         <h1>Flatpak Automatic</h1>
-        <p>Welcome to the official DNF repository for <strong>Flatpak Automatic</strong>. This project provides a secure, configurable, and systemd-native automation wrapper for Flatpak updates with Snapper snapshot integration.</p>
+        <p>Welcome to the official repository for <strong>Flatpak Automatic</strong>. This project provides a secure, configurable, and systemd-native automation wrapper for Flatpak updates with Snapper snapshot integration.</p>
 
         <div class="card">
-            <h2>📦 Installation</h2>
+            <h2>📦 Installation (RPM-based)</h2>
             <p>Run the following commands to add the repository and install the package on Fedora or compatible RPM-based systems:</p>
             <div class="code-block">sudo tee /etc/yum.repos.d/flatpak-automatic.repo &lt;&lt;'EOF'
 [flatpak-automatic]
 name=Flatpak Automatic - Stable
-baseurl=https://fedorabee.github.io/flatpak-automatic/rpms/latest/stable/
+baseurl=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/rpms/latest/stable/
 enabled=1
 gpgcheck=1
-gpgkey=https://fedorabee.github.io/flatpak-automatic/rpms/gpg.key
+gpgkey=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpt.key
 
 [flatpak-automatic-testing]
 name=Flatpak Automatic - Testing
-baseurl=https://fedorabee.github.io/flatpak-automatic/rpms/latest/testing/
+baseurl=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/rpms/latest/testing/
 enabled=0
 gpgcheck=1
-gpgkey=https://fedorabee.github.io/flatpak-automatic/rpms/gpg.key
+gpgkey=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpt.key
 EOF
 
 sudo dnf makecache
@@ -67,16 +67,28 @@ sudo dnf install flatpak-automatic</div>
         </div>
 
         <div class="card">
+            <h2>📦 Installation (Debian-based)</h2>
+            <p>Run the following commands to add the repository and install the package on Ubuntu, Debian, or compatible systems:</p>
+            <div class="code-block">curl -fsSL https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpt.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/debs/latest/stable /" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
+sudo apt-get update
+sudo apt-get install flatpak-automatic</div>
+        </div>
+
+        <div class="card">
             <h2>🗂️ Available Versions & Channels</h2>
             {% if versions %}
                 {% for version in versions %}
                     <h3>{{ version.name }} {% if version.is_first %}<span class="badge-latest">LATEST</span>{% endif %}</h3>
+
+                    {% if version.rpm_channels %}
+                    <h4>RPM Packages</h4>
                     <ul>
-                    {% for channel in version.channels %}
+                    {% for channel in version.rpm_channels %}
                         <details><summary>Channel: {{ channel.name }}</summary><ul class="rpm-list">
-                        {% if channel.rpms %}
-                            {% for rpm in channel.rpms %}
-                                <li><a href="rpms/{{ version.name }}/{{ channel.name }}/{{ rpm }}">{{ rpm }}</a>
+                        {% if channel.packages %}
+                            {% for pkg in channel.packages %}
+                                <li><a href="rpms/{{ version.name }}/{{ channel.name }}/{{ pkg }}">{{ pkg }}</a>
                                 {% if version.is_first and loop.first %} <span class="badge-latest-sm">latest patch</span>{% endif %}
                                 </li>
                             {% endfor %}
@@ -86,6 +98,26 @@ sudo dnf install flatpak-automatic</div>
                         </ul></details>
                     {% endfor %}
                     </ul>
+                    {% endif %}
+
+                    {% if version.deb_channels %}
+                    <h4>Debian Packages</h4>
+                    <ul>
+                    {% for channel in version.deb_channels %}
+                        <details><summary>Channel: {{ channel.name }}</summary><ul class="rpm-list">
+                        {% if channel.packages %}
+                            {% for pkg in channel.packages %}
+                                <li><a href="debs/{{ version.name }}/{{ channel.name }}/{{ pkg }}">{{ pkg }}</a>
+                                {% if version.is_first and loop.first %} <span class="badge-latest-sm">latest patch</span>{% endif %}
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li><em>No DEBs available in this channel.</em></li>
+                        {% endif %}
+                        </ul></details>
+                    {% endfor %}
+                    </ul>
+                    {% endif %}
                 {% endfor %}
             {% else %}
                 <p>No versions found.</p>
@@ -95,9 +127,9 @@ sudo dnf install flatpak-automatic</div>
         <div class="card">
             <h2>🔗 Resources</h2>
             <ul>
-                <li><a href="rpms/gpg.key">Download Repository GPG Key</a></li>
-                <li><a href="https://github.com/fedoraBee/flatpak-automatic">GitHub Source Code &amp; Documentation</a></li>
-                <li><a href="https://github.com/fedoraBee/flatpak-automatic/issues">Report an Issue</a></li>
+                <li><a href="gpt.key">Download Repository GPG Key (gpt.key)</a></li>
+                <li><a href="https://github.com/{{ github_repo }}">GitHub Source Code &amp; Documentation</a></li>
+                <li><a href="https://github.com/{{ github_repo }}/issues">Report an Issue</a></li>
             </ul>
         </div>
 
@@ -107,10 +139,3 @@ sudo dnf install flatpak-automatic</div>
     </div>
 </body>
 </html>
-
-
-<h3>Debian / Ubuntu (APT)</h3>
-<pre><code>curl -fsSL https://fedorabee.github.io/flatpak-automatic/rpms/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://fedorabee.github.io/flatpak-automatic/rpms/latest/stable /" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
-sudo apt-get update
-sudo apt-get install flatpak-automatic</code></pre>
