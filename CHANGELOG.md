@@ -2,9 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to
-[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The used format is based on
+[Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
+adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.4.8] - 2026-04-25
+
+### Added
+
+- **CI/CD**: Expanded GitOps branch prefixes to include `style`, `test`,
+  `revert`, `perf`, and `build`.
+
+### Changed
+
+- **Documentation**: Refactored `README.md` into a streamlined Quick Start
+  Guide.
+- **UI/UX**: Delegated DNF/APT repository configuration logic to the hosted
+  index page.
+- **UI/UX**: Injected mobile-responsive CSS breakpoints to decrease index
+  template padding on smaller viewports.
 
 ## [1.4.7] - 2026-04-25
 
