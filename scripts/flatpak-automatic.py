@@ -11,7 +11,7 @@ from typing import Optional, Dict
 
 
 class JSONFormatter(logging.Formatter):
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         log_record = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "level": record.levelname,

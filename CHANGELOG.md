@@ -21,6 +21,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - **Core**: Migrated standard text logging to structured JSON output using a
   native `JSONFormatter` for improved SIEM observability.
+- **CI/QA**: Resolved `mypy` strict type hinting violations in custom logging
+  formatter.
 
 - **Documentation**: Refactored `README.md` into a streamlined Quick Start
   Guide.
