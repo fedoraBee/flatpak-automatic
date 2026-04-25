@@ -43,7 +43,6 @@ class TestSnapperDBusIntegration(dbusmock.DBusTestCase):  # type: ignore
             "org.opensuse.Snapper", "CreateSingleSnapshot", "sssa{ss}", "i", "ret = 100"
         )
 
-
     def tearDown(self) -> None:
         # Terminate the mocked dbus server process after each test to free the bus name
         self.p_mock.terminate()
