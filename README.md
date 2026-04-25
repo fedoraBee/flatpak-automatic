@@ -20,46 +20,27 @@ RPM-based distributions.
 - **Configurable** – Easily tune email, snapshot, and scheduling behavior via
   `/etc/sysconfig/flatpak-automatic`
 
-## 📦 Installation via DNF (Recommended)
+## 🚀 Quick Start Guide
 
-Packages are distributed via a dedicated DNF repository hosted on GitHub Pages:
+Flatpak Automatic is distributed via a dedicated repository hosted on GitHub
+Pages for both RPM (Fedora/RHEL) and DEB (Ubuntu/Debian) distributions.
 
-👉 <https://fedorabee.github.io/flatpak-automatic/>
+👉
+**[View Full Installation & Repository Setup Instructions](https://fedorabee.github.io/flatpak-automatic/)**
 
-### 1. Add the Repository
+### General Setup Flow
 
-```bash
-sudo tee /etc/yum.repos.d/flatpak-automatic.repo <<'EOF'
-[flatpak-automatic]
-name=Flatpak Automatic - Stable
-baseurl=https://fedorabee.github.io/flatpak-automatic/rpms/latest/stable/
-enabled=1
-gpgcheck=1
-gpgkey=https://fedorabee.github.io/flatpak-automatic/gpg.key
+1. **Configure Repository:** Add the DNF or APT repository using the commands
+   provided on the project website.
+2. **Install Package:** `sudo dnf install flatpak-automatic` OR
+   `sudo apt install flatpak-automatic`
+3. **Enable Automation:** Activate the systemd timer:
 
-[flatpak-automatic-testing]
-name=Flatpak Automatic - Testing
-baseurl=https://fedorabee.github.io/flatpak-automatic/rpms/latest/testing/
-enabled=0
-gpgcheck=1
-gpgkey=https://fedorabee.github.io/flatpak-automatic/gpg.key
-EOF
-```
+   ```bash
+   sudo systemctl enable --now flatpak-automatic.timer
+   ```
 
-### 2. Update Cache & Install
-
-```bash
-sudo dnf makecache
-sudo dnf install flatpak-automatic
-```
-
-### 3. Enable the Timer
-
-```bash
-sudo systemctl enable --now flatpak-automatic.timer
-```
-
-## 🔐 GPG Key
+## 🔐 Security & GPG
 
 The GPG key is available at
 <https://fedorabee.github.io/flatpak-automatic/gpg.key>.

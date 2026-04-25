@@ -104,7 +104,7 @@ if [[ -z "$TARGET_BRANCH" ]]; then
 fi
 
 # Branch naming enforcement
-if [[ ! "$TARGET_BRANCH" =~ ^(feat|fix|chore|refactor|docs|ci)/v[0-9]+\.[0-9]+\.[0-9]+- ]]; then
+if [[ ! "$TARGET_BRANCH" =~ ^(feat|fix|chore|refactor|docs|ci|style|test|revert|perf|build)/v[0-9]+\.[0-9]+\.[0-9]+- ]]; then
     echo "❌ Invalid branch name: $TARGET_BRANCH"
     echo "Expected: <type>/v<version>-<description>"
     exit 1
