@@ -20,16 +20,16 @@ class TestSnapperDBusIntegration(dbusmock.DBusTestCase):  # type: ignore
         cls.start_system_bus()
 
     def setUp(self) -> None:
-        self.p_mock = self.spawn_server_template(
-            "org.opensuse.Snapper", {}, stdout=subprocess.PIPE
+        # Spawn a generic D-Bus server rather than attempting to load a non-existent template
+        self.p_mock, self.obj_snapper = self.spawn_server(
+            "org.opensuse.Snapper",
+            "/org/opensuse/Snapper",
+            "org.opensuse.Snapper",
+            stdout=subprocess.PIPE,
         )
 
-        self.dbusmock = dbus.Interface(
-            self.get_dbus(True).get_object(
-                "org.opensuse.Snapper", "/org/opensuse/Snapper"
-            ),
-            dbusmock.MOCK_IFACE,
-        )
+        # Bind the dbusmock control interface to our generic object
+        self.dbusmock = dbus.Interface(self.obj_snapper, dbusmock.MOCK_IFACE)
         self.dbusmock.AddMethod(
             "org.opensuse.Snapper", "CreateSingleSnapshot", "ssss", "i", "ret = 100"
         )
