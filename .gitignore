@@ -19,4 +19,4 @@ debian/*.substvars
 debian/debhelper-build-stamp
 debian/changelog
 tests/
-scripts/__pycache__/
+**/__pycache__/

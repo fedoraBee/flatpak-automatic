@@ -23,24 +23,59 @@ RPM-based distributions.
 ## 🚀 Quick Start Guide
 
 Flatpak Automatic is distributed via a dedicated repository hosted on GitHub
-Pages for both RPM (Fedora/RHEL) and DEB (Ubuntu/Debian) distributions.
+Pages for both RPM (Fedora/RHEL) and DEB (Ubuntu/Debian) distributions:
 
-👉
-**[View Full Installation & Repository Setup Instructions](https://fedorabee.github.io/flatpak-automatic/)**
+👉 <https://fedorabee.github.io/flatpak-automatic/>
 
-### General Setup Flow
+### 1. Add the Repository
 
-1. **Configure Repository:** Add the DNF or APT repository using the commands
-   provided on the project website.
-2. **Install Package:** `sudo dnf install flatpak-automatic` OR
-   `sudo apt install flatpak-automatic`
-3. **Enable Automation:** Activate the systemd timer:
+**RPM-based:**
 
-   ```bash
-   sudo systemctl enable --now flatpak-automatic.timer
-   ```
+```bash
+sudo tee /etc/yum.repos.d/flatpak-automatic.repo <<'EOF'
+[flatpak-automatic]
+name=Flatpak Automatic - Stable
+baseurl=https://fedorabee.github.io/flatpak-automatic/rpms/latest/stable/
+enabled=1
+gpgcheck=1
+gpgkey=https://fedorabee.github.io/flatpak-automatic/gpg.key
+EOF
+```
 
-## 🔐 Security & GPG
+**DEB-based:**
+
+```bash
+KEY="https://fedorabee.github.io/flatpak-automatic/gpg.key"
+REPO="https://fedorabee.github.io/flatpak-automatic/debs"
+RING="/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg"
+
+curl -fsSL $KEY | sudo gpg --dearmor -o $RING
+echo "deb [signed-by=$RING] $REPO stable main" | \
+sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
+```
+
+### 2. Update Cache & Install
+
+**RPM-based:**
+
+```bash
+sudo dnf makecache
+sudo dnf install -y flatpak-automatic
+```
+
+**DEB-based:**
+
+```bash
+sudo apt update && sudo apt install -y flatpak-automatic
+```
+
+### 3. Enable the Timer
+
+```bash
+sudo systemctl enable --now flatpak-automatic.timer
+```
+
+## 🔐 GPG Key
 
 The GPG key is available at
 <https://fedorabee.github.io/flatpak-automatic/gpg.key>.
@@ -89,22 +124,6 @@ The package repository contains:
 - Repository metadata
 - GPG signing key (`gpg.key`)
 
-## GitOps PR CLI Tool
-
-The project includes a `scripts/gitops-pr-cli-tool.sh` to automate and enforce
-the Pull Request workflow. It ensures version synchronization across the
-Makefile, RPM spec, and CHANGELOG.
-
-## 🔗 Resources
-
-- 🌐 Project Website & Repo: <https://fedorabee.github.io/flatpak-automatic/>
-- 💻 Development: <https://github.com/fedoraBee/flatpak-automatic>
-
-## ⚠️ Disclaimer
-
-This is an independent project and not affiliated with Fedora or the Flatpak
-project. Use at your own discretion.
-
 ## Troubleshooting & Runbook
 
 If you encounter issues with `flatpak-automatic`, follow these steps to diagnose
@@ -134,15 +153,11 @@ If you have `ENABLE_EMAIL=yes` but are not receiving notifications, check your
 `s-nail` configuration. The mail client relies on `/etc/mail.rc`. Ensure your
 SMTP server, port, and authentication credentials are set up correctly.
 
-### Debian / Ubuntu (APT)
+## ⚠️ Disclaimer
 
-```bash
-KEY="https://fedorabee.github.io/flatpak-automatic/gpg.key"
-REPO="https://fedorabee.github.io/flatpak-automatic/debs"
-RING="/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg"
+This is an independent project and not affiliated with Fedora or the Flatpak
+project. Use at your own discretion.
 
-curl -fsSL $KEY | sudo gpg --dearmor -o $RING
-echo "deb [signed-by=$RING] $REPO stable main" | \
-sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
-sudo apt update && sudo apt install -y flatpak-automatic
-```
+## 🔗 Resources
+
+- 🌐 Project Repo: <https://fedorabee.github.io/flatpak-automatic/>
