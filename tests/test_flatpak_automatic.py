@@ -1,5 +1,7 @@
 import sys
 import importlib.util
+import logging
+import json
 from unittest.mock import MagicMock, patch, mock_open
 from typing import Any
 
@@ -85,3 +87,50 @@ class TestLoadSysconfig:
             config = fa.load_sysconfig()
             assert config.get("FLATPAK_AUTO_UPDATE") == "false"
             assert config.get("FLATPAK_CREATE_SNAPSHOT") == "true"
+
+
+class TestJSONFormatter:
+    def test_format_standard_log(self) -> None:
+        formatter = fa.JSONFormatter()
+        record = logging.LogRecord(
+            name="flatpak_automatic",
+            level=logging.INFO,
+            pathname="flatpak-automatic.py",
+            lineno=100,
+            msg="Successfully applied flatpak updates.",
+            args=(),
+            exc_info=None,
+        )
+        output = formatter.format(record)
+        data = json.loads(output)
+
+        assert "timestamp" in data
+        assert data["level"] == "INFO"
+        assert data["message"] == "Successfully applied flatpak updates."
+        assert data["logger"] == "flatpak_automatic"
+        assert "exception" not in data
+
+    def test_format_exception_log(self) -> None:
+        formatter = fa.JSONFormatter()
+        try:
+            raise ValueError("Simulated system bus failure")
+        except ValueError:
+            exc_info = sys.exc_info()
+
+        record = logging.LogRecord(
+            name="flatpak_automatic",
+            level=logging.ERROR,
+            pathname="flatpak-automatic.py",
+            lineno=105,
+            msg="Failed to connect to Snapper DBus",
+            args=(),
+            exc_info=exc_info,
+        )
+        output = formatter.format(record)
+        data = json.loads(output)
+
+        assert "timestamp" in data
+        assert data["level"] == "ERROR"
+        assert data["message"] == "Failed to connect to Snapper DBus"
+        assert "exception" in data
+        assert "ValueError: Simulated system bus failure" in data["exception"]
