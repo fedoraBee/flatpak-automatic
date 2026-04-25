@@ -4,6 +4,7 @@
 .gemini/
 .geminiignore
 GEMINI.md
+GEM.md
 SUGGESTIONS.md
 .ruff_cache/
 node_modules/
