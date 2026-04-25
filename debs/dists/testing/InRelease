@@ -1,0 +1,34 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Architectures: all
+Codename: testing
+Components: main
+Date: Sat, 25 Apr 2026 08:12:40 +0000
+Description: Flatpak Automatic DEB Repository
+Label: Flatpak Automatic
+Origin: fedoraBee
+Suite: testing
+MD5Sum:
+ ed40523e11719a93d3e67fcb1c01bd85              196 Release
+ 055a7e2ad8acab6a1358a458cb971000              745 main/binary-all/Packages
+ af1b21d3509b10539e64aefd1fd551b4              507 main/binary-all/Packages.gz
+SHA1:
+ 3288ed14abb5939c85505ee60a1af6d306d06085              196 Release
+ fd656496a9034c94abe187a51f9111bf7fa44f17              745 main/binary-all/Packages
+ 8438efea5b32c3fd770e6cd61019db859041709c              507 main/binary-all/Packages.gz
+SHA256:
+ 06dad6f9cbf0e1e6bebab26127e091d75119346d58f423efd372e06c03e14e6c              196 Release
+ a136fa6f4d047a4dcda137e6eeba44627c9b4e7114dc8543608034d870cc3da8              745 main/binary-all/Packages
+ a592ca30f5336fe753f02751adef54684cd5e6afc70111c6dd1a9cab9e22cc84              507 main/binary-all/Packages.gz
+SHA512:
+ 00dfff3620b8e78b1b331636033a855b5113d9aebf190d5ae68ba4ba1c0638289584479aba1e53cfa4cdfca5ba3e0e4ebc51512aae1e259b749e8c2883cfe832              196 Release
+ c40c3c79b512499f51996e359ed1ab01c1a872170f88af9a417bf2ba74e6ea69b780528c30e88d0a9bddded781fd4e71f0b7d2196190d45569d185313e1486ad              745 main/binary-all/Packages
+ 20944fa7091595b0ddde448e3afb708cc2dd80c5df026821c23e037252f2ffd1d411cf465825420942d4dfa99498e7bcfc01d7f67c9a91a8381f0a2a7ec6c148              507 main/binary-all/Packages.gz
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSRCfK5ypdCEF7qio5R9PQXhPgciQUCaex3eQAKCRBR9PQXhPgc
+ibu+APsFWiqksSjoRy7BKH5BGlSugJgD33xq+Rxtva/Mn4ljpgEAwl+wKMGBIuAy
+9xXJqi+E1iv/+qlIVkcI5dDTJZkbwgU=
+=wf1y
+-----END PGP SIGNATURE-----
