@@ -77,8 +77,9 @@ To deploy changes locally for testing:
   `<type>/v<version>-<short-description>`
 
   Where:
-  - `<type>`: feat | fix | chore | refactor | docs | ci | style | test | revert
-    | perf | build
+  - `<type>`: `feat` | `fix` | `chore` | `refactor` | `docs` | `ci` | `style` |
+    `test` | `revert` | `perf` | `build` | `format` | `deps` | `sec` | perf |
+    build | format | deps | sec | perf | build
   - `<version>`: target release version
 
 - **Pull Request Workflow (Mandatory)** Each branch must open a descriptive Pull
