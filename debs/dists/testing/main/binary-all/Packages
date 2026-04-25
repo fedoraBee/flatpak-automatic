@@ -1,17 +1,17 @@
 Package: flatpak-automatic
 Architecture: all
-Version: 1.4.6-1
+Version: 1.4.8-1
 Priority: optional
 Section: admin
 Maintainer: GitOps DevSecOps Team <noreply@github.com>
-Installed-Size: 37
+Installed-Size: 38
 Depends: flatpak, systemd, python3, python3-dbus
-Filename: pool/main/f/flatpak-automatic/flatpak-automatic_1.4.6-1_all.deb
-Size: 10128
-MD5sum: 2ae406bf28262f9681d24ecc75203831
-SHA1: e7c83f21284494efe4453b22143dd33a68826948
-SHA256: 553f1496744a1c90a50ef99ceffd2e488ba6f492743842bee412227419c1c869
-SHA512: 3580f259d03e700d818acb5463ef9af2e3b2a2909d50937b3d149ff719cb747c08889e7b733cd36f7fbf2107814284e1e8749298196c8ab5b79ebd0da16d97aa
+Filename: pool/main/f/flatpak-automatic/flatpak-automatic_1.4.8-1_all.deb
+Size: 10620
+MD5sum: 8c43aeef677e498558b7c5bd3bfa6037
+SHA1: 4322b48d219e9352f32383cef91381e147b79656
+SHA256: 01948c04c2ec7c9eae2488a7bf5a29a76629474c40944d80f45b4eb3405498e9
+SHA512: f5c5fd9b145d1447a758f1de816f1574e99bc7ea5899cc171117c995dbfd8f6313ff6bd0017a1b942adaefa6d19192546b79c74620fc84ab7ab967e877e27037
 Description: Automated Flatpak updates via systemd
  A simple script and systemd service/timer to automatically
  update Flatpak applications.
