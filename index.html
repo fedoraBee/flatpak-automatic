@@ -5,43 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flatpak Automatic Repository</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 2rem; background: #f4f6f8; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 2rem; background: #f4f6f8; }
         .container { background: white; padding: 2.5rem; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; margin-top: 0; }
         h2 { color: #34495e; margin-top: 1.5rem; }
         h3 { color: #2178b1; margin-top: 1.0rem; margin-bottom: 0.2rem; }
+        h4 { color: #2c3e50; margin-top: 1.2rem; margin-bottom: 0.5rem; border-bottom: 1px solid #eee; padding-bottom: 0.3rem; }
+        h5 { color: #7f8c8d; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 0.5rem; }
         a { color: #1377ba; text-decoration: none; font-weight: 500; }
         a:hover { text-decoration: underline; color: #2178b1; }
-        .code-block { background: #282c34; color: #abb2bf; padding: 1.2rem; border-radius: 6px; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.9em; }
+        .code-block { background: #282c34; color: #abb2bf; padding: 1.2rem; border-radius: 6px; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.9em; white-space: pre; }
         .card { border: 1px solid #eaeaea; padding: 1.5rem; margin-top: 1.5rem; border-radius: 8px; background: #fafafa; }
-        ul { padding-left: 1.5rem; }
+        ul { padding-left: 1.5rem; list-style-type: square; }
         li { margin-bottom: 0.5rem; }
-        details { background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 0.5rem; padding: 0.5rem; }
-        .rpm-list { max-height: 280px; overflow-y: auto; margin-top: 0.5rem; padding-right: 0.5rem; }
-        summary { font-weight: 500; cursor: pointer; color: #2178b1; user-select: none; outline: none; }
-        .badge-latest { background: #02893b; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.6em; vertical-align: middle; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        details { background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 1rem; padding: 0.8rem; }
+        .rpm-list { max-height: 280px; overflow-y: auto; margin-top: 0.5rem; padding-right: 0.5rem; list-style-type: none; padding-left: 0; }
+        .rpm-list li { padding: 4px 0; border-bottom: 1px solid #f0f0f0; }
+        .rpm-list li:last-child { border-bottom: none; }
+        summary { font-weight: 600; cursor: pointer; color: #2178b1; user-select: none; outline: none; font-size: 1.1rem; }
+        .badge-latest { background: #02893b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.65em; vertical-align: middle; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         .badge-latest-sm { background: #177bbe; color: white; padding: 1px 5px; border-radius: 3px; font-size: 0.7em; margin-left: 6px; font-weight: bold; text-transform: uppercase; }
+        .packages-grid { display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 1rem; }
+        .package-col { flex: 1; min-width: 300px; }
         .footer { margin-top: 2rem; text-align: center; font-size: 0.85em; color: #6c797a; border-top: 1px solid #eee; padding-top: 1rem; }
+        .fingerprint { font-family: monospace; background: #eee; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+
         @media (prefers-color-scheme: dark) {
             body { background: #121212; color: #e0e0e0; }
             .container { background: #1e1e1e; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
             h1 { color: #ffffff; border-bottom-color: #333; }
             h2 { color: #eeeeee; }
             h3 { color: #64b5f6; }
+            h4 { color: #e0e0e0; border-bottom-color: #333; }
             a { color: #64b5f6; }
             a:hover { color: #90caf9; }
             .card { background: #252525; border-color: #333; }
             .code-block { background: #111; border: 1px solid #333; }
             details { background: #2a2a2a; border-color: #444; }
             summary { color: #90caf9; }
+            .rpm-list li { border-bottom-color: #333; }
             .footer { color: #888; border-top-color: #333; }
+            .fingerprint { background: #333; color: #64b5f6; }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
             body { padding: 0.5rem; margin: 0; }
             .container { padding: 1.2rem; }
             h1 { font-size: 1.5rem; }
             .code-block { padding: 0.8rem; font-size: 0.8em; }
+            .package-col { min-width: 100%; }
         }
     </style>
 </head>
@@ -52,8 +64,9 @@
 
         <div class="card">
             <h2>📦 Installation (RPM-based)</h2>
-            <p>Run the following commands to add the repository and install the package on Fedora or compatible RPM-based systems:</p>
-            <div class="code-block">sudo tee /etc/yum.repos.d/flatpak-automatic.repo &lt;&lt;'EOF'
+            <p>Add the repository and install the package on Fedora or compatible RPM-based systems:</p>
+            <div class="code-block"># Add the repository configuration
+sudo tee /etc/yum.repos.d/flatpak-automatic.repo &lt;&lt;'EOF'
 [flatpak-automatic]
 name=Flatpak Automatic - Stable
 baseurl=https://fedoraBee.github.io/flatpak-automatic/rpms/latest/stable/
@@ -69,16 +82,26 @@ gpgcheck=1
 gpgkey=https://fedoraBee.github.io/flatpak-automatic/gpg.key
 EOF
 
+# Update the package metadata cache
 sudo dnf makecache
+
+# Install the flatpak-automatic package
 sudo dnf install flatpak-automatic</div>
         </div>
 
         <div class="card">
             <h2>📦 Installation (Debian-based)</h2>
-            <p>Run the following commands to add the repository and install the package on Ubuntu, Debian, or compatible systems:</p>
-            <div class="code-block">curl -fsSL https://fedoraBee.github.io/flatpak-automatic/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
+            <p>Add the repository and install the package on Ubuntu, Debian, or compatible systems:</p>
+            <div class="code-block"># Download the GPG key and convert it to a format APT understands
+curl -fsSL https://fedoraBee.github.io/flatpak-automatic/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
+
+# Add the repository to your system's sources list
 echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://fedoraBee.github.io/flatpak-automatic/debs stable main" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
+
+# Update your local package index
 sudo apt-get update
+
+# Install the flatpak-automatic package
 sudo apt-get install flatpak-automatic</div>
         </div>
 
@@ -86,169 +109,195 @@ sudo apt-get install flatpak-automatic</div>
             <h2>🗂️ Available Versions & Channels</h2>
             
                 
-                    <h3>v1.4.8 <span class="badge-latest">LATEST</span></h3>
+                    <div class="version-group">
+                        <h3>v1.4 <span class="badge-latest">LATEST</span></h3>
 
-                    
-
-                    
-                    <h4>Debian Packages</h4>
-                    <ul>
-                    
-                        <details><summary>Channel: stable</summary><ul class="rpm-list">
                         
-                            
-                                <li><a href="debs/pool/main/f/flatpak-automatic/flatpak-automatic_1.4.8-1_all.deb">flatpak-automatic_1.4.8-1_all.deb</a>
-                                 <span class="badge-latest-sm">latest patch</span>
-                                </li>
-                            
+                            <details open>
+                                <summary>Channel: Testing</summary>
+                                <div class="packages-grid">
+                                    <div class="package-col">
+                                        <h4>RPM Packages</h4>
+                                        <ul class="rpm-list">
+                                        
+                                            
+                                                <li><a href="rpms/v1.4/testing/flatpak-automatic-1.4.8-1.fc43.noarch.rpm">flatpak-automatic-1.4.8-1.fc43.noarch.rpm</a>
+                                                 <span class="badge-latest-sm">latest patch</span>
+                                                </li>
+                                            
+                                                <li><a href="rpms/v1.4/testing/flatpak-automatic-1.4.6-1.fc43.noarch.rpm">flatpak-automatic-1.4.6-1.fc43.noarch.rpm</a>
+                                                
+                                                </li>
+                                            
+                                        
+                                        </ul>
+                                    </div>
+                                    <div class="package-col">
+                                        <h4>Debian Packages</h4>
+                                        <ul class="rpm-list">
+                                        
+                                            
+                                                <li><a href="debs/pool/main/f/flatpak-automatic/flatpak-automatic_1.4.8-1_all.deb">flatpak-automatic_1.4.8-1_all.deb</a>
+                                                 <span class="badge-latest-sm">latest patch</span>
+                                                </li>
+                                            
+                                                <li><a href="debs/pool/main/f/flatpak-automatic/flatpak-automatic_1.4.6-1_all.deb">flatpak-automatic_1.4.6-1_all.deb</a>
+                                                
+                                                </li>
+                                            
+                                        
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
                         
-                        </ul></details>
-                    
-                    </ul>
-                    
+                    </div>
                 
-                    <h3>v1.4.6 </h3>
+                    <div class="version-group">
+                        <h3>v1.3 </h3>
 
-                    
-
-                    
-                    <h4>Debian Packages</h4>
-                    <ul>
-                    
-                        <details><summary>Channel: stable</summary><ul class="rpm-list">
                         
-                            
-                                <li><a href="debs/pool/main/f/flatpak-automatic/flatpak-automatic_1.4.6-1_all.deb">flatpak-automatic_1.4.6-1_all.deb</a>
-                                
-                                </li>
-                            
+                            <details >
+                                <summary>Channel: Testing</summary>
+                                <div class="packages-grid">
+                                    <div class="package-col">
+                                        <h4>RPM Packages</h4>
+                                        <ul class="rpm-list">
+                                        
+                                            
+                                                <li><a href="rpms/v1.3/testing/flatpak-automatic-1.3.6-1.fc43.noarch.rpm">flatpak-automatic-1.3.6-1.fc43.noarch.rpm</a>
+                                                
+                                                </li>
+                                            
+                                                <li><a href="rpms/v1.3/testing/flatpak-automatic-1.3.5-1.fc43.noarch.rpm">flatpak-automatic-1.3.5-1.fc43.noarch.rpm</a>
+                                                
+                                                </li>
+                                            
+                                                <li><a href="rpms/v1.3/testing/flatpak-automatic-1.3.0-1.fc43.noarch.rpm">flatpak-automatic-1.3.0-1.fc43.noarch.rpm</a>
+                                                
+                                                </li>
+                                            
+                                        
+                                        </ul>
+                                    </div>
+                                    <div class="package-col">
+                                        <h4>Debian Packages</h4>
+                                        <ul class="rpm-list">
+                                        
+                                            <li><em>No DEBs available.</em></li>
+                                        
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
                         
-                        </ul></details>
-                    
-                    </ul>
-                    
+                    </div>
                 
-                    <h3>v1.4 </h3>
+                    <div class="version-group">
+                        <h3>v1.2 </h3>
 
-                    
-                    <h4>RPM Packages</h4>
-                    <ul>
-                    
-                        <details><summary>Channel: testing</summary><ul class="rpm-list">
                         
-                            
-                                <li><a href="rpms/v1.4/testing/flatpak-automatic-1.4.8-1.fc43.noarch.rpm">flatpak-automatic-1.4.8-1.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
-                                <li><a href="rpms/v1.4/testing/flatpak-automatic-1.4.6-1.fc43.noarch.rpm">flatpak-automatic-1.4.6-1.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
+                            <details >
+                                <summary>Channel: Testing</summary>
+                                <div class="packages-grid">
+                                    <div class="package-col">
+                                        <h4>RPM Packages</h4>
+                                        <ul class="rpm-list">
+                                        
+                                            
+                                                <li><a href="rpms/v1.2/testing/flatpak-automatic-1.2.9-3.fc43.noarch.rpm">flatpak-automatic-1.2.9-3.fc43.noarch.rpm</a>
+                                                
+                                                </li>
+                                            
+                                                <li><a href="rpms/v1.2/testing/flatpak-automatic-1.2.9-1.fc43.noarch.rpm">flatpak-automatic-1.2.9-1.fc43.noarch.rpm</a>
+                                                
+                                                </li>
+                                            
+                                        
+                                        </ul>
+                                    </div>
+                                    <div class="package-col">
+                                        <h4>Debian Packages</h4>
+                                        <ul class="rpm-list">
+                                        
+                                            <li><em>No DEBs available.</em></li>
+                                        
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
                         
-                        </ul></details>
-                    
-                    </ul>
-                    
-
-                    
+                    </div>
                 
-                    <h3>v1.3 </h3>
+                    <div class="version-group">
+                        <h3>v1.1 </h3>
 
-                    
-                    <h4>RPM Packages</h4>
-                    <ul>
-                    
-                        <details><summary>Channel: testing</summary><ul class="rpm-list">
                         
-                            
-                                <li><a href="rpms/v1.3/testing/flatpak-automatic-1.3.6-1.fc43.noarch.rpm">flatpak-automatic-1.3.6-1.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
-                                <li><a href="rpms/v1.3/testing/flatpak-automatic-1.3.5-1.fc43.noarch.rpm">flatpak-automatic-1.3.5-1.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
-                                <li><a href="rpms/v1.3/testing/flatpak-automatic-1.3.0-1.fc43.noarch.rpm">flatpak-automatic-1.3.0-1.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
+                            <details >
+                                <summary>Channel: Stable</summary>
+                                <div class="packages-grid">
+                                    <div class="package-col">
+                                        <h4>RPM Packages</h4>
+                                        <ul class="rpm-list">
+                                        
+                                            
+                                                <li><a href="rpms/v1.1/stable/flatpak-automatic-1.1.5-1.fc43.noarch.rpm">flatpak-automatic-1.1.5-1.fc43.noarch.rpm</a>
+                                                
+                                                </li>
+                                            
+                                        
+                                        </ul>
+                                    </div>
+                                    <div class="package-col">
+                                        <h4>Debian Packages</h4>
+                                        <ul class="rpm-list">
+                                        
+                                            <li><em>No DEBs available.</em></li>
+                                        
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
                         
-                        </ul></details>
-                    
-                    </ul>
-                    
-
-                    
-                
-                    <h3>v1.2 </h3>
-
-                    
-                    <h4>RPM Packages</h4>
-                    <ul>
-                    
-                        <details><summary>Channel: testing</summary><ul class="rpm-list">
+                            <details >
+                                <summary>Channel: Testing</summary>
+                                <div class="packages-grid">
+                                    <div class="package-col">
+                                        <h4>RPM Packages</h4>
+                                        <ul class="rpm-list">
+                                        
+                                            
+                                                <li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.8-1.fc43.noarch.rpm">flatpak-automatic-1.1.8-1.fc43.noarch.rpm</a>
+                                                
+                                                </li>
+                                            
+                                                <li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.7-1.fc43.noarch.rpm">flatpak-automatic-1.1.7-1.fc43.noarch.rpm</a>
+                                                
+                                                </li>
+                                            
+                                                <li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.6-1.fc43.noarch.rpm">flatpak-automatic-1.1.6-1.fc43.noarch.rpm</a>
+                                                
+                                                </li>
+                                            
+                                                <li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.1-1.fc43.noarch.rpm">flatpak-automatic-1.1.1-1.fc43.noarch.rpm</a>
+                                                
+                                                </li>
+                                            
+                                        
+                                        </ul>
+                                    </div>
+                                    <div class="package-col">
+                                        <h4>Debian Packages</h4>
+                                        <ul class="rpm-list">
+                                        
+                                            <li><em>No DEBs available.</em></li>
+                                        
+                                        </ul>
+                                    </div>
+                                </div>
+                            </details>
                         
-                            
-                                <li><a href="rpms/v1.2/testing/flatpak-automatic-1.2.9-3.fc43.noarch.rpm">flatpak-automatic-1.2.9-3.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
-                                <li><a href="rpms/v1.2/testing/flatpak-automatic-1.2.9-1.fc43.noarch.rpm">flatpak-automatic-1.2.9-1.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
-                        
-                        </ul></details>
-                    
-                    </ul>
-                    
-
-                    
-                
-                    <h3>v1.1 </h3>
-
-                    
-                    <h4>RPM Packages</h4>
-                    <ul>
-                    
-                        <details><summary>Channel: stable</summary><ul class="rpm-list">
-                        
-                            
-                                <li><a href="rpms/v1.1/stable/flatpak-automatic-1.1.5-1.fc43.noarch.rpm">flatpak-automatic-1.1.5-1.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
-                        
-                        </ul></details>
-                    
-                        <details><summary>Channel: testing</summary><ul class="rpm-list">
-                        
-                            
-                                <li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.8-1.fc43.noarch.rpm">flatpak-automatic-1.1.8-1.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
-                                <li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.7-1.fc43.noarch.rpm">flatpak-automatic-1.1.7-1.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
-                                <li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.6-1.fc43.noarch.rpm">flatpak-automatic-1.1.6-1.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
-                                <li><a href="rpms/v1.1/testing/flatpak-automatic-1.1.1-1.fc43.noarch.rpm">flatpak-automatic-1.1.1-1.fc43.noarch.rpm</a>
-                                
-                                </li>
-                            
-                        
-                        </ul></details>
-                    
-                    </ul>
-                    
-
-                    
+                    </div>
                 
             
         </div>
@@ -257,13 +306,14 @@ sudo apt-get install flatpak-automatic</div>
             <h2>🔗 Resources</h2>
             <ul>
                 <li><a href="gpg.key">Download Repository GPG Key (gpg.key)</a></li>
+                <li><strong>GPG Fingerprint:</strong> <span class="fingerprint">8D12 D614 9E1E 5E83 29DD E6FD 9B99 A03F 6577 BF59</span></li>
                 <li><a href="https://github.com/fedoraBee/flatpak-automatic">GitHub Source Code &amp; Documentation</a></li>
                 <li><a href="https://github.com/fedoraBee/flatpak-automatic/issues">Report an Issue</a></li>
             </ul>
         </div>
 
         <div class="footer">
-            <p>Generated on <strong>2026-04-25 14:25:36 UTC</strong> | Commit: <a href="https://github.com/fedoraBee/flatpak-automatic/commit/37c03d2ea1a8569dc8ceb0a01cf0b8a143a6e1ac">37c03d2</a> | Run ID: 24932960361</p>
+            <p>Generated on <strong>2026-04-25 15:47:23 UTC</strong> | Commit: <a href="https://github.com/fedoraBee/flatpak-automatic/commit/ed18639c86c949d30c1b44cda7502b5b131cc54d">ed18639</a> | Run ID: 24934515674</p>
         </div>
     </div>
 </body>
