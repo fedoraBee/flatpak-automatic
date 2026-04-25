@@ -63,6 +63,21 @@ class TestSnapperDBusIntegration(dbusmock.DBusTestCase):  # type: ignore
         self.assertIn("timeline", flat_args)
         self.assertIn("Integration Test Description", flat_args)
 
+    def test_snapper_ipc_graceful_degradation(self) -> None:
+        # Re-map the mock interface to force an exception
+        self.dbusmock.AddMethod(
+            "org.opensuse.Snapper",
+            "CreateSingleSnapshot",
+            "sssa{ss}",
+            "i",
+            "raise Exception('Mocked IPC Failure')",
+        )
+        manager = fa.SnapperManager()
+        snapshot_id = manager.create_timeline_snapshot("Error Test Description")
+
+        # The manager must trap the exception and safely return -1
+        self.assertEqual(snapshot_id, -1)
+
 
 if __name__ == "__main__":
     unittest.main()
