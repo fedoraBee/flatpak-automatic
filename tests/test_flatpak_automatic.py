@@ -41,6 +41,17 @@ class TestFlatpakUpdater:
         updater = fa.FlatpakUpdater()
         assert updater.apply_updates() is True
 
+    @patch("subprocess.run")
+    def test_apply_updates_failure(self, mock_run: Any) -> None:
+        mock_run.return_value = MagicMock(
+            stdout="Update failed",
+            stderr="Error: GPG verification failed",
+            returncode=1,
+        )
+        updater = fa.FlatpakUpdater()
+        assert updater.apply_updates() is False
+        assert "Error: GPG verification failed" in updater.update_log
+
 
 class TestSnapperManager:
     def test_create_timeline_snapshot_success(self) -> None:
