@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.7] - 2026-04-25
+
+### Changed
+
+- **Core**: Migrated daemon to use strict Python type hinting (`mypy`
+  compliant).
+- **Core**: Transitioned standard output prints to the native `logging` module
+  for better `journalctl` integration.
+- **CI/CD**: Added integration tests using `dbusmock` to simulate system-bus
+  message passing.
+
 ## [1.4.6] - 2026-04-24
 
 ### Added
