@@ -101,7 +101,8 @@ format:
 
 Where:
 
-- `<type>`: `feat` | `fix` | `chore` | `refactor` | `docs` | `ci`
+- `<type>`: `feat` | `fix` | `chore` | `refactor` | `docs` | `ci` | `style` |
+  `test` | `revert` | `perf` | `build`
 - `<version>`: Target release version (e.g., `v2.0.0`)
 - `<short-description>`: Kebab-case description (e.g., `update-docs`)
 
