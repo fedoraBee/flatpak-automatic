@@ -17,14 +17,16 @@ spec.loader.exec_module(fa)
 class TestSnapperDBusIntegration(dbusmock.DBusTestCase):  # type: ignore
     @classmethod
     def setUpClass(cls) -> None:
+        # Start the local CI system bus
         cls.start_system_bus()
 
     def setUp(self) -> None:
-        # Spawn a generic D-Bus server rather than attempting to load a non-existent template
+        # Spawn a generic D-Bus server explicitly on the SYSTEM bus
         self.p_mock, self.obj_snapper = self.spawn_server(
             "org.opensuse.Snapper",
             "/org/opensuse/Snapper",
             "org.opensuse.Snapper",
+            system_bus=True,
             stdout=subprocess.PIPE,
         )
 
