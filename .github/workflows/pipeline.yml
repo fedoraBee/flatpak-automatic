@@ -67,6 +67,10 @@ jobs:
         uses: astral-sh/ruff-action@v3
         with:
           args: 'format --check scripts/ tests/'
+      - name: Run Mypy Type Check
+        run: |
+          pipx install mypy
+          mypy --strict scripts/ tests/
 
   lint-actions:
     name: Lint GitHub Workflows
@@ -380,3 +384,17 @@ jobs:
           files: |
             rpms/*.rpm
             debs/*.deb
+
+  integration-tests:
+    name: System Bus IPC Integration
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    needs: lint-python
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install System Dependencies
+        run: |
+          dnf install -y python3 python3-pytest python3-dbus python3-dbusmock dbus-daemon flatpak
+      - name: Run DBus Integration Tests
+        run: |
+          python3 -m pytest tests/integration_test_dbus.py
