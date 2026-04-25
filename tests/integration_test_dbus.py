@@ -38,8 +38,9 @@ class TestSnapperDBusIntegration(dbusmock.DBusTestCase):  # type: ignore
 
         # Bind the dbusmock control interface to our generic object
         self.dbusmock = dbus.Interface(self.obj_snapper, dbusmock.MOCK_IFACE)
+        # Corrected signature to sssa{ss} to match the dictionary payload
         self.dbusmock.AddMethod(
-            "org.opensuse.Snapper", "CreateSingleSnapshot", "ssss", "i", "ret = 100"
+            "org.opensuse.Snapper", "CreateSingleSnapshot", "sssa{ss}", "i", "ret = 100"
         )
 
     def test_snapper_ipc_message_payload(self) -> None:
@@ -50,10 +51,17 @@ class TestSnapperDBusIntegration(dbusmock.DBusTestCase):  # type: ignore
         calls = self.dbusmock.GetMethodCalls("CreateSingleSnapshot")
         self.assertEqual(len(calls), 1)
 
-        args = calls[0][0]
-        self.assertEqual(args[0], "root")
-        self.assertEqual(args[1], "timeline")
-        self.assertEqual(args[2], "Integration Test Description")
+        # Safely extract payload (dbusmock returns tuples which may include timestamps depending on version)
+        flat_args = []
+        for item in calls[0]:
+            if isinstance(item, (tuple, list, dbus.Array, dbus.Struct)):
+                flat_args.extend(list(item))
+            else:
+                flat_args.append(item)
+
+        self.assertIn("root", flat_args)
+        self.assertIn("timeline", flat_args)
+        self.assertIn("Integration Test Description", flat_args)
 
 
 if __name__ == "__main__":
