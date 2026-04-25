@@ -11,7 +11,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - **CI/CD**: Expanded GitOps branch prefixes to include `style`, `test`,
-  `revert`, `perf`, and `build`.
+  `revert`, `perf`, `build`, `format`, `deps`, and `sec`.
+- **CI/CD**: Hardened CI pipeline by integrating `Bandit` for automated Python
+  security linting in pre-commit hooks.
+- **Tests**: Expanded core integration tests to verify graceful error
+  degradation during D-Bus communication failures.
 
 ### Changed
 
@@ -21,6 +25,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   index page.
 - **UI/UX**: Injected mobile-responsive CSS breakpoints to decrease index
   template padding on smaller viewports.
+
+### Fixed
+
+- **Tests**: Resolved intermittent assertion failures in D-Bus integration tests
+  by implementing explicit `dbusmock` process teardown.
 
 ## [1.4.7] - 2026-04-25
 
