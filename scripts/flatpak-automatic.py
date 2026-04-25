@@ -5,10 +5,32 @@ import sys
 import subprocess
 import socket
 import logging
+import json
+from datetime import datetime, timezone
 from typing import Optional, Dict
 
+
+class JSONFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        log_record = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "level": record.levelname,
+            "message": record.getMessage(),
+            "logger": record.name,
+        }
+        if record.exc_info:
+            log_record["exception"] = self.formatException(record.exc_info)
+        return json.dumps(log_record)
+
+
 # Configure native Systemd logging (syslog/journald ready)
-logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+handler.setFormatter(JSONFormatter())
+if logger.hasHandlers():
+    logger.handlers.clear()
+logger.addHandler(handler)
 
 try:
     import dbus  # type: ignore
