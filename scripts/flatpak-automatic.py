@@ -11,7 +11,7 @@ from typing import Optional, Dict
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 try:
-    import dbus
+    import dbus  # type: ignore
 
     DBUS_AVAILABLE = True
 except ImportError:

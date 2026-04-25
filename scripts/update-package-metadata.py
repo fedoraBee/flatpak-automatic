@@ -5,9 +5,10 @@ import os
 from datetime import datetime
 import subprocess
 import argparse
+from typing import Optional
 
 
-def get_git_info():
+def get_git_info() -> str:
     """Fetches author info from git, falling back to a default."""
     try:
         name = subprocess.check_output(["git", "config", "user.name"]).decode().strip()
@@ -19,13 +20,13 @@ def get_git_info():
         return "fedoraBee <9395414+fedoraBee@users.noreply.github.com>"
 
 
-def format_date(date_str):
+def format_date(date_str: str) -> str:
     """Converts YYYY-MM-DD from Markdown to RPM Day Mon DD YYYY."""
     dt = datetime.strptime(date_str, "%Y-%m-%d")
     return dt.strftime("%a %b %d %Y")
 
 
-def get_version_from_makefile(makefile="Makefile"):
+def get_version_from_makefile(makefile: str = "Makefile") -> Optional[str]:
     """Extracts the VERSION variable from a Makefile as a fallback."""
     try:
         with open(makefile, "r") as f:
@@ -38,7 +39,9 @@ def get_version_from_makefile(makefile="Makefile"):
     return None
 
 
-def generate_rpm_changelog(changelog_in, current_epoch, current_version, current_rel):
+def generate_rpm_changelog(
+    changelog_in: str, current_epoch: str, current_version: str, current_rel: str
+) -> str:
     """Parses CHANGELOG.md and formats it for RPM."""
     try:
         with open(changelog_in, "r") as f:
@@ -96,7 +99,14 @@ def generate_rpm_changelog(changelog_in, current_epoch, current_version, current
     return "\n".join(rpm_changelog)
 
 
-def build_spec_file(spec_in, spec_out, epoch, version, rel_num, changelog_content):
+def build_spec_file(
+    spec_in: str,
+    spec_out: str,
+    epoch: str,
+    version: str,
+    rel_num: str,
+    changelog_content: str,
+) -> None:
     """Injects EVR variables into the spec template and appends the changelog."""
     try:
         with open(spec_in, "r") as f:
@@ -124,7 +134,7 @@ def build_spec_file(spec_in, spec_out, epoch, version, rel_num, changelog_conten
     print(f"Successfully generated complete spec at: {spec_out}")
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Compile an RPM .spec file with EVR injection and Markdown changelog parsing."
     )
