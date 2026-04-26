@@ -13,8 +13,8 @@
   <text x="50%" y="10" class="ascii" text-anchor="middle" xml:space="preserve">
     <tspan x="50%" dy="1.2em" class="c1">  ___ _       _               _    </tspan>
     <tspan x="50%" dy="1.2em" class="c2"> | __| |__ _ | |_ _ __  __ _ | |__ </tspan>
-    <tspan x="50%" dy="1.2em" class="c3"> | _|| / _` ||  _| '_ \/ _` || / / </tspan>
-    <tspan x="50%" dy="1.2em" class="c4"> |_| |_\__,_|\__|  .__/\__,_||_\_\ </tspan>
+    <tspan x="50%" dy="1.2em" class="c3"> | _|| / _` || ._| '_ \/ _` || / / </tspan>
+    <tspan x="50%" dy="1.2em" class="c4"> |_| |_\__,_|\__|| .__/\__,_||_\_\ </tspan>
     <tspan x="50%" dy="1.2em" class="c4">          |_|<tspan class="c-auto"> AUTOMATIC</tspan></tspan>
   </text>
 </svg>
