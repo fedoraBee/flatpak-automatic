@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.4.10
+# Version: 1.4.11
 import os
 import sys
 import subprocess
@@ -198,6 +198,15 @@ def load_sysconfig() -> Dict[str, str]:
 
 
 def main() -> None:
+    if sys.stdout.isatty():
+        print(r"""
+  ___ _      _               _          _       _                        _   _
+ | __| |__ _| |_ _ __  __ _ | |__      /_\ _  _| |_ ___ _ __  __ _| |_(_)__
+ | _|| / _` |  _| '_ \/ _` || / /     / _ \ || |  _/ _ \ '  \/ _` |  _| / _|
+ |_| |_\__,_|\__| .__/\__,_||_\_\    /_/ \_\_,_|\__\___/_|_|_\__,_|\__|_\__|
+                |_|
+        """)
+
     config: Dict[str, str] = load_sysconfig()
 
     if config.get("FLATPAK_AUTO_UPDATE", "true").lower() != "true":

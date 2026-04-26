@@ -1,5 +1,7 @@
 # Flatpak Automatic
 
+![Flatpak Automatic Logo](assets/logo.svg)
+
 [![Pipeline](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml)
 
 Flatpak Automatic provides a secure, configurable, and systemd-native automation
