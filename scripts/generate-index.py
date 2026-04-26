@@ -3,7 +3,7 @@ import os
 import datetime
 import re
 from typing import Optional, List, Dict, Any, Set
-from jinja2 import Environment, FileSystemLoader  # type: ignore
+from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
 
 
 def get_version_info(filename: str) -> Optional[str]:
@@ -113,7 +113,10 @@ def main() -> None:
     if versions:
         versions[0]["is_first"] = True
 
-    env = Environment(loader=FileSystemLoader("docs/templates"))
+    env = Environment(
+        loader=FileSystemLoader("docs/templates"),
+        autoescape=select_autoescape(["html", "htm", "xml"]),
+    )
     template = env.get_template("index.html.j2")
     github_repo = os.environ.get("GITHUB_REPOSITORY", "fedoraBee/flatpak-automatic")
     build_sha = os.environ.get("GITHUB_SHA", "unknown")
