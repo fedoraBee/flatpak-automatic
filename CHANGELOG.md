@@ -6,6 +6,14 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.15] - 2026-04-26
+
+### Fixed
+
+- **UX/UI**: Fixed a Markdown rendering bug where invisible ANSI escape
+  characters (`\x1b`) stranded by previous string replacements caused the SVG
+  header HTML block to render as plain text in `README.md`.
+
 ## [1.4.14] - 2026-04-26
 
 ### Fixed

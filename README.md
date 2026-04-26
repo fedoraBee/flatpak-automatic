@@ -1,8 +1,6 @@
-```ansi
-<div align="center">
+<div align="center">
   <img src="assets/logo.svg" alt="Flatpak Automatic CLI Banner" width="450">
 </div>
-```
 
 [![Pipeline](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml)
 
