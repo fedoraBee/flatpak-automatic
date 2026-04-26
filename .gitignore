@@ -3,6 +3,7 @@
 .vscode/
 .gemini/
 .geminiignore
+GEM.md
 GEMINI.md
 SUGGESTIONS.md
 .ruff_cache/
