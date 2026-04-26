@@ -25,6 +25,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - **UX/UI**: Resolved WCAG 2.1 AA contrast violations in the web repository
   index and CLI banner by adopting darker, accessible gradient stops.
+- **Style**: Fixed svg logo intention mismatch.
 
 ## [1.4.16] - 2026-04-26
 
