@@ -1,3 +1,8 @@
+# --- [ Universal Notifications (Apprise) ] ---
+# Comma-separated list of Apprise URLs (e.g., slack://..., discord://..., mailto://...)
+# Requires the python3-apprise package to be installed.
+FLATPAK_APPRISE_URLS=""
+
 # ==============================================================================
 # Flatpak Automatic - Configuration File
 # Location: /etc/sysconfig/flatpak-automatic
@@ -19,8 +24,9 @@ EMAIL_FROM_DISPLAY="Fedora Auto-Updater"
 # --- [ Dynamic Email Subjects ] ---
 # Use \$UPDATE_COUNT for package count and \$(hostname) for machine name.
 # Note: Variables must be escaped with a backslash (\) to be evaluated by the script.
-EMAIL_SUBJECT_SUCCESS="[$(hostname)] flatpak-automatic: \$UPDATE_COUNT new upgrades have been installed."
-EMAIL_SUBJECT_FAILURE="[$(hostname)] flatpak-automatic: FAILED"
+EMAIL_SUBJECT_SUCCESS="[$(hostname)] flatpak-automatic: \$UPDATE_COUNT new
+upgrades have been installed." EMAIL_SUBJECT_FAILURE="[$(hostname)]
+flatpak-automatic: FAILED"
 
 # --- [ Snapshot Settings ] ---
 # Set to "yes" to create Snapper pre/post snapshots, "no" to disable.
@@ -41,4 +47,4 @@ SNAPPER_DESC_POST="flatpak-automatic-post"
 # SNAPPER_PRE_CMD="snapper -c \"\$SNAPPER_CONFIG\" create --type pre --description \"\$SNAPPER_DESC_PRE\" --cleanup-algorithm number --print-number"
 
 # ==============================================================================
-# Version: 1.4.8 | Built for Fedora & Universal RPM Systems
+# Version: 1.4.9 | Built for Fedora & Universal RPM Systems

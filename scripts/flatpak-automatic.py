@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-# Version: 1.4.8
+# Version: 1.4.9
 import os
 import sys
 import subprocess
 import socket
 import logging
 import json
+import shlex
 from datetime import datetime, timezone
 from typing import Optional, Dict
 
@@ -40,6 +41,16 @@ except ImportError:
     DBUS_AVAILABLE = False
     logging.warning(
         "python3-dbus is not installed. Snapper snapshots will be bypassed."
+    )
+
+try:
+    import apprise  # type: ignore
+
+    APPRISE_AVAILABLE = True
+except ImportError:
+    APPRISE_AVAILABLE = False
+    logging.warning(
+        "apprise is not installed. Universal notifications will be bypassed."
     )
 
 
@@ -102,6 +113,28 @@ class FlatpakUpdater:
         return result.returncode == 0
 
 
+class AppriseNotifier:
+    def __init__(self, urls: str) -> None:
+        self.urls = [url.strip() for url in urls.split(",") if url.strip()]
+
+    def send_notification(self, title: str, body: str) -> None:
+        if not APPRISE_AVAILABLE or not self.urls:
+            logging.warning(
+                "Skipping Apprise notification: Apprise not available or no URLs configured."
+            )
+            return
+        try:
+            apobj = apprise.Apprise()
+            for url in self.urls:
+                apobj.add(url)
+            apobj.notify(body=body, title=title)
+            logging.info(
+                f"Apprise notification dispatched to {len(self.urls)} endpoints."
+            )
+        except Exception as e:
+            logging.error(f"Failed to dispatch Apprise notification: {e}")
+
+
 class MailNotifier:
     def __init__(self, to_address: str, from_address: str) -> None:
         self.to_address: str = to_address
@@ -150,9 +183,16 @@ def load_sysconfig() -> Dict[str, str]:
         if os.path.exists(path):
             with open(path, "r") as f:
                 for line in f:
-                    if line.strip() and not line.startswith("#") and "=" in line:
-                        k, v = line.strip().split("=", 1)
-                        config[k] = v.strip("\"'")
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        k, v = line.split("=", 1)
+                        k = k.replace("export ", "").strip()
+                        v = v.strip()
+                        try:
+                            parsed = shlex.split(v)
+                            config[k] = parsed[0] if parsed else ""
+                        except ValueError:
+                            config[k] = v.strip("\"'")
             break
     return config
 
@@ -198,6 +238,14 @@ def main() -> None:
             f"{subject_prefix} Flatpak Automatic Updates - {socket.gethostname()}",
             updater.update_log,
         )
+
+        apprise_urls = config.get("FLATPAK_APPRISE_URLS", "")
+        if apprise_urls:
+            apprise_notifier = AppriseNotifier(apprise_urls)
+            apprise_notifier.send_notification(
+                f"{subject_prefix} Flatpak Automatic Updates - {socket.gethostname()}",
+                updater.update_log,
+            )
 
     sys.exit(0 if success else 1)
 

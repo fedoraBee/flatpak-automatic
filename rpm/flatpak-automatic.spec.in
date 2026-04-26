@@ -18,6 +18,7 @@ Requires:       python3-dbus
 Requires:       snapper
 Requires:       s-nail
 Requires:       systemd
+Recommends:       python3-apprise
 
 %description
 Automates Flatpak updates with snapshots taken before and after the update
