@@ -7,8 +7,8 @@ from jinja2 import Environment, FileSystemLoader
 
 def get_version_info(filename):
     """Extract full version string from RPM or DEB filename."""
-    # RPM: flatpak-automatic-1.4.8-1.noarch.rpm -> 1.4.8
-    # DEB: flatpak-automatic_1.4.8_all.deb -> 1.4.8
+    # RPM: flatpak-automatic-1.4.9-1.noarch.rpm -> 1.4.9
+    # DEB: flatpak-automatic_1.4.9_all.deb -> 1.4.9
     m = re.search(r"[-_](\d+\.\d+\.\d+)", filename)
     return m.group(1) if m else None
 

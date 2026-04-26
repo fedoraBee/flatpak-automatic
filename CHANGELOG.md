@@ -6,6 +6,19 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.9] - 2026-04-26
+
+### Added
+
+- **Notifications**: Integrated the `apprise` library to support universal
+  notifications (Slack, Discord, Telegram, Matrix, etc.) via the
+  `FLATPAK_APPRISE_URLS` configuration variable.
+
+### Changed
+
+- **Core**: Refactored `load_sysconfig()` to use Python's native `shlex` module
+  for robust, quote-safe environment variable parsing.
+
 ## [1.4.8] - 2026-04-25
 
 ### Added
@@ -16,6 +29,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   security linting in pre-commit hooks.
 - **Tests**: Expanded core integration tests to verify graceful error
   degradation during D-Bus communication failures.
+- **CI/CD**: Integrated `Bandit` SAST scanning into the pipeline to continuously
+  monitor for insecure subprocess execution and Python vulnerabilities.
+- **Tests**: Expanded Pytest coverage to include the core execution "Happy Path"
+  using mocked `dbus` and `subprocess` interfaces.
 
 ### Changed
 
@@ -23,13 +40,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   native `JSONFormatter` for improved SIEM observability.
 - **CI/QA**: Resolved `mypy` strict type hinting violations in custom logging
   formatter.
-
 - **Documentation**: Refactored `README.md` into a streamlined Quick Start
   Guide.
 - **UI/UX**: Delegated DNF/APT repository configuration logic to the hosted
   index page.
 - **UI/UX**: Injected mobile-responsive CSS breakpoints to decrease index
   template padding on smaller viewports.
+- **CI/CD**: Tuned SAST thresholds to filter expected Low-severity subprocess
+  warnings inherent to the wrapper script.
+- **QA**: Renamed metadata tests to ensure 1:1 parity with the
+  `update-package-metadata.py` script.
+- **QA**: Resolved strict `mypy` typing violations in the expanded test suite. -
 
 ### Fixed
 
