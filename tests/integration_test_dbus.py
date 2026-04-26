@@ -6,7 +6,7 @@ import dbusmock  # type: ignore
 import importlib.util
 
 spec = importlib.util.spec_from_file_location(
-    "flatpak_automatic", "scripts/flatpak-automatic.py"
+    "flatpak_automatic", "src/flatpak-automatic.py"
 )
 assert spec is not None
 assert spec.loader is not None
