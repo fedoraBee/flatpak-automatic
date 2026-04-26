@@ -123,5 +123,5 @@ Before cutting a new release, ensure the following:
 - [ ] `tbump <version> --only-patch` has been run and committed in a PR.
 - [ ] Ensure local `main` branch is synced with `origin/main`.
 - [ ] Tag the release candidate (e.g.,
-      `git tag -a v1.5.0-rc.1 -m "Release Candidate 1"`).
+      `git tag -a v1.5.0-rc-1 -m "Release Candidate 1"`).
 - [ ] Push the tag to trigger the automated GitHub Actions release workflow.
