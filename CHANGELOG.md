@@ -6,6 +6,23 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.9] - 2026-04-26
+
+### Added
+
+- **CI/CD**: Integrated `Bandit` SAST scanning into the pipeline to continuously
+  monitor for insecure subprocess execution and Python vulnerabilities.
+- **Tests**: Expanded Pytest coverage to include the core execution "Happy Path"
+  using mocked `dbus` and `subprocess` interfaces.
+
+### Changed
+
+- **CI/CD**: Tuned SAST thresholds to filter expected Low-severity subprocess
+  warnings inherent to the wrapper script.
+- **QA**: Renamed metadata tests to ensure 1:1 parity with the
+  `update-package-metadata.py` script.
+- **QA**: Resolved strict `mypy` typing violations in the expanded test suite. -
+
 ## [1.4.8] - 2026-04-25
 
 ### Added
