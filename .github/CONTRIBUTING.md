@@ -1,8 +1,14 @@
-# Contributing to flatpak-automatic
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable-next-line MD033 MD041-->
+<div align="center"><img src="../assets/logo.svg" alt="Flatpak Automatic CLI
+Banner" width="450"></div>
+<!-- prettier-ignore-end -->
 
-Thank you for contributing! This project aims to provide a secure, configurable,
-and systemd-native automation wrapper for Flatpak updates with Snapper
-integration.
+## 🎉 Contributing
+
+Thank you for contributing to **Flatpak Automatic**! This project aims to
+provide a secure, configurable, and systemd-native automation wrapper for
+Flatpak updates with Snapper integration.
 
 ## 📜 Code of Conduct
 
@@ -40,7 +46,7 @@ pre-commit run --all-files
 
 ### 3. Project Structure & Standards
 
-- **Scripts**: The main automation logic is in `scripts/flatpak-automatic.sh`.
+- **Scripts**: The main automation logic is in `scripts/flatpak-automatic.py`.
 - **Systemd**: Units are located in `systemd/`.
 - **Configuration**: Default environment variables are in
   `sysconfig/flatpak-automatic`.
@@ -81,7 +87,7 @@ provided `make` targets:
   is updated in:
   - `Makefile` (`VERSION` variable)
   - `rpm/flatpak-automatic.spec` (`Version` field - automatically updated by
-    `scripts/update-rpm-metadata.py` from `Makefile`)
+    `scripts/update-package-metadata.py` from `Makefile`)
   - `CHANGELOG.md` (New version heading)
 - **CHANGELOG.md**: Add a brief note under the current version. This file is the
   single source of truth for release notes. The RPM changelog is automatically

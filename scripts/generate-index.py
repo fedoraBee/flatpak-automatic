@@ -110,7 +110,7 @@ def main():
     if versions:
         versions[0]["is_first"] = True
 
-    env = Environment(loader=FileSystemLoader(".github/templates"))
+    env = Environment(loader=FileSystemLoader("docs/templates"))
     template = env.get_template("index.html.j2")
     github_repo = os.environ.get("GITHUB_REPOSITORY", "fedoraBee/flatpak-automatic")
     build_sha = os.environ.get("GITHUB_SHA", "unknown")

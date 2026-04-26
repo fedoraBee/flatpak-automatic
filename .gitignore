@@ -19,6 +19,7 @@ debian/*.log
 debian/*.substvars
 debian/debhelper-build-stamp
 debian/changelog
-**/__pycache__/
+__pycache__/
+*.pyc
 **/__init__.py
 .pytest_cache/

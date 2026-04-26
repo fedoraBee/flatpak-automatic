@@ -1,7 +1,13 @@
-# Maintainer Guide
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable-next-line MD033 MD041-->
+<div align="center"><img src="assets/logo.svg" alt="Flatpak Automatic CLI
+Banner" width="450"></div>
+<!-- prettier-ignore-end -->
+
+# Maintainers' Guide
 
 This document outlines the processes, versioning workflows, and checklists for
-project maintainers.
+project maintainers of **Flatpak Automatic**.
 
 ## GPG Signing
 

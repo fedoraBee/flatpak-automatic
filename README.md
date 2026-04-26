@@ -1,11 +1,13 @@
-<div align="center">
-  <img src="assets/logo.svg" alt="Flatpak Automatic CLI Banner" width="450">
-</div>
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable-next-line MD033 MD041-->
+<div align="center"><img src="assets/logo.svg" alt="Flatpak Automatic CLI
+Banner" width="450"></div>
+<!-- prettier-ignore-end -->
 
-[![Pipeline](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml)
+# [![Pipeline](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml)
 
-Flatpak Automatic provides a secure, configurable, and systemd-native automation
-wrapper for Flatpak updates.
+**Flatpak Automatic** provides a secure, configurable, and systemd-native
+automation wrapper for Flatpak updates.
 
 It integrates with Snapper to provide atomic-like pre/post update snapshots and
 uses systemd timers for reliable, scheduled execution on Fedora and other
@@ -165,3 +167,8 @@ project. Use at your own discretion.
 ## 🔗 Resources
 
 - 🌐 Project Repo: <https://fedorabee.github.io/flatpak-automatic/>
+- 📖 [Technical Manifest](AGENTS.md)
+- 🛠 [Development Guide](docs/development.md)
+- 🤝 [Contribution Guidelines](.github/CONTRIBUTING.md)
+- 📜 [Changelog](CHANGELOG.md)
+- 🧑‍💻 [Maintainers' Guide](MAINTAINERS.md)
