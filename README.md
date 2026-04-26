@@ -1,9 +1,7 @@
 ```ansi
-[38;2;0;255;255m  ___ _       _               _
- [38;2;85;170;255m | __| |__ _ | |_ _ __  __ _ | |__
- [38;2;170;85;255m | _|| / _` ||  _| '_ \/ _` || / /
- [38;2;255;0;255m |_| |_\__,_|\__| .__/\__,_||_\_\
-                |_|[0m AUTOMATIC
+<div align="center">
+  <img src="assets/logo.svg" alt="Flatpak Automatic CLI Banner" width="450">
+</div>
 ```
 
 [![Pipeline](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml)
