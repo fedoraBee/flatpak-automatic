@@ -6,6 +6,16 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.12] - 2026-04-26
+
+### Changed
+
+- **UX/UI**: Refactored CLI execution banner to use a compact, multicolored ANSI
+  gradient.
+- **UX/UI**: Redesigned SVG logo for strict inline typography alignment.
+- **UX/UI**: Updated web index and README.md layouts to use mobile-friendly
+  inline responsive styling.
+
 ## [1.4.11] - 2026-04-26
 
 ### Added
