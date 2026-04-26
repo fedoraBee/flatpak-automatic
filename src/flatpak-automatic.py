@@ -201,11 +201,11 @@ def main() -> None:
     if sys.stdout.isatty():
         # Gradient banner: Cyan -> Deep Blue -> Magenta
         print(
-            "\033[38;2;0;155;155m  ___ _       _               _    \n"
+            "\033[1m\033[38;2;0;155;155m  ___ _       _               _    \n"
             "\033[38;2;42;123;202m | __| |__ _ | |_ _ __  __ _ | |__ \n"
             "\033[38;2;138;58;185m | _|| / _` || ._| '_ \\/ _` || / / \n"
             "\033[38;2;193;14;140m |_| |_\\__,_|\\__|| .__/\\__,_||_\\_\\\n"
-            "                 |_|\033[0m AUTOMATIC\n"
+            "                 |_| AUTOMATIC\033[0m\n"
         )
 
     config: Dict[str, str] = load_sysconfig()
