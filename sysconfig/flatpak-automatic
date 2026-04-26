@@ -41,4 +41,4 @@ SNAPPER_DESC_POST="flatpak-automatic-post"
 # SNAPPER_PRE_CMD="snapper -c \"\$SNAPPER_CONFIG\" create --type pre --description \"\$SNAPPER_DESC_PRE\" --cleanup-algorithm number --print-number"
 
 # ==============================================================================
-# Version: 1.4.8 | Built for Fedora & Universal RPM Systems
+# Version: 1.4.9 | Built for Fedora & Universal RPM Systems
