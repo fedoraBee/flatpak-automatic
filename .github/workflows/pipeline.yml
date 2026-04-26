@@ -74,7 +74,7 @@ jobs:
       - name: Run Bandit SAST
         run: |
           pipx install bandit
-          bandit -r scripts/ tests/ -c .bandit.yml
+          bandit -ll -i -r scripts/ tests/ -c .bandit.yml
 
   lint-actions:
     name: Lint GitHub Workflows
