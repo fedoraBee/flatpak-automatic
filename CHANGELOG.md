@@ -6,6 +6,18 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.10]
+
+### Added
+
+- **Documentation**: Created `MAINTAINERS.md` to centralize release checklists,
+  `tbump` versioning procedures, and GPG signing setup.
+
+### Changed
+
+- **Documentation**: Extracted maintainer-specific sections from
+  `DEVELOPMENT.md` to enforce strict role-based documentation architecture.
+
 ## [1.4.9] - 2026-04-26
 
 ### Added
