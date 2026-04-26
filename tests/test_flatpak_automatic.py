@@ -1,4 +1,4 @@
-import pytest
+import pytest  # type: ignore
 import sys
 import importlib.util
 import logging
@@ -142,7 +142,9 @@ class TestMainIntegration:
     @patch.object(fa, "FlatpakUpdater")
     @patch.object(fa, "SnapperManager")
     @patch.object(fa, "MailNotifier")
-    def test_main_updates_found(self, mock_mail, mock_snapper, mock_updater, mock_load):
+    def test_main_updates_found(
+        self, mock_mail: Any, mock_snapper: Any, mock_updater: Any, mock_load: Any
+    ) -> None:
         mock_load.return_value = {
             "FLATPAK_AUTO_UPDATE": "true",
             "FLATPAK_CREATE_SNAPSHOT": "true",
