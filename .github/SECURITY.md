@@ -36,8 +36,8 @@ Please use the **GitHub Private Vulnerability Reporting** feature:
 ### Reporting Format
 
 To help us investigate quickly, please follow the structure in our
-[Security Advisory Template](https://github.com/fedoraBee/flatpak-automatic/blob/main/.github/SECURITY_ADVISORY_TEMPLATE.md).
-Specifically, include:
+[Security Advisory Template](ISSUE_TEMPLATE/security_report.md). Specifically,
+include:
 
 - **Impact:** Technical description of the risk.
 - **Environment:** Details from your `.version_manifest`.

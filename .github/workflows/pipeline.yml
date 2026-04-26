@@ -248,7 +248,7 @@ jobs:
             test -f /lib/systemd/system/flatpak-automatic.timer || test -f /usr/lib/systemd/system/flatpak-automatic.timer
             test -f /lib/systemd/system/flatpak-automatic.service || test -f /usr/lib/systemd/system/flatpak-automatic.service
           else
-            test -f /etc/config/sysconfig/flatpak-automatic
+            test -f /etc/sysconfig/flatpak-automatic
             test -f /usr/lib/systemd/system/flatpak-automatic.timer
             test -f /usr/lib/systemd/system/flatpak-automatic.service
           fi
