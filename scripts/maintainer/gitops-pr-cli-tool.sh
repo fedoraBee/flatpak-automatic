@@ -217,8 +217,8 @@ echo "✅ Debian packaging skeleton is present"
 # -----------------------------
 # Validate Python Script Presence
 # -----------------------------
-if [[ ! -f "scripts/update-package-metadata.py" ]]; then
-    echo "❌ scripts/update-package-metadata.py is missing. PR blocked."
+if [[ ! -f "scripts/build/update-package-metadata.py" ]]; then
+    echo "❌ scripts/build/update-package-metadata.py is missing. PR blocked."
     exit 1
 fi
 echo "✅ Metadata generator script found"

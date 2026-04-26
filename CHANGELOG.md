@@ -15,6 +15,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.4.17] - 2026-04-26
 
+### Changed
+
+- **Architecture**: Migrated application core to `src/`, consolidated
+  environment templates to `config/`, and segregated CI/CD utilities into
+  `scripts/build/` and `scripts/maintainer/`.
+
 ### Fixed
 
 - **UX/UI**: Resolved WCAG 2.1 AA contrast violations in the web repository

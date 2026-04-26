@@ -248,7 +248,7 @@ jobs:
             test -f /lib/systemd/system/flatpak-automatic.timer || test -f /usr/lib/systemd/system/flatpak-automatic.timer
             test -f /lib/systemd/system/flatpak-automatic.service || test -f /usr/lib/systemd/system/flatpak-automatic.service
           else
-            test -f /etc/sysconfig/flatpak-automatic
+            test -f /etc/config/sysconfig/flatpak-automatic
             test -f /usr/lib/systemd/system/flatpak-automatic.timer
             test -f /usr/lib/systemd/system/flatpak-automatic.service
           fi
@@ -331,7 +331,7 @@ jobs:
         env:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_RUN_ID: ${{ github.run_id }}
-        run: python3 scripts/generate-index.py
+        run: python3 scripts/maintainer/generate-index.py
 
       - name: Validate HTML Output
         run: htmlhint public/index.html
