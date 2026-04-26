@@ -63,8 +63,7 @@ sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
 **RPM-based:**
 
 ```bash
-sudo dnf makecache
-sudo dnf install -y flatpak-automatic
+sudo dnf makecache && sudo dnf install -y flatpak-automatic
 ```
 
 **DEB-based:**
