@@ -6,6 +6,14 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - Unreleased
+
+### Added
+
+- **Documentation**: Created `MAINTAINERS.md` to consolidate release checklists
+  and `tbump` versioning instructions, extracting maintainer processes from
+  `DEVELOPMENT.md`.
+
 ## [1.4.9] - 2026-04-26
 
 ### Added
