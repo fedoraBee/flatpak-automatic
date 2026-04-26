@@ -56,6 +56,6 @@ make install DESTDIR=%{buildroot} PREFIX=%{_prefix} SYSCONFDIR=%{_sysconfdir}
 %{_unitdir}/flatpak-automatic.timer
 %config(noreplace) %{_sysconfdir}/sysconfig/flatpak-automatic
 %license LICENSE
-%doc README.md CHANGELOG.md DEVELOPMENT.md CONTRIBUTING.md AGENTS.md
+%doc README.md CHANGELOG.md docs/development.md .github/CONTRIBUTING.md AGENTS.md MAINTAINERS.md
 
 # NOTE: The %%changelog directive is automatically appended by the python script during the build process.

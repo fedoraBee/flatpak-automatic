@@ -1,17 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 120" width="100%" height="100%">
-  <defs>
-    <linearGradient id="cli-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#00FFFF" />
-      <stop offset="33%" stop-color="#55AAFF" />
-      <stop offset="66%" stop-color="#AA55FF" />
-      <stop offset="100%" stop-color="#FF00FF" />
-    </linearGradient>
-  </defs>
-  <text x="50%" y="10" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="16" font-weight="bold" fill="url(#cli-grad)" text-anchor="middle" xml:space="preserve">
-    <tspan x="50%" dy="1.2em">  ___ _       _               _    </tspan>
-    <tspan x="50%" dy="1.2em"> | __| |__ _ | |_ _ __  __ _ | |__ </tspan>
-    <tspan x="50%" dy="1.2em"> | _|| / _` ||  _| '_ \/ _` || / / </tspan>
-    <tspan x="50%" dy="1.2em"> |_| |_\__,_|\__| .__/\__,_||_\_\</tspan>
-    <tspan x="50%" dy="1.2em">                |_| AUTOMATIC</tspan>
+  <style>
+    .ascii { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 16px; font-weight: bold; }
+    .c1 { fill: #00FFFF; }
+    .c2 { fill: #55AAFF; }
+    .c3 { fill: #AA55FF; }
+    .c4 { fill: #FF00FF; }
+    .c-auto { fill: #2c3e50; } /* Light mode default text color */
+    @media (prefers-color-scheme: dark) {
+      .c-auto { fill: #e0e0e0; } /* Dark mode text color */
+    }
+  </style>
+  <text x="50%" y="10" class="ascii" text-anchor="middle" xml:space="preserve">
+    <tspan x="50%" dy="1.2em" class="c1">  ___ _       _               _    </tspan>
+    <tspan x="50%" dy="1.2em" class="c2"> | __| |__ _ | |_ _ __  __ _ | |__ </tspan>
+    <tspan x="50%" dy="1.2em" class="c3"> | _|| / _` ||  _| '_ \/ _` || / / </tspan>
+    <tspan x="50%" dy="1.2em" class="c4"> |_| |_\__,_|\__| .__/\__,_||_\_\</tspan>
+    <tspan x="50%" dy="1.2em"><tspan class="c4">                |_|</tspan><tspan class="c-auto"> AUTOMATIC</tspan></tspan>
   </text>
 </svg>

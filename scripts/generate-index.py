@@ -2,10 +2,11 @@
 import os
 import datetime
 import re
-from jinja2 import Environment, FileSystemLoader
+from typing import Optional, List, Dict, Any, Set
+from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
 
 
-def get_version_info(filename):
+def get_version_info(filename: str) -> Optional[str]:
     """Extract full version string from RPM or DEB filename."""
     # RPM: flatpak-automatic-1.4.9-1.noarch.rpm -> 1.4.9
     # DEB: flatpak-automatic_1.4.9_all.deb -> 1.4.9
@@ -13,13 +14,13 @@ def get_version_info(filename):
     return m.group(1) if m else None
 
 
-def main():
+def main() -> None:
     output_file = "public/index.html"
     repo_root = "public"
 
     # 1. Collect all RPM versions and channels
     rpm_dir = os.path.join(repo_root, "rpms")
-    major_minor_versions = []
+    major_minor_versions: List[str] = []
     if os.path.isdir(rpm_dir):
         major_minor_versions = sorted(
             [d for d in os.listdir(rpm_dir) if d.startswith("v") and d != "latest"],
@@ -28,14 +29,14 @@ def main():
 
     # 2. Collect all DEB packages from the pool
     pool_dir = os.path.join(repo_root, "debs", "pool", "main", "f", "flatpak-automatic")
-    deb_pkgs = []
+    deb_pkgs: List[str] = []
     if os.path.isdir(pool_dir):
         deb_pkgs = sorted(
             [f for f in os.listdir(pool_dir) if f.endswith(".deb")], reverse=True
         )
 
     # Map DEBs to MAJOR.MINOR
-    deb_by_major_minor = {}
+    deb_by_major_minor: Dict[str, List[str]] = {}
     for pkg in deb_pkgs:
         v = get_version_info(pkg)
         if v:
@@ -49,13 +50,13 @@ def main():
         list(set(major_minor_versions + list(deb_by_major_minor.keys()))), reverse=True
     )
 
-    versions = []
+    versions: List[Dict[str, Any]] = []
     for mm in all_mm:
-        v_data = {"name": mm, "channels": [], "is_first": False}
+        v_data: Dict[str, Any] = {"name": mm, "channels": [], "is_first": False}
 
         # Check channels for this MM version in RPMs
         mm_path = os.path.join(rpm_dir, mm)
-        channels_found = []
+        channels_found: List[str] = []
         if os.path.isdir(mm_path):
             channels_found = sorted(os.listdir(mm_path))  # stable, testing
 
@@ -65,21 +66,23 @@ def main():
 
         for channel in channels_found:
             c_path = os.path.join(mm_path, channel)
-            rpms = []
+            rpms: List[str] = []
             if os.path.isdir(c_path):
                 rpms = sorted(
                     [f for f in os.listdir(c_path) if f.endswith(".rpm")], reverse=True
                 )
 
             # Assign DEBs to this channel
-            debs_in_channel = []
+            debs_in_channel: List[str] = []
             if mm in deb_by_major_minor:
                 if len(channels_found) == 1:
                     # If only one channel, all DEBs for this MM go here
                     debs_in_channel = deb_by_major_minor[mm]
                 else:
                     # Try to match by full version string found in RPMs
-                    rpm_full_versions = set([get_version_info(r) for r in rpms])
+                    rpm_full_versions: Set[Optional[str]] = set(
+                        [get_version_info(r) for r in rpms]
+                    )
                     debs_in_channel = [
                         d
                         for d in deb_by_major_minor[mm]
@@ -110,7 +113,10 @@ def main():
     if versions:
         versions[0]["is_first"] = True
 
-    env = Environment(loader=FileSystemLoader(".github/templates"))
+    env = Environment(
+        loader=FileSystemLoader("docs/templates"),
+        autoescape=select_autoescape(["html", "htm", "xml"]),
+    )
     template = env.get_template("index.html.j2")
     github_repo = os.environ.get("GITHUB_REPOSITORY", "fedoraBee/flatpak-automatic")
     build_sha = os.environ.get("GITHUB_SHA", "unknown")

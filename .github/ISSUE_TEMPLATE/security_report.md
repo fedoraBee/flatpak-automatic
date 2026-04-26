@@ -1,3 +1,9 @@
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable-next-line MD033 MD041-->
+<div align="center"><img src="../../assets/logo.svg" alt="Flatpak Automatic CLI
+Banner" width="450"></div>
+<!-- prettier-ignore-end -->
+
 # [GHSA-ID]: [Short, Descriptive Title of Vulnerability]
 
 ## Summary

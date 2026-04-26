@@ -2,7 +2,7 @@
 
 NAME := flatpak-automatic
 EPOCH := 1
-VERSION := 1.4.15
+VERSION := 1.4.17
 REL_NUM := 1
 DATE := $(shell LC_ALL=C date +"%a %b %d %Y")
 AUTHOR := "fedoraBee <9395414+fedoraBee@users.noreply.github.com>"
@@ -30,7 +30,7 @@ lint-shell:
 
 lint-md:
 	@if command -v markdownlint > /dev/null; then \
-		markdownlint --config $(CURDIR)/rpm/.markdownlint.jsonc *.md .github/**/*.md; \
+		markdownlint --config $(CURDIR)/rpm/.markdownlint.jsonc *.md docs/**/*.md .github/**/*.md; \
 	else \
 		echo "Warning: markdownlint not found. Skipping markdown lint."; \
 	fi

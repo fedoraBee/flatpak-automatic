@@ -1,10 +1,37 @@
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable-next-line MD033 MD041-->
+<div align="center"><img src="assets/logo.svg" alt="Flatpak Automatic CLI
+Banner" width="450"></div>
+<!-- prettier-ignore-end -->
+
 # Changelog
 
-All notable changes to this project will be documented in this file.
+This is the changelog for **Flatpak Automatic**. All notable changes to this
+project will be documented in this file.
 
 The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.4.17] - 2026-04-26
+
+### Fixed
+
+- **UX/UI**: Resolved WCAG 2.1 AA contrast violations in the web repository
+  index and CLI banner by adopting darker, accessible gradient stops.
+
+## [1.4.16] - 2026-04-26
+
+### Changed
+
+- **Refactor**: Reorganized repository structure by moving documentation to
+  `docs/` and repository management scripts to `scripts/`.
+- **Refactor**: Consolidated `generate-index.py` and its template into
+  `scripts/` and `docs/templates/` respectively.
+- **Documentation**: Updated all internal links and SVG logo paths to reflect
+  the new repository structure.
+- **Packaging**: Updated RPM spec file to include new documentation paths and
+  correct file locations.
 
 ## [1.4.15] - 2026-04-26
 

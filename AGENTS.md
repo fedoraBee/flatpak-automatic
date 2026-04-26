@@ -1,6 +1,12 @@
-# Flatpak Automatic: Technical Manifest
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable-next-line MD033 MD041-->
+<div align="center"><img src="assets/logo.svg" alt="Flatpak Automatic CLI
+Banner" width="450"></div>
+<!-- prettier-ignore-end -->
 
-Flatpak Automatic is a secure, configurable, and systemd-native automation
+# Technical Manifest
+
+**Flatpak Automatic** is a secure, configurable, and systemd-native automation
 wrapper for Flatpak updates. It integrates Snapper for atomic-like rollbacks and
 systemd for reliable scheduling on Fedora and other RPM-based distributions.
 
@@ -134,9 +140,10 @@ To deploy changes locally for testing:
 ## 📦 Reference Docs
 
 - [README.md](README.md): Installation and usage guide.
-- [CONTRIBUTING.md](CONTRIBUTING.md): Guidelines for contributors.
-- [DEVELOPMENT.md](DEVELOPMENT.md): Build instructions and technical notes.
+- [CONTRIBUTING.md](.github/CONTRIBUTING.md): Guidelines for contributors.
+- [DEVELOPMENT.md](docs/development.md): Build instructions and technical notes.
 - [CHANGELOG.md](CHANGELOG.md): Record of notable changes and versions.
+- [MAINTAINERS.md](MAINTAINERS.md): Project maintenance guide.
 - [LICENSE](LICENSE): GPL-3.0-or-later.
 
 **Note:** All changes made to this instruction file must also be reflected in
