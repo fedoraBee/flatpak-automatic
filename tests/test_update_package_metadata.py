@@ -7,7 +7,7 @@ sys.path.insert(
 )
 
 
-def test_update_rpm_metadata_dummy() -> None:
+def test_update_package_metadata_dummy() -> None:
     # Base assertions to ensure pytest runs properly in the CI pipeline
     # without breaking on exact regex logic parsing if module structure changes.
     assert True

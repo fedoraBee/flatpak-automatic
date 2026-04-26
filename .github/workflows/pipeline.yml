@@ -71,6 +71,10 @@ jobs:
         run: |
           pipx install mypy
           mypy --strict scripts/ tests/
+      - name: Run Bandit SAST
+        run: |
+          pipx install bandit
+          bandit -r scripts/ tests/ -c .bandit.yml
 
   lint-actions:
     name: Lint GitHub Workflows

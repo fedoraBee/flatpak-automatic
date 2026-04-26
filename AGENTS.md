@@ -39,7 +39,7 @@ components:
 - **Configuration Persistence**: The `/etc/sysconfig/flatpak-automatic` file is
   marked as `noreplace` to preserve user overrides during package updates.
 - **Automated Changelog**: The RPM changelog is generated from `CHANGELOG.md`
-  using `scripts/update-rpm-metadata.py` and included in the spec file via
+  using `scripts/update-package-metadata.py` and included in the spec file via
   `%include %{_topdir}/changelog`.
 - **Markdown Linting**: All changes to Markdown files (`.md`) must adhere to the
   project's Markdown linting rules, especially MD013 to prevent line length
@@ -92,7 +92,7 @@ To deploy changes locally for testing:
   includes:
   - markdownlint
   - shellcheck
-  - lint-python
+  - lint-python (Ruff, Mypy, Bandit)
   - shfmt
   - rpmlint
   - RPM build and smoke tests
@@ -123,7 +123,7 @@ To deploy changes locally for testing:
   synchronized across:
   - `Makefile` (`VERSION` variable)
   - `rpm/flatpak-automatic.spec` (`Version` field - automatically updated by
-    `scripts/update-rpm-metadata.py` from `Makefile`)
+    `scripts/update-package-metadata.py` from `Makefile`)
   - `CHANGELOG.md` (New version heading)
 
 - **Script Requirements** All scripts must be:

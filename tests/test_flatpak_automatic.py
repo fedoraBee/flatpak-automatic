@@ -1,3 +1,4 @@
+import pytest
 import sys
 import importlib.util
 import logging
@@ -134,3 +135,29 @@ class TestJSONFormatter:
         assert data["message"] == "Failed to connect to Snapper DBus"
         assert "exception" in data
         assert "ValueError: Simulated system bus failure" in data["exception"]
+
+
+class TestMainIntegration:
+    @patch.object(fa, "load_sysconfig")
+    @patch.object(fa, "FlatpakUpdater")
+    @patch.object(fa, "SnapperManager")
+    @patch.object(fa, "MailNotifier")
+    def test_main_updates_found(self, mock_mail, mock_snapper, mock_updater, mock_load):
+        mock_load.return_value = {
+            "FLATPAK_AUTO_UPDATE": "true",
+            "FLATPAK_CREATE_SNAPSHOT": "true",
+            "FLATPAK_AUTO_NOTIFY": "none",
+        }
+        updater_instance = mock_updater.return_value
+        updater_instance.check_updates.return_value = True
+        updater_instance.apply_updates.return_value = True
+        snapper_instance = mock_snapper.return_value
+
+        with pytest.raises(SystemExit) as e:
+            fa.main()
+
+        assert e.value.code == 0
+        snapper_instance.create_timeline_snapshot.assert_called_once_with(
+            "Pre-Flatpak Update Automation"
+        )
+        updater_instance.apply_updates.assert_called_once()
