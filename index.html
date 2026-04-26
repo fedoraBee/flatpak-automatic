@@ -282,15 +282,28 @@
           Add the repository and install the package on Fedora or compatible
           RPM-based systems:
         </p>
-        <div class="code-block">
-          # Add the repository configuration sudo tee
-          /etc/yum.repos.d/flatpak-automatic.repo &lt;&lt;'EOF'
-          [flatpak-automatic] name=Flatpak Automatic - Stable baseurl=https://fedoraBee.github.io/flatpak-automatic/rpms/latest/stable/ enabled=1 gpgcheck=1 gpgkey=https://fedoraBee.github.io/flatpak-automatic/gpg.key [flatpak-automatic-testing] name=Flatpak Automatic -
-          Testing baseurl=https://fedoraBee.github.io/flatpak-automatic/rpms/latest/testing/ enabled=0 gpgcheck=1
-          gpgkey=https://fedoraBee.github.io/flatpak-automatic/gpg.key EOF # Update the package metadata
-          cache sudo dnf makecache # Install the flatpak-automatic package sudo
-          dnf install flatpak-automatic
-        </div>
+        <div class="code-block"># Add the repository configuration
+sudo tee /etc/yum.repos.d/flatpak-automatic.repo &lt;&lt;'EOF'
+[flatpak-automatic]
+name=Flatpak Automatic - Stable
+baseurl=https://fedoraBee.github.io/flatpak-automatic/rpms/latest/stable/
+enabled=1
+gpgcheck=1
+gpgkey=https://fedoraBee.github.io/flatpak-automatic/gpg.key
+
+[flatpak-automatic-testing]
+name=Flatpak Automatic - Testing
+baseurl=https://fedoraBee.github.io/flatpak-automatic/rpms/latest/testing/
+enabled=0
+gpgcheck=1
+gpgkey=https://fedoraBee.github.io/flatpak-automatic/gpg.key
+EOF
+
+# Update the package metadata cache
+sudo dnf makecache
+
+# Install the flatpak-automatic package
+sudo dnf install flatpak-automatic</div>
       </div>
 
       <div class="card">
@@ -299,17 +312,17 @@
           Add the repository and install the package on Ubuntu, Debian, or
           compatible systems:
         </p>
-        <div class="code-block">
-          # Download the GPG key and convert it to a format APT understands curl
-          -fsSL https://fedoraBee.github.io/flatpak-automatic/gpg.key | sudo gpg --dearmor -o
-          /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg # Add the
-          repository to your system's sources list echo "deb
-          [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg]
-          https://fedoraBee.github.io/flatpak-automatic/debs stable main" | sudo tee
-          /etc/apt/sources.list.d/flatpak-automatic.list # Update your local
-          package index sudo apt-get update # Install the flatpak-automatic
-          package sudo apt-get install flatpak-automatic
-        </div>
+        <div class="code-block"># Download the GPG key and convert it to a format APT understands
+curl -fsSL https://fedoraBee.github.io/flatpak-automatic/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
+
+# Add the repository to your system's sources list
+echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://fedoraBee.github.io/flatpak-automatic/debs stable main" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
+
+# Update your local package index
+sudo apt-get update
+
+# Install the flatpak-automatic package
+sudo apt-get install flatpak-automatic</div>
       </div>
 
       <div class="card">
@@ -682,11 +695,11 @@
 
       <div class="footer">
         <p>
-          Generated on <strong>2026-04-26 23:18:32 UTC</strong> | Commit:
-          <a href="https://github.com/fedoraBee/flatpak-automatic/commit/cc4bcdaa2d9e572f50ac8bfefc627d85492b1bf2"
-            >cc4bcda</a
+          Generated on <strong>2026-04-26 23:58:22 UTC</strong> | Commit:
+          <a href="https://github.com/fedoraBee/flatpak-automatic/commit/0393070761a73db7140fb9f158d6a25d643e2352"
+            >0393070</a
           >
-          | Run ID: 24969515028
+          | Run ID: 24970229899
         </p>
       </div>
     </div>
