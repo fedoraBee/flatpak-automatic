@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.4.11
+# Version: 1.4.12
 import os
 import sys
 import subprocess
@@ -199,13 +199,14 @@ def load_sysconfig() -> Dict[str, str]:
 
 def main() -> None:
     if sys.stdout.isatty():
-        print(r"""
-  ___ _      _               _          _       _                        _   _
- | __| |__ _| |_ _ __  __ _ | |__      /_\ _  _| |_ ___ _ __  __ _| |_(_)__
- | _|| / _` |  _| '_ \/ _` || / /     / _ \ || |  _/ _ \ '  \/ _` |  _| / _|
- |_| |_\__,_|\__| .__/\__,_||_\_\    /_/ \_\_,_|\__\___/_|_|_\__,_|\__|_\__|
-                |_|
-        """)
+        # Gradient banner: Cyan -> Deep Blue -> Magenta
+        print(
+            "\033[38;2;0;255;255m  ___ _       _               _    \n"
+            "\033[38;2;85;170;255m | __| |__ _ | |_ _ __  __ _ | |__ \n"
+            "\033[38;2;170;85;255m | _|| / _` ||  _| '_ \\/ _` || / / \n"
+            "\033[38;2;255;0;255m |_| |_\\__,_|\\__| .__/\\__,_||_\\_\\\n"
+            "                |_|\033[0m AUTOMATIC\n"
+        )
 
     config: Dict[str, str] = load_sysconfig()
 

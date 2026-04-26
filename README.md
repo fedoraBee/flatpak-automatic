@@ -1,6 +1,4 @@
-# Flatpak Automatic
-
-![Flatpak Automatic Logo](assets/logo.svg)
+# ![Logo](assets/logo.svg) Flatpak Automatic
 
 [![Pipeline](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml)
 
