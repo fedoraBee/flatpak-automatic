@@ -20,7 +20,7 @@ prep:
 	@echo "Preparing build environments..."
 	mkdir -p $(TOPDIR)/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 	@echo "Generating package metadata..."
-	$(CURDIR)/scripts/update-package-metadata.py --epoch $(EPOCH) --version $(VERSION) --rel-num $(REL_NUM) --spec-in $(CURDIR)/rpm/$(NAME).spec.in --spec-out $(TOPDIR)/SPECS/$(NAME).spec --makefile $(CURDIR)/Makefile --date "$(DATE)" --changelog-in $(CURDIR)/CHANGELOG.md
+	$(CURDIR)/scripts/build/update-package-metadata.py --epoch $(EPOCH) --version $(VERSION) --rel-num $(REL_NUM) --spec-in $(CURDIR)/rpm/$(NAME).spec.in --spec-out $(TOPDIR)/SPECS/$(NAME).spec --makefile $(CURDIR)/Makefile --date "$(DATE)" --changelog-in $(CURDIR)/CHANGELOG.md
 rpm: prep rpm-build
 
 lint: lint-shell lint-md lint-spec
@@ -45,21 +45,21 @@ install:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	mkdir -p $(DESTDIR)$(SYSCONFDIR)/sysconfig
 	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system
-	install -p -m 755 scripts/flatpak-automatic.py $(DESTDIR)$(PREFIX)/bin/flatpak-automatic
-	install -p -m 644 sysconfig/flatpak-automatic $(DESTDIR)$(SYSCONFDIR)/sysconfig/flatpak-automatic
-	install -p -m 644 systemd/flatpak-automatic.service $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.service
-	install -p -m 644 systemd/flatpak-automatic.timer $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.timer
+	install -p -m 755 src/flatpak-automatic.py $(DESTDIR)$(PREFIX)/bin/flatpak-automatic
+	install -p -m 644 config/sysconfig/flatpak-automatic $(DESTDIR)$(SYSCONFDIR)/sysconfig/flatpak-automatic
+	install -p -m 644 config/systemd/flatpak-automatic.service $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.service
+	install -p -m 644 config/systemd/flatpak-automatic.timer $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.timer
 
 rpm-build:
-	@./scripts/build-rpm-local.sh "$(NAME)" "$(EPOCH)" "$(VERSION)" "$(REL_NUM)" "$(TOPDIR)"
+	@./scripts/build/build-rpm-local.sh "$(NAME)" "$(EPOCH)" "$(VERSION)" "$(REL_NUM)" "$(TOPDIR)"
 
 rpm-sign:
-	@./scripts/sign-rpm.sh "$(TOPDIR)" "$(GPG_KEY_ID)"
+	@./scripts/build/sign-rpm.sh "$(TOPDIR)" "$(GPG_KEY_ID)"
 
 CHANNEL ?= $(or $(channel),stable)
 
 rpm-repo:
-	$(CURDIR)/scripts/update-repo.sh $(TOPDIR)/RPMS/noarch $(CURDIR)/debs $(VERSION) $(CHANNEL) "$(GPG_KEY_ID)" $(CURDIR)/repo
+	$(CURDIR)/scripts/maintainer/update-repo.sh $(TOPDIR)/RPMS/noarch $(CURDIR)/debs $(VERSION) $(CHANNEL) "$(GPG_KEY_ID)" $(CURDIR)/repo
 
 clean:
 	rm -rf $(TOPDIR) .debbuild *.deb
@@ -70,4 +70,4 @@ test:
 	python3 -m pytest tests/
 
 deb: prep
-	@./scripts/build-deb-local.sh
+	@./scripts/build/build-deb-local.sh
