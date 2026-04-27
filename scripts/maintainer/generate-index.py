@@ -6,7 +6,7 @@ from typing import Optional, List, Dict, Any, Set
 from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
 
 
-def version_sort_key(ver_str: str) -> list:
+def version_sort_key(ver_str: str) -> list[int]:
     return [int(n) for n in re.findall(r"\d+", str(ver_str))]
 
 
