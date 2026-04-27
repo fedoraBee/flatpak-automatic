@@ -25,7 +25,7 @@ class TestFlatpakUpdater:
         mock_run.return_value = MagicMock(
             stdout="org.test.App\tmaster\t1.0", returncode=0
         )
-        updater = fa.FlatpakUpdater()
+        updater = fa.FlatpakUpdater(excludes="")
         assert updater.check_updates() is True
         assert updater.updates_available is True
 
@@ -34,14 +34,14 @@ class TestFlatpakUpdater:
         mock_run.return_value = MagicMock(
             stdout="Looking for updates...\nNothing to do.\n", returncode=0
         )
-        updater = fa.FlatpakUpdater()
+        updater = fa.FlatpakUpdater(excludes="")
         assert updater.check_updates() is False
         assert updater.updates_available is False
 
     @patch("subprocess.run")
     def test_apply_updates_success(self, mock_run: Any) -> None:
         mock_run.return_value = MagicMock(stdout="Success", stderr="", returncode=0)
-        updater = fa.FlatpakUpdater()
+        updater = fa.FlatpakUpdater(excludes="")
         assert updater.apply_updates() is True
 
     @patch("subprocess.run")
@@ -51,7 +51,7 @@ class TestFlatpakUpdater:
             stderr="Error: GPG verification failed",
             returncode=1,
         )
-        updater = fa.FlatpakUpdater()
+        updater = fa.FlatpakUpdater(excludes="")
         assert updater.apply_updates() is False
         assert "Error: GPG verification failed" in updater.update_log
 

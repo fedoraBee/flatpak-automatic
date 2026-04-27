@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.4.19
+# Version: 1.4.20
 import os
 import sys
 import subprocess
@@ -93,16 +93,25 @@ class SnapperManager:
 
 
 class FlatpakUpdater:
-    def __init__(self) -> None:
+    def __init__(self, excludes: str = "") -> None:
         self.updates_available: bool = False
         self.update_log: str = ""
+        self.excludes = [x.strip() for x in excludes.split(",") if x.strip()]
 
     def check_updates(self) -> bool:
         cmd = ["flatpak", "update", "--dry-run", "--columns=application,branch,version"]
         result = subprocess.run(cmd, capture_output=True, text=True)
         if "Nothing to do" not in result.stdout and result.stdout.strip() != "":
-            self.updates_available = True
-            self.update_log = result.stdout
+            lines = result.stdout.strip().split("\n")
+            filtered_lines = []
+            for line in lines:
+                app_id = line.split("\t")[0] if "\t" in line else line.split()[0]
+                if app_id not in self.excludes and line.strip() != "":
+                    filtered_lines.append(line)
+
+            if filtered_lines:
+                self.updates_available = True
+                self.update_log = "\n".join(filtered_lines)
         return self.updates_available
 
     def apply_updates(self) -> bool:
@@ -112,6 +121,53 @@ class FlatpakUpdater:
             f"\n\n--- Flatpak Execution Log ---\n{result.stdout}\n{result.stderr}"
         )
         return result.returncode == 0
+
+
+class DesktopNotifier:
+    def __init__(self, enabled: str = "no") -> None:
+        self.enabled = enabled.lower() in ("yes", "true", "1")
+
+    def send_notification(
+        self, title: str, body: str, icon: str = "software-update-available"
+    ) -> None:
+        if not self.enabled:
+            return
+        try:
+            # Safely traverse session boundary to find active graphical user
+            users_out = subprocess.run(
+                ["loginctl", "list-users", "--no-legend"],
+                capture_output=True,
+                text=True,
+            ).stdout
+            for line in users_out.strip().split("\n"):
+                if not line:
+                    continue
+                parts = line.split()
+                if len(parts) >= 2:
+                    uid, user = parts[0], parts[1]
+                    bus_address = f"unix:path=/run/user/{uid}/bus"
+                    env = os.environ.copy()
+                    env["DBUS_SESSION_BUS_ADDRESS"] = bus_address
+                    subprocess.run(
+                        [
+                            "sudo",
+                            "-u",
+                            user,
+                            "DBUS_SESSION_BUS_ADDRESS=" + bus_address,
+                            "notify-send",
+                            "-a",
+                            "Flatpak Automatic",
+                            "-i",
+                            icon,
+                            title,
+                            body,
+                        ],
+                        env=env,
+                        check=False,
+                    )
+            logging.info("Desktop UI notification dispatched to active sessions.")
+        except Exception as e:
+            logging.error(f"Failed to dispatch desktop UI notification: {e}")
 
 
 class AppriseNotifier:
@@ -206,7 +262,7 @@ def main() -> None:
         "-d",
         "--dry-run",
         action="store_true",
-        help="Simulate the update process without applying changes or snapshots.",
+        help="Simulate the update process without applying changes.",
     )
     parser.add_argument(
         "-t",
@@ -218,12 +274,23 @@ def main() -> None:
         "-f",
         "--force",
         action="store_true",
-        help="Force the update process, ignoring FLATPAK_AUTO_UPDATE config.",
+        help="Force the update process, ignoring safeguards.",
+    )
+    parser.add_argument(
+        "-s",
+        "--status",
+        action="store_true",
+        help="Display system monitoring overview and exit.",
+    )
+    parser.add_argument(
+        "-l",
+        "--history",
+        action="store_true",
+        help="Display recent update history from journalctl and exit.",
     )
     args = parser.parse_args()
 
     if sys.stdout.isatty():
-        # Gradient banner: Cyan -> Deep Blue -> Magenta
         print(
             "\033[1m\033[38;2;0;155;155m  ___ _       _               _    \n"
             "\033[38;2;42;123;202m | __| |__ _ | |_ _ __  __ _ | |__ \n"
@@ -234,12 +301,29 @@ def main() -> None:
 
     config: Dict[str, str] = load_sysconfig()
 
+    if args.status:
+        print("\033[1m[ System Status & Monitoring Overview ]\033[0m")
+        print("\n\033[1m⚙️  Configuration (/etc/sysconfig/flatpak-automatic):\033[0m")
+        for k, v in config.items():
+            print(f"  {k}: {v}")
+        print("\n\033[1m📦 Flatpak Status:\033[0m")
+        subprocess.run(["flatpak", "list", "--app", "--columns=application,version"])
+        sys.exit(0)
+
+    if args.history:
+        print("\033[1m[ Recent flatpak-automatic Execution History ]\033[0m")
+        subprocess.run(
+            ["journalctl", "-u", "flatpak-automatic.service", "-n", "20", "--no-pager"]
+        )
+        sys.exit(0)
+
     if args.test_notify:
         logging.info("Executing Test Notification dispatch...")
         mailer = MailNotifier(
-            config.get("FLATPAK_MAIL_TO", ""),
+            config.get("FLATPAK_MAIL_TO", config.get("EMAIL_TO", "")),
             config.get(
-                "FLATPAK_MAIL_FROM", f"flatpak-automatic@{socket.gethostname()}"
+                "FLATPAK_MAIL_FROM",
+                config.get("EMAIL_FROM", f"flatpak-automatic@{socket.gethostname()}"),
             ),
         )
         mailer.send_mail(
@@ -253,13 +337,20 @@ def main() -> None:
                 "[TEST] Flatpak Automatic",
                 "This is a test notification from flatpak-automatic.",
             )
+        desktop = DesktopNotifier(
+            config.get("ENABLE_DESKTOP_NOTIFY", "yes")
+        )  # Force test to yes
+        desktop.send_notification(
+            "Test Notification", "This is a test notification from flatpak-automatic."
+        )
         sys.exit(0)
 
-    if config.get("FLATPAK_AUTO_UPDATE", "true").lower() != "true" and not args.force:
+    auto_update = config.get("FLATPAK_AUTO_UPDATE", "true").lower() == "true"
+    if not auto_update and not args.force:
         logging.info("Automatic updates are disabled via configuration.")
         sys.exit(0)
 
-    updater = FlatpakUpdater()
+    updater = FlatpakUpdater(excludes=config.get("FLATPAK_EXCLUDES", ""))
     if not updater.check_updates():
         logging.info("No Flatpak updates available.")
         sys.exit(0)
@@ -270,44 +361,59 @@ def main() -> None:
         logging.info(
             "[DRY-RUN] Updates found, but dry-run is active. Skipping snapshots and applying updates."
         )
-        logging.info(f"[DRY-RUN] Would have updated:\\n{updater.update_log}")
+        logging.info(f"[DRY-RUN] Would have updated:\n{updater.update_log}")
         sys.exit(0)
 
-    if config.get("FLATPAK_CREATE_SNAPSHOT", "true").lower() == "true":
-        snapper = SnapperManager()
-        snapper.create_timeline_snapshot("Pre-Flatpak Update Automation")
+    if config.get(
+        "ENABLE_SNAPSHOTS", config.get("FLATPAK_CREATE_SNAPSHOT", "true")
+    ).lower() in ("yes", "true", "1"):
+        snapper = SnapperManager(config=config.get("SNAPPER_CONFIG", "root"))
+        snapper.create_timeline_snapshot(
+            config.get("SNAPPER_DESC_PRE", "flatpak-automatic-pre")
+        )
 
     logging.info("Applying Flatpak updates...")
     success: bool = updater.apply_updates()
 
-    notify_type: str = config.get("FLATPAK_AUTO_NOTIFY", "none").lower()
+    if success and config.get("ENABLE_SNAPSHOTS", "true").lower() in (
+        "yes",
+        "true",
+        "1",
+    ):
+        if "snapper" in locals():
+            snapper.create_timeline_snapshot(
+                config.get("SNAPPER_DESC_POST", "flatpak-automatic-post")
+            )
+
+    notify_type: str = config.get(
+        "FLATPAK_AUTO_NOTIFY", config.get("ENABLE_EMAIL", "yes")
+    ).lower()
     trigger_notify: bool = False
 
-    if notify_type in ("always", "on-update"):
+    if notify_type in ("always", "on-update", "yes", "true", "1"):
         trigger_notify = True
     elif notify_type == "on-error" and not success:
         trigger_notify = True
 
     if trigger_notify:
         subject_prefix: str = "[SUCCESS]" if success else "[FAILED]"
+        title = f"{subject_prefix} Flatpak Updates - {socket.gethostname()}"
         mailer = MailNotifier(
-            config.get("FLATPAK_MAIL_TO", ""),
+            config.get("FLATPAK_MAIL_TO", config.get("EMAIL_TO", "")),
             config.get(
-                "FLATPAK_MAIL_FROM", f"flatpak-automatic@{socket.gethostname()}"
+                "FLATPAK_MAIL_FROM",
+                config.get("EMAIL_FROM", f"flatpak-automatic@{socket.gethostname()}"),
             ),
         )
-        mailer.send_mail(
-            f"{subject_prefix} Flatpak Automatic Updates - {socket.gethostname()}",
-            updater.update_log,
-        )
+        mailer.send_mail(title, updater.update_log)
 
         apprise_urls = config.get("FLATPAK_APPRISE_URLS", "")
         if apprise_urls:
             apprise_notifier = AppriseNotifier(apprise_urls)
-            apprise_notifier.send_notification(
-                f"{subject_prefix} Flatpak Automatic Updates - {socket.gethostname()}",
-                updater.update_log,
-            )
+            apprise_notifier.send_notification(title, updater.update_log)
+
+        desktop = DesktopNotifier(config.get("ENABLE_DESKTOP_NOTIFY", "no"))
+        desktop.send_notification(title, updater.update_log)
 
     sys.exit(0 if success else 1)
 

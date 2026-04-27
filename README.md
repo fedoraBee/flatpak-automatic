@@ -117,7 +117,13 @@ sudo flatpak-automatic
 # Simulate an update (Dry-run) without snapshots or changes
 sudo flatpak-automatic --dry-run
 
-# Test notification endpoints
+# Display system health, configuration, and monitoring overview
+sudo flatpak-automatic --status
+
+# View recent execution history
+sudo flatpak-automatic --history
+
+# Test notification endpoints (Email, Apprise, Desktop UI)
 sudo flatpak-automatic --test-notify
 
 # Force an update (ignoring FLATPAK_AUTO_UPDATE safeguards)

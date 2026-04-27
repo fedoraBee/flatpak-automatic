@@ -13,6 +13,18 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.20] - 2026-04-27
+
+### Added
+
+- **CLI**: Introduced `--status` for system monitoring overviews and `--history`
+  for tailored journalctl execution history routing.
+- **Core**: Added `FLATPAK_EXCLUDES` configuration option to mask specific App
+  IDs from being updated automatically.
+- **Notifications**: Implemented `DesktopNotifier` DBus class to traverse
+  session boundaries and send native OS UI notifications to the active user's
+  graphical session.
+
 ## [1.4.19] - 2026-04-27
 
 ### Fixed
