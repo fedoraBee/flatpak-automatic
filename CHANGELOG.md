@@ -17,6 +17,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - Native YAML configuration routing supporting notification groups and
   Markdown/Text template bodies.
 
@@ -40,6 +43,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.5.0] - 2026-04-27
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -87,6 +93,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -127,6 +136,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.20] - 2026-04-27
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -169,6 +181,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.18] - 2026-04-27
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -285,6 +300,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -313,6 +331,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.10] - 2026-04-26
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -343,6 +364,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.9] - 2026-04-26
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -384,6 +408,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.8] - 2026-04-25
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -468,6 +495,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -517,6 +547,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.3] - 2026-04-24
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -570,6 +603,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.0] - 2026-04-24
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -656,6 +692,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -696,6 +735,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -724,6 +766,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.14] - 2026-04-24
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -754,6 +799,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -782,6 +830,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.12] - 2026-04-23
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -812,6 +863,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.11] - 2026-04-23
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -845,6 +899,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.10] - 2026-04-23
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -891,6 +948,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   to successfully sign DNF repository metadata during release tags.
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -996,6 +1056,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -1025,6 +1088,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -1053,6 +1119,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.0] - 2026-04-23
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -1115,6 +1184,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -1145,6 +1217,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.6] - 2026-04-23
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -1310,6 +1385,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -1386,6 +1464,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -1421,6 +1502,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.0] - 2026-03-12
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
