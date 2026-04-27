@@ -156,9 +156,36 @@ class DesktopNotifier:
                 parts = line.split()
                 if len(parts) >= 2:
                     uid, user = parts[0], parts[1]
+
+                    # Fetch user's systemd environment to accurately detect graphical sessions
+                    env_out = subprocess.run(
+                        ["sudo", "-u", user, "systemctl", "--user", "show-environment"],
+                        capture_output=True,
+                        text=True,
+                    ).stdout
+
+                    env_dict = {}
+                    for el in env_out.splitlines():
+                        if "=" in el:
+                            k, v = el.split("=", 1)
+                            env_dict[k] = v
+
+                    if "WAYLAND_DISPLAY" not in env_dict and "DISPLAY" not in env_dict:
+                        logging.info(
+                            f"Skipping desktop notification for {user}: Headless session detected (No WAYLAND_DISPLAY/DISPLAY)."
+                        )
+                        continue
+
                     bus_address = f"unix:path=/run/user/{uid}/bus"
                     env = os.environ.copy()
                     env["DBUS_SESSION_BUS_ADDRESS"] = bus_address
+                    if "WAYLAND_DISPLAY" in env_dict:
+                        env["WAYLAND_DISPLAY"] = env_dict["WAYLAND_DISPLAY"]
+                    if "DISPLAY" in env_dict:
+                        env["DISPLAY"] = env_dict["DISPLAY"]
+                    if "XDG_RUNTIME_DIR" in env_dict:
+                        env["XDG_RUNTIME_DIR"] = env_dict["XDG_RUNTIME_DIR"]
+
                     subprocess.run(
                         [
                             "sudo",
@@ -201,6 +228,41 @@ class AppriseNotifier:
             )
         except Exception as e:
             logging.error(f"Failed to dispatch Apprise notification: {e}")
+
+
+class WebhookNotifier:
+    def __init__(self, urls: str, secret: str = "") -> None:
+        self.urls = [url.strip() for url in urls.split(",") if url.strip()]
+        self.secret = secret.strip()
+
+    def send_notification(self, title: str, body: str) -> None:
+        if not self.urls:
+            return
+        import urllib.request
+        import urllib.error
+        import json
+        import hmac
+        import hashlib
+
+        payload = json.dumps({"title": title, "body": body}).encode("utf-8")
+
+        for url in self.urls:
+            try:
+                req = urllib.request.Request(url, data=payload, method="POST")
+                req.add_header("Content-Type", "application/json")
+
+                if self.secret:
+                    signature = hmac.new(
+                        self.secret.encode("utf-8"), payload, hashlib.sha256
+                    ).hexdigest()
+                    req.add_header("X-Hub-Signature-256", f"sha256={signature}")
+
+                with urllib.request.urlopen(req, timeout=10) as response:
+                    logging.info(
+                        f"Webhook dispatched to {url} (Status: {response.status})"
+                    )
+            except Exception as e:
+                logging.error(f"Failed to dispatch webhook to {url}: {e}")
 
 
 class MailNotifier:
@@ -386,6 +448,16 @@ def main() -> None:
                 "[TEST] Flatpak Automatic",
                 "This is a test notification from flatpak-automatic.",
             )
+
+        webhook_urls = config.get("WEBHOOK_URLS", "")
+        if webhook_urls:
+            webhook_notifier = WebhookNotifier(
+                webhook_urls, config.get("WEBHOOK_SECRET", "")
+            )
+            webhook_notifier.send_notification(
+                "[TEST] Flatpak Automatic",
+                "This is a test notification from flatpak-automatic.",
+            )
         desktop = DesktopNotifier(
             config.get("ENABLE_DESKTOP_NOTIFY", "yes")
         )  # Force test to yes
@@ -493,6 +565,13 @@ def main() -> None:
         if apprise_urls:
             apprise_notifier = AppriseNotifier(apprise_urls)
             apprise_notifier.send_notification(title, updater.update_log)
+
+        webhook_urls = config.get("WEBHOOK_URLS", "")
+        if webhook_urls:
+            webhook_notifier = WebhookNotifier(
+                webhook_urls, config.get("WEBHOOK_SECRET", "")
+            )
+            webhook_notifier.send_notification(title, updater.update_log)
 
         desktop = DesktopNotifier(config.get("ENABLE_DESKTOP_NOTIFY", "no"))
         desktop.send_notification(title, updater.update_log)
