@@ -47,7 +47,7 @@ SNAPPER_DESC_POST="flatpak-automatic-post"
 # SNAPPER_PRE_CMD="snapper -c \"\$SNAPPER_CONFIG\" create --type pre --description \"\$SNAPPER_DESC_PRE\" --cleanup-algorithm number --print-number"
 
 # ==============================================================================
-# Version: 1.4.21 | Built for Fedora & Universal RPM Systems
+# Version: 1.4.23 | Built for Fedora & Universal RPM Systems
 
 # --- [ Application Overrides ] ---
 # Comma-separated list of Flatpak App IDs to exclude from automatic updates.
@@ -56,3 +56,10 @@ SNAPPER_DESC_POST="flatpak-automatic-post"
 # --- [ Desktop Notifications ] ---
 # Set to "yes" to send native UI notifications to active graphical sessions.
 ENABLE_DESKTOP_NOTIFY="no"
+
+# --- [ Systemd Timer & Scheduling ] ---
+# Requires executing 'sudo flatpak-automatic --apply-schedule' to take effect.
+# Standard systemd calendar event syntax (e.g., daily, weekly, *-*-* 02:00:00)
+TIMER_SCHEDULE="daily"
+# Randomization delay to prevent thundering herd problems on multiple machines
+TIMER_DELAY="1h"

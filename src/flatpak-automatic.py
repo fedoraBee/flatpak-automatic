@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.4.21
+# Version: 1.4.23
 import os
 import sys
 import subprocess
@@ -26,10 +26,21 @@ class JSONFormatter(logging.Formatter):
 
 
 # Configure native Systemd logging (syslog/journald ready)
+class ANSIFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        colors = {"INFO": "\033[36m", "WARNING": "\033[33m", "ERROR": "\033[31m"}
+        color = colors.get(record.levelname, "")
+        reset = "\033[0m"
+        return f"{color}[{record.levelname}]{reset} {record.getMessage()}"
+
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
-handler.setFormatter(JSONFormatter())
+if not sys.stdout.isatty():
+    handler.setFormatter(JSONFormatter())
+else:
+    handler.setFormatter(ANSIFormatter())
 if logger.hasHandlers():
     logger.handlers.clear()
 logger.addHandler(handler)
@@ -288,6 +299,12 @@ def main() -> None:
         action="store_true",
         help="Display recent update history from journalctl and exit.",
     )
+    parser.add_argument(
+        "-a",
+        "--apply-schedule",
+        action="store_true",
+        help="Apply systemd timer overrides based on config settings.",
+    )
     args = parser.parse_args()
 
     if sys.stdout.isatty():
@@ -300,6 +317,32 @@ def main() -> None:
         )
 
     config: Dict[str, str] = load_sysconfig()
+
+    if args.apply_schedule:
+        schedule = config.get("TIMER_SCHEDULE", "daily")
+        delay = config.get("TIMER_DELAY", "1h")
+        override_dir = "/etc/systemd/system/flatpak-automatic.timer.d"
+        override_file = os.path.join(override_dir, "override.conf")
+
+        try:
+            print("\033[1m⚙️  Applying Systemd Timer Override...\033[0m")
+            os.makedirs(override_dir, exist_ok=True)
+            with open(override_file, "w") as f:
+                f.write(
+                    f"[Timer]\nOnCalendar=\nOnCalendar={schedule}\nRandomizedDelaySec={delay}\n"
+                )
+            print(f"  Wrote configuration to: {override_file}")
+
+            subprocess.run(["systemctl", "daemon-reload"], check=True)
+            subprocess.run(
+                ["systemctl", "restart", "flatpak-automatic.timer"], check=True
+            )
+            print(
+                f"\033[32m✅ Successfully applied schedule: '{schedule}' with a '{delay}' randomization delay.\033[0m"
+            )
+        except Exception as e:
+            print(f"\033[31m❌ Failed to apply systemd schedule: {e}\033[0m")
+        sys.exit(0)
 
     if args.status:
         print("\033[1m[ System Status & Monitoring Overview ]\033[0m")

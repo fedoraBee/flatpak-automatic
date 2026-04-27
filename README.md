@@ -123,6 +123,9 @@ sudo flatpak-automatic --status
 # View recent execution history
 sudo flatpak-automatic --history
 
+# Apply timer schedule configuration to systemd
+sudo flatpak-automatic --apply-schedule
+
 # Test notification endpoints (Email, Apprise, Desktop UI)
 sudo flatpak-automatic --test-notify
 
