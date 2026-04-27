@@ -17,6 +17,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **Core**: Implemented `os.geteuid() == 0` guard to gracefully enforce `sudo`
   execution.
 - **Core**: Added `MINIMUM_DELAY_HOURS` configuration parameter to prevent
@@ -41,6 +49,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **CLI**: Introduced the `--apply-schedule` command to dynamically generate
   systemd timer overrides (`TIMER_SCHEDULE`, `TIMER_DELAY`) directly from
   sysconfig.
@@ -59,6 +75,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.20] - 2026-04-27
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **CLI**: Introduced `--status` for system monitoring overviews and `--history`
   for tailored journalctl execution history routing.
@@ -79,6 +103,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.18] - 2026-04-27
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **CLI**: Implemented the robust `argparse` router, introducing `--dry-run`,
   `--test-notify`, `--force`, and `--help` flags.
@@ -149,12 +181,28 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **UX/UI**: Introduced project branding with a new vector logo for the
   repository and an ASCII banner for interactive CLI executions.
 
 ## [1.4.10] - 2026-04-26
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **Documentation**: Created `MAINTAINERS.md` to consolidate release checklists
   and `tbump` versioning instructions, extracting maintainer processes from
@@ -163,6 +211,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.9] - 2026-04-26
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **Notifications**: Integrated the `apprise` library to support universal
   notifications (Slack, Discord, Telegram, Matrix, etc.) via the
@@ -176,6 +232,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.8] - 2026-04-25
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **CI/CD**: Expanded GitOps branch prefixes to include `style`, `test`,
   `revert`, `perf`, `build`, `format`, `deps`, and `sec`.
@@ -226,6 +290,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **Versioning**: Integrated `tbump` configuration for centralized,
   single-source-of-truth version bumping.
 
@@ -247,6 +319,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.3] - 2026-04-24
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **CI/CD**: Expanded `unit-tests` job in the pipeline to run across a
   containerized matrix (`fedora:latest`, `debian:latest`) to validate core shell
@@ -272,6 +352,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.0] - 2026-04-24
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **Core**: Added distro-agnostic mail client detection (`s-nail`, `mailutils`,
   `mailx`) to natively support Debian/Ubuntu email formats.
@@ -330,6 +418,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **Packaging**: Unified metadata generation for DEB and RPM packaging.
 - **Packaging**: Automated `debian/changelog` generation logic.
 
@@ -342,12 +438,28 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **Debian Support**: Adapted config path resolution to check
   `/etc/default/flatpak-automatic`.
 
 ## [1.2.14] - 2026-04-24
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **Linting**: Integrated `prettier` into pre-commit hooks for native Markdown
   auto-formatting to ensure 1:1 parity with VSCode.
@@ -356,12 +468,28 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **Documentation**: Added Troubleshooting & Runbook section to `README.md`.
 - **Documentation**: Added Mermaid.js execution flow diagram to `AGENTS.md`.
 
 ## [1.2.12] - 2026-04-23
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **Testing**: Added BATS testing framework for shell script logic validation.
 - **Testing**: Integrated `pytest` to validate Python parsing scripts.
@@ -370,6 +498,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.11] - 2026-04-23
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **CI/CD**: Added Ruff (Python) and shfmt (Bash) linting to
   `.pre-commit-config.yaml` and pipeline.
@@ -381,6 +517,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.10] - 2026-04-23
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **CLI**: Implemented the `--check` (`-c`) argument for manual environment
   validation and health checks.
@@ -405,6 +549,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   to successfully sign DNF repository metadata during release tags.
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **CI/CD**: Integrated `pa11y` into the repository site build process to
   enforce WCAG accessibility standards on the generated index page.
@@ -464,6 +616,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **CI/CD**: Integrated `htmlhint` into GitHub Actions (`ci.yml`) to validate
   the generated `index.html` during pull requests.
 
@@ -471,12 +631,28 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **CI/CD**: Added dynamic footer to repository index with build metadata (SHA,
   Run ID, Timestamp).
 
 ## [1.2.0] - 2026-04-23
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **Architecture**: Migrated repository index generation from a Bash script to a
   Python/Jinja2 template system for improved separation of concerns and
@@ -505,6 +681,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **UI/UX**: Added native dark mode support (`prefers-color-scheme`) to the
   repository index page.
 - **UI/UX**: Enhanced repository index to display collapsible lists of actual
@@ -513,6 +697,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.6] - 2026-04-23
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - **CI/CD**: Dynamic directory discovery in `generate-index.sh` to track and
   list available versions/channels.
@@ -620,6 +812,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **Build Automation:** Introduced `build-rpm.sh`, a dynamic helper script that
   extracts versioning from the SPEC file and automates the full build lifecycle.
 - **Universal Compatibility:** Added filesystem safety checks to automatically
@@ -662,6 +862,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
+
 - **Dynamic Subjects:** Email subjects now include the count of updated packages
   using regex parsing.
 - **Optimization:** Added a zero-impact dry-run check to prevent unnecessary
@@ -675,6 +883,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.0] - 2026-03-12
 
 ### Added
+
+- **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
+  integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
+  etc).
+- **Notifications**: Hardened `DesktopNotifier` by reading the target user's
+  systemd environment to dynamically detect and support pure `WAYLAND_DISPLAY`
+  or `DISPLAY` graphical sessions, preventing notification dispatches to
+  headless TTY users.
 
 - Initial release with Snapper pre/post snapshot integration.
 - Systemd timer and service for daily automation.
