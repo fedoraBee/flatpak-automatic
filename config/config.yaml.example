@@ -1,0 +1,8 @@
+auto_update: true
+enable_snapshots: true
+auto_notify: always
+notification_groups:
+  - name: Default Group
+    urls:
+      - mailto://user:pass@example.com
+    template_body: default.md

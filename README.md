@@ -11,7 +11,7 @@ automation wrapper for Flatpak updates.
 
 It integrates with Snapper to provide atomic-like pre/post update snapshots and
 uses systemd timers for reliable, scheduled execution on Fedora and other
-RPM-based distributions.
+Fedora/RHEL distributions.
 
 ## ✨ Features
 
@@ -33,7 +33,7 @@ Pages for both RPM (Fedora/RHEL) and DEB (Ubuntu/Debian) distributions:
 
 ### 1. Add the Repository
 
-**RPM-based:**
+**Fedora/RHEL:**
 
 ```bash
 sudo tee /etc/yum.repos.d/flatpak-automatic.repo <<'EOF'
@@ -46,7 +46,7 @@ gpgkey=https://fedorabee.github.io/flatpak-automatic/gpg.key
 EOF
 ```
 
-**DEB-based:**
+**Ubuntu/Debian:**
 
 ```bash
 KEY="https://fedorabee.github.io/flatpak-automatic/gpg.key"
@@ -60,13 +60,13 @@ sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
 
 ### 2. Update Cache & Install
 
-**RPM-based:**
+**Fedora/RHEL:**
 
 ```bash
 sudo dnf makecache && sudo dnf install -y flatpak-automatic
 ```
 
-**DEB-based:**
+**Ubuntu/Debian:**
 
 ```bash
 sudo apt update && sudo apt install -y flatpak-automatic

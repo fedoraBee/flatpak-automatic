@@ -1,0 +1,2 @@
+config/config.yaml.example /etc/flatpak-automatic/
+config/templates/* /etc/flatpak-automatic/templates/

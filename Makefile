@@ -42,6 +42,11 @@ lint-rpm:
 	rpmlint -v -r $(CURDIR)/rpm/flatpak-automatic.rpm.rpmlintrc --ignore-unused-rpmlintrc $(TOPDIR)/RPMS/noarch/*.rpm
 
 install:
+	install -d $(DESTDIR)/etc/flatpak-automatic/templates
+	install -m 0644 config/config.yaml.example $(DESTDIR)/etc/flatpak-automatic/config.yaml.example
+	install -m 0644 config/templates/default.md $(DESTDIR)/etc/flatpak-automatic/templates/default.md
+	install -m 0644 config/templates/minimal.txt $(DESTDIR)/etc/flatpak-automatic/templates/minimal.txt
+
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	mkdir -p $(DESTDIR)$(PREFIX)/share/man/man1
 	mkdir -p $(DESTDIR)$(SYSCONFDIR)/sysconfig
