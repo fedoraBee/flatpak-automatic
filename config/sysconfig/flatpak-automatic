@@ -47,4 +47,12 @@ SNAPPER_DESC_POST="flatpak-automatic-post"
 # SNAPPER_PRE_CMD="snapper -c \"\$SNAPPER_CONFIG\" create --type pre --description \"\$SNAPPER_DESC_PRE\" --cleanup-algorithm number --print-number"
 
 # ==============================================================================
-# Version: 1.4.19 | Built for Fedora & Universal RPM Systems
+# Version: 1.4.21 | Built for Fedora & Universal RPM Systems
+
+# --- [ Application Overrides ] ---
+# Comma-separated list of Flatpak App IDs to exclude from automatic updates.
+# FLATPAK_EXCLUDES="org.gimp.GIMP"
+
+# --- [ Desktop Notifications ] ---
+# Set to "yes" to send native UI notifications to active graphical sessions.
+ENABLE_DESKTOP_NOTIFY="no"
