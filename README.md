@@ -22,7 +22,7 @@ RPM-based distributions.
 - **Notifications** – Sends update reports via local mail (`s-nail`/`mailx`)
 - **Systemd Integration** – Managed via standard oneshot services and timers
 - **Configurable** – Easily tune email, snapshot, and scheduling behavior via
-  `/etc/sysconfig/flatpak-automatic`
+  `/etc/flatpak-automatic/config.yaml`
 
 ## 🚀 Quick Start Guide
 
@@ -94,7 +94,7 @@ Fingerprint:
 The main configuration file is located at:
 
 ```text
-/etc/sysconfig/flatpak-automatic
+/etc/flatpak-automatic/config.yaml
 ```
 
 Key options include:
