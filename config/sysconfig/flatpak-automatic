@@ -63,3 +63,10 @@ ENABLE_DESKTOP_NOTIFY="no"
 TIMER_SCHEDULE="daily"
 # Randomization delay to prevent thundering herd problems on multiple machines
 TIMER_DELAY="1h"
+
+# Telemetry & Webhook Integration
+WEBHOOK_URLS=""
+WEBHOOK_SECRET=""
+
+# Minimum Delay in Hours (0 to disable, prevents manual execution spam)
+MINIMUM_DELAY_HOURS="0"

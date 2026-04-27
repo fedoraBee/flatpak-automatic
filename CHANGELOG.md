@@ -17,6 +17,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -49,6 +59,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -75,6 +95,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.20] - 2026-04-27
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -103,6 +133,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.18] - 2026-04-27
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -181,6 +221,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -195,6 +245,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.10] - 2026-04-26
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -211,6 +271,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.9] - 2026-04-26
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -232,6 +302,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.8] - 2026-04-25
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -290,6 +370,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -319,6 +409,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.3] - 2026-04-24
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -352,6 +452,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.0] - 2026-04-24
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -418,6 +528,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -438,6 +558,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -452,6 +582,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.14] - 2026-04-24
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -468,6 +608,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -482,6 +632,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.12] - 2026-04-23
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -498,6 +658,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.11] - 2026-04-23
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -517,6 +687,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.10] - 2026-04-23
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -549,6 +729,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   to successfully sign DNF repository metadata during release tags.
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -616,6 +806,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -631,6 +831,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -645,6 +855,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.0] - 2026-04-23
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -681,6 +901,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -697,6 +927,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.6] - 2026-04-23
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -812,6 +1052,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -862,6 +1112,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -883,6 +1143,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.0] - 2026-03-12
 
 ### Added
+
+- **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
+  vulnerability by removing secret collection from the `--setup` wizard and
+  explicitly enforcing `0600` file permissions on config generation.
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
