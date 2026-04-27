@@ -17,14 +17,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Added customizable default and minimal notification templates.\n- Improved
-  documentation wording replacing generic terms with Ubuntu/Debian and
-  Fedora/RHEL.\n
-- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
-  Debian control files to resolve test failures.
-
+- Restored direct Mail and Webhook integrations supporting legacy
+  `mailx`/`s-nail` and pure HTTP POST webhooks with HMAC-SHA256 signatures.
+- Updated YAML configuration to support global and group-specific `mail` and
+  `webhooks` blocks.
 - Native YAML configuration routing supporting notification groups and
   Markdown/Text template bodies.
+- Added customizable default and minimal notification templates.
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+- Improved documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.
 
 ### Changed
 

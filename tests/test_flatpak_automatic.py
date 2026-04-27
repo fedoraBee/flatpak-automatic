@@ -139,6 +139,7 @@ class TestJSONFormatter:
 
 class TestMainIntegration:
     @patch("sys.argv", ["flatpak-automatic"])
+    @patch("os.geteuid", return_value=0)
     @patch.object(fa, "load_config")
     @patch.object(fa, "FlatpakUpdater")
     @patch.object(fa, "SnapperManager")
@@ -153,6 +154,7 @@ class TestMainIntegration:
         mock_snapper: Any,
         mock_updater: Any,
         mock_load: Any,
+        mock_geteuid: Any,
     ) -> None:
         mock_load.return_value = {
             "auto_update": True,

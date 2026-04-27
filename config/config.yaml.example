@@ -1,8 +1,29 @@
 auto_update: true
 enable_snapshots: true
 auto_notify: always
+
+# Optional: Direct Mail & Webhook Integration (Legacy/Standalone)
+# mail:
+#   enabled: true
+#   to: admin@example.com
+#   from: bot@hostname
+
+# webhooks:
+#   enabled: true
+#   urls:
+#     - https://hooks.slack.com/services/...
+#   secret: "optional_hmac_secret"
+
 notification_groups:
   - name: Default Group
     urls:
       - mailto://user:pass@example.com
     template_body: default.md
+
+  # Group-specific legacy integrations
+  - name: Critical Alerts
+    mail:
+      to: emergency@example.com
+    webhooks:
+      urls:
+        - https://webhook.site/...

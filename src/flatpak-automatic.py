@@ -241,6 +241,86 @@ class DesktopNotifier:
             logging.error(f"Failed to dispatch desktop UI notification: {e}")
 
 
+class WebhookNotifier:
+    def __init__(self, urls: List[str], secret: str = "") -> None:
+        self.urls = urls
+        self.secret = secret.strip()
+
+    def send_notification(self, title: str, body: str) -> None:
+        if not self.urls:
+            return
+        import urllib.request
+        import urllib.error
+        import hmac
+        import hashlib
+
+        payload = json.dumps({"title": title, "body": body}).encode("utf-8")
+
+        for url in self.urls:
+            try:
+                req = urllib.request.Request(url, data=payload, method="POST")
+                req.add_header("Content-Type", "application/json")
+
+                if self.secret:
+                    signature = hmac.new(
+                        self.secret.encode("utf-8"), payload, hashlib.sha256
+                    ).hexdigest()
+                    req.add_header("X-Hub-Signature-256", f"sha256={signature}")
+
+                with urllib.request.urlopen(req, timeout=10) as response:
+                    logging.info(
+                        f"Webhook dispatched to {url} (Status: {response.status})"
+                    )
+            except Exception as e:
+                logging.error(f"Failed to dispatch webhook to {url}: {e}")
+
+
+class MailNotifier:
+    def __init__(self, to_address: str, from_address: str) -> None:
+        self.to_address: str = to_address
+        self.from_address: str = from_address
+        self.mail_cmd: Optional[str] = self._find_mail_cmd()
+
+    def _find_mail_cmd(self) -> Optional[str]:
+        for cmd in ["s-nail", "mailx", "mailutils", "mail"]:
+            try:
+                if (
+                    subprocess.run(
+                        ["command", "-v", cmd], capture_output=True, shell=True
+                    ).returncode
+                    == 0
+                ):
+                    return cmd
+            except Exception:
+                continue
+        return None
+
+    def send_mail(self, subject: str, body: str) -> None:
+        if not self.mail_cmd or not self.to_address:
+            logging.warning(
+                "Skipping mail notification: Mail client or recipient missing."
+            )
+            return
+        try:
+            process = subprocess.Popen(
+                [
+                    self.mail_cmd,
+                    "-s",
+                    subject,
+                    "-r",
+                    self.from_address,
+                    self.to_address,
+                ],
+                stdin=subprocess.PIPE,
+            )
+            process.communicate(input=body.encode("utf-8"))
+            logging.info(
+                f"Notification dispatched to {self.to_address} via {self.mail_cmd}."
+            )
+        except Exception as e:
+            logging.error(f"Failed to dispatch mail: {e}")
+
+
 class TemplateRenderer:
     @staticmethod
     def render(template_name: str, context: Dict[str, str]) -> str:
@@ -257,6 +337,18 @@ class NotificationRouter:
         self.config = config
         self.groups = config.get("notification_groups", [])
 
+        # Support top-level legacy config by injecting it into a virtual group
+        legacy_mail = config.get("mail")
+        legacy_webhooks = config.get("webhooks")
+        if legacy_mail or legacy_webhooks:
+            self.groups.append(
+                {
+                    "name": "Legacy Global Group",
+                    "mail": legacy_mail if legacy_mail else {},
+                    "webhooks": legacy_webhooks if legacy_webhooks else {},
+                }
+            )
+
     def dispatch_all(self, title: str, body: str, success: bool):
         if not self.groups:
             return
@@ -266,6 +358,7 @@ class NotificationRouter:
             "BODY": body,
             "STATUS": "SUCCESS" if success else "FAILED",
             "DATE": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "HOSTNAME": socket.gethostname(),
         }
 
         for group in self.groups:
@@ -276,6 +369,7 @@ class NotificationRouter:
             if template_file:
                 rendered_body = TemplateRenderer.render(template_file, context)
 
+            # 1. Apprise (Universal)
             if APPRISE_AVAILABLE and urls:
                 try:
                     apobj = apprise.Apprise()
@@ -283,10 +377,27 @@ class NotificationRouter:
                         apobj.add(url)
                     apobj.notify(body=rendered_body, title=title)
                     logging.info(
-                        f"Notification group '{group.get('name', 'unnamed')}' dispatched to {len(urls)} endpoints."
+                        f"Notification group '{group.get('name', 'unnamed')}' dispatched to {len(urls)} endpoints via Apprise."
                     )
                 except Exception as e:
                     logging.error(f"Failed to dispatch Apprise notification: {e}")
+
+            # 2. Legacy/Direct Mail
+            mail_cfg = group.get("mail", {})
+            if mail_cfg.get("enabled", False) or "to" in mail_cfg:
+                to_addr = mail_cfg.get("to")
+                from_addr = mail_cfg.get("from", f"bot@{socket.gethostname()}")
+                if to_addr:
+                    mailer = MailNotifier(to_addr, from_addr)
+                    mailer.send_mail(title, rendered_body)
+
+            # 3. Legacy/Direct Webhooks
+            webhook_cfg = group.get("webhooks", {})
+            wh_urls = webhook_cfg.get("urls", [])
+            if wh_urls:
+                secret = webhook_cfg.get("secret", "")
+                wh = WebhookNotifier(wh_urls, secret)
+                wh.send_notification(title, rendered_body)
 
 
 def load_config() -> Dict[str, Any]:
