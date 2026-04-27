@@ -13,6 +13,17 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.22] - 2026-04-27
+
+### Added
+
+- **CLI**: Introduced the `--apply-schedule` command to dynamically generate
+  systemd timer overrides (`TIMER_SCHEDULE`, `TIMER_DELAY`) directly from
+  sysconfig.
+- **UX/Logging**: Implemented context-aware logging detection. The CLI now
+  renders human-readable ANSI outputs in TTY environments and strictly preserves
+  JSON structured logging when executed by systemd in the background.
+
 ## [1.4.21] - 2026-04-27
 
 ### Fixed
