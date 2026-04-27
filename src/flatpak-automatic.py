@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.4.22
+# Version: 1.4.23
 import os
 import sys
 import subprocess
@@ -298,6 +298,12 @@ def main() -> None:
         "--history",
         action="store_true",
         help="Display recent update history from journalctl and exit.",
+    )
+    parser.add_argument(
+        "-a",
+        "--apply-schedule",
+        action="store_true",
+        help="Apply systemd timer overrides based on config settings.",
     )
     args = parser.parse_args()
 
