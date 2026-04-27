@@ -451,11 +451,12 @@ def main() -> None:
         webhooks = ask("Webhook URLs (comma-separated, leave blank to disable)", "")
         if webhooks:
             config_lines.append(f'WEBHOOK_URLS="{webhooks}"')
-            secret = ask(
-                "Webhook Secret (for HMAC-SHA256 signature, leave blank to skip)", ""
+            print(
+                "\n\033[33m🛡️  [SecOps Notice]\033[0m To comply with CodeQL security standards, this wizard will not store the WEBHOOK_SECRET."
             )
-            if secret:
-                config_lines.append(f'WEBHOOK_SECRET="{secret}"')
+            print(
+                '   Please manually add \033[1mWEBHOOK_SECRET="your_secret"\033[0m to the sysconfig file.\n'
+            )
 
         apprise = ask("Apprise URLs (comma-separated, leave blank to disable)", "")
         if apprise:
@@ -467,6 +468,7 @@ def main() -> None:
             os.makedirs(sysconfig_dir, exist_ok=True)
             with open(sysconfig_path, "w") as sysconf_file:
                 sysconf_file.write("\n".join(config_lines) + "\n")
+            os.chmod(sysconfig_path, 0o600)
             print(
                 f"\n\033[32m✅ Successfully wrote configuration to {sysconfig_path}\033[0m"
             )
