@@ -1,6 +1,8 @@
 import sys
 import importlib.util
+import socket
 from unittest.mock import MagicMock, patch
+from typing import Any
 
 # Mock dbus before importing fa
 mock_dbus = MagicMock()
@@ -10,7 +12,9 @@ sys.modules["dbus.exceptions"] = MagicMock()
 spec = importlib.util.spec_from_file_location(
     "flatpak_automatic", "src/flatpak-automatic.py"
 )
-fa = importlib.util.module_from_spec(spec)
+assert spec is not None
+assert spec.loader is not None
+fa: Any = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(fa)
 
 
@@ -18,7 +22,9 @@ class TestNotificationRouter:
     @patch.object(fa, "MailNotifier")
     @patch.object(fa, "WebhookNotifier")
     @patch.object(fa, "TemplateRenderer")
-    def test_dispatch_all_legacy_global(self, mock_template, mock_webhook, mock_mail):
+    def test_dispatch_all_legacy_global(
+        self, mock_template: Any, mock_webhook: Any, mock_mail: Any
+    ) -> None:
         config = {
             "mail": {"enabled": True, "to": "admin@example.com"},
             "webhooks": {"enabled": True, "urls": ["http://webhook.local"]},
@@ -28,7 +34,7 @@ class TestNotificationRouter:
         router.dispatch_all("Test Title", "Test Body", True)
 
         mock_mail.assert_called_once_with(
-            "admin@example.com", f"bot@{fa.socket.gethostname()}"
+            "admin@example.com", f"bot@{socket.gethostname()}"
         )
         mock_mail.return_value.send_mail.assert_called_once_with(
             "Test Title", "Test Body"
@@ -41,7 +47,9 @@ class TestNotificationRouter:
 
     @patch.object(fa, "MailNotifier")
     @patch.object(fa, "WebhookNotifier")
-    def test_dispatch_all_group_specific(self, mock_webhook, mock_mail):
+    def test_dispatch_all_group_specific(
+        self, mock_webhook: Any, mock_mail: Any
+    ) -> None:
         config = {
             "notification_groups": [
                 {
@@ -56,11 +64,12 @@ class TestNotificationRouter:
         router.dispatch_all("Test Title", "Test Body", True)
 
         mock_mail.assert_called_once_with(
-            "admin@example.com", f"bot@{fa.socket.gethostname()}"
+            "admin@example.com", f"bot@{socket.gethostname()}"
         )
+        # WebhookNotifier init takes List[str]
         mock_webhook.assert_called_once_with(["http://admin.local"], "")
 
-    def test_apprise_dispatch(self):
+    def test_apprise_dispatch(self) -> None:
         fa.APPRISE_AVAILABLE = True
         config = {
             "notification_groups": [
