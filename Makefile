@@ -43,9 +43,11 @@ lint-rpm:
 
 install:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	mkdir -p $(DESTDIR)$(PREFIX)/share/man/man1
 	mkdir -p $(DESTDIR)$(SYSCONFDIR)/sysconfig
 	mkdir -p $(DESTDIR)$(PREFIX)/lib/systemd/system
 	install -p -m 755 src/flatpak-automatic.py $(DESTDIR)$(PREFIX)/bin/flatpak-automatic
+	install -p -m 644 docs/flatpak-automatic.1 $(DESTDIR)$(PREFIX)/share/man/man1/flatpak-automatic.1
 	install -p -m 644 config/sysconfig/flatpak-automatic $(DESTDIR)$(SYSCONFDIR)/sysconfig/flatpak-automatic
 	install -p -m 644 config/systemd/flatpak-automatic.service $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.service
 	install -p -m 644 config/systemd/flatpak-automatic.timer $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.timer
