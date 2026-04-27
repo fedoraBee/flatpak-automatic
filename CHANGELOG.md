@@ -17,6 +17,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -49,6 +55,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -75,6 +87,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.20] - 2026-04-27
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -103,6 +121,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.18] - 2026-04-27
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -181,6 +205,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -195,6 +225,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.10] - 2026-04-26
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -211,6 +247,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.9] - 2026-04-26
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -232,6 +274,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.8] - 2026-04-25
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -290,6 +338,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -319,6 +373,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.3] - 2026-04-24
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -352,6 +412,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.0] - 2026-04-24
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -418,6 +484,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -438,6 +510,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -452,6 +530,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.14] - 2026-04-24
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -468,6 +552,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -482,6 +572,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.12] - 2026-04-23
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -498,6 +594,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.11] - 2026-04-23
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -517,6 +619,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.10] - 2026-04-23
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -549,6 +657,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   to successfully sign DNF repository metadata during release tags.
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -616,6 +730,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -631,6 +751,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -645,6 +771,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.0] - 2026-04-23
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -681,6 +813,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -697,6 +835,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.6] - 2026-04-23
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
@@ -812,6 +956,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -862,6 +1012,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
+
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
   etc).
@@ -883,6 +1039,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.0] - 2026-03-12
 
 ### Added
+
+- **CLI & UX**: Subclassed `ArgumentParser` to inject persistent, colorized
+  gradient branding across all interactive `--help` screens.
+- **CLI & UX**: Introduced the `--setup` interactive configuration wizard,
+  allowing users to rapidly generate `/etc/sysconfig/flatpak-automatic` without
+  manual text editing.
 
 - **Telemetry**: Introduced `WebhookNotifier` allowing pure HTTP POST webhook
   integration with HMAC-SHA256 signature verification (for Datadog, Splunk,
