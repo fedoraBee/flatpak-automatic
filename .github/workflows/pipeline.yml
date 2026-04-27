@@ -101,7 +101,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install Build Tools
-        run: dnf install -y rpmlint make python3 dpkg-dev debhelper
+        run: dnf install -y rpmlint make python3 dpkg-dev debhelper python3-yaml
 
       - name: Initialize RPM Environment
         run: echo "%_topdir ${{ github.workspace }}/.rpmbuild" > ~/.rpmmacros
@@ -125,9 +125,9 @@ jobs:
       - name: Install Test Dependencies
         run: |
           if command -v dnf >/dev/null 2>&1; then
-            dnf install -y bats python3-pytest make hostname util-linux
+            dnf install -y bats python3-pytest make hostname util-linux python3-yaml
           else
-            apt-get update && apt-get install -y bats python3-pytest make hostname bsdutils
+            apt-get update && apt-get install -y bats python3-pytest make hostname bsdutils python3-yaml
           fi
       - name: Run Tests
         run: make test
@@ -145,7 +145,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v5
       - name: Install Build Dependencies
-        run: dnf install -y python3 rpm-build systemd-rpm-macros make tar gnupg2 rpm-sign which rpmlint dpkg fakeroot
+        run: dnf install -y python3 rpm-build systemd-rpm-macros make tar gnupg2 rpm-sign which rpmlint dpkg fakeroot python3-yaml
       - name: Compile Packages
         run: make rpm
       - name: Configure GPG Signing Key
@@ -188,7 +188,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v5
       - name: Install Build Dependencies
-        run: apt-get update && apt-get install -y dpkg-dev debhelper make python3 tar build-essential lintian
+        run: apt-get update && apt-get install -y dpkg-dev debhelper make python3 tar build-essential lintian python3-yaml
       - name: Compile Packages
         run: make deb
       - name: Run Lintian
@@ -276,7 +276,7 @@ jobs:
       - name: Install Web Dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y python3 python3-pip make createrepo-c git rsync nodejs npm gnupg2 chromium-browser dpkg-dev apt-utils rpm
+          sudo apt-get install -y python3 python3-pip make createrepo-c git rsync nodejs npm gnupg2 chromium-browser dpkg-dev apt-utils rpm python3-yaml
           python3 -m pip install jinja2 --break-system-packages
           sudo npm install -g htmlhint pa11y
 
@@ -398,7 +398,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install System Dependencies
         run: |
-          dnf install -y python3 python3-pytest python3-dbus python3-dbusmock dbus-daemon flatpak
+          dnf install -y python3 python3-pytest python3-dbus python3-dbusmock dbus-daemon flatpak python3-yaml
       - name: Run DBus Integration Tests
         run: |
           python3 -m pytest tests/integration_test_dbus.py

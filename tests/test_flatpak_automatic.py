@@ -25,7 +25,7 @@ class TestFlatpakUpdater:
         mock_run.return_value = MagicMock(
             stdout="org.test.App\tmaster\t1.0", returncode=0
         )
-        updater = fa.FlatpakUpdater(excludes="")
+        updater = fa.FlatpakUpdater(excludes=[])
         assert updater.check_updates() is True
         assert updater.updates_available is True
 
@@ -34,14 +34,14 @@ class TestFlatpakUpdater:
         mock_run.return_value = MagicMock(
             stdout="Looking for updates...\nNothing to do.\n", returncode=0
         )
-        updater = fa.FlatpakUpdater(excludes="")
+        updater = fa.FlatpakUpdater(excludes=[])
         assert updater.check_updates() is False
         assert updater.updates_available is False
 
     @patch("subprocess.run")
     def test_apply_updates_success(self, mock_run: Any) -> None:
         mock_run.return_value = MagicMock(stdout="Success", stderr="", returncode=0)
-        updater = fa.FlatpakUpdater(excludes="")
+        updater = fa.FlatpakUpdater(excludes=[])
         assert updater.apply_updates() is True
 
     @patch("subprocess.run")
@@ -51,7 +51,7 @@ class TestFlatpakUpdater:
             stderr="Error: GPG verification failed",
             returncode=1,
         )
-        updater = fa.FlatpakUpdater(excludes="")
+        updater = fa.FlatpakUpdater(excludes=[])
         assert updater.apply_updates() is False
         assert "Error: GPG verification failed" in updater.update_log
 
@@ -77,17 +77,17 @@ class TestSnapperManager:
         assert manager.create_timeline_snapshot() == -1
 
 
-class TestLoadSysconfig:
+class TestLoadConfig:
     @patch("os.path.exists")
-    def test_load_sysconfig_parsing(self, mock_exists: Any) -> None:
-        mock_exists.side_effect = lambda path: path == "/etc/default/flatpak-automatic"
-        mock_file_content = (
-            'FLATPAK_AUTO_UPDATE="false"\nFLATPAK_CREATE_SNAPSHOT=true\n# Comment\n'
+    def test_load_config_parsing(self, mock_exists: Any) -> None:
+        mock_exists.side_effect = lambda path: (
+            path == "/etc/flatpak-automatic/config.yaml"
         )
+        mock_file_content = "auto_update: false\nenable_snapshots: true\n"
         with patch("builtins.open", mock_open(read_data=mock_file_content)):
-            config = fa.load_sysconfig()
-            assert config.get("FLATPAK_AUTO_UPDATE") == "false"
-            assert config.get("FLATPAK_CREATE_SNAPSHOT") == "true"
+            config = fa.load_config()
+            assert config.get("auto_update") is False
+            assert config.get("enable_snapshots") is True
 
 
 class TestJSONFormatter:
@@ -139,18 +139,28 @@ class TestJSONFormatter:
 
 class TestMainIntegration:
     @patch("sys.argv", ["flatpak-automatic"])
-    @patch.object(fa, "load_sysconfig")
+    @patch.object(fa, "load_config")
     @patch.object(fa, "FlatpakUpdater")
     @patch.object(fa, "SnapperManager")
-    @patch.object(fa, "MailNotifier")
+    @patch.object(fa, "NotificationRouter")
+    @patch.object(fa, "load_state")
+    @patch.object(fa, "save_state")
     def test_main_updates_found(
-        self, mock_mail: Any, mock_snapper: Any, mock_updater: Any, mock_load: Any
+        self,
+        mock_save_state: Any,
+        mock_load_state: Any,
+        mock_router: Any,
+        mock_snapper: Any,
+        mock_updater: Any,
+        mock_load: Any,
     ) -> None:
         mock_load.return_value = {
-            "FLATPAK_AUTO_UPDATE": "true",
-            "FLATPAK_CREATE_SNAPSHOT": "true",
-            "FLATPAK_AUTO_NOTIFY": "none",
+            "auto_update": True,
+            "enable_snapshots": True,
+            "auto_notify": "none",
         }
+        mock_load_state.return_value = {"last_try": "Never", "last_success": "Never"}
+
         updater_instance = mock_updater.return_value
         updater_instance.check_updates.return_value = True
         updater_instance.apply_updates.return_value = True
@@ -168,3 +178,4 @@ class TestMainIntegration:
             "flatpak-automatic-post"
         )
         updater_instance.apply_updates.assert_called_once()
+        mock_save_state.assert_called()

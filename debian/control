@@ -8,7 +8,7 @@ Standards-Version: 4.5.0
 
 Package: flatpak-automatic
 Architecture: all
-Depends: ${misc:Depends}, flatpak, systemd, python3, python3-dbus
+Depends: ${misc:Depends}, flatpak, systemd, python3, python3-yaml, python3-dbus
 Recommends: python3-apprise
 Description: Automated Flatpak updates via systemd
  A simple script and systemd service/timer to automatically

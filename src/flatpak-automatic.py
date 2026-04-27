@@ -2,14 +2,53 @@
 # Version: 1.5.1
 import os
 import sys
+import json
 import subprocess
 import socket
 import logging
-import json
-import shlex
 import argparse
+import yaml
+from string import Template
 from datetime import datetime, timezone
-from typing import Optional, Dict
+from typing import Optional, Dict, Any, List
+
+
+class Colors:
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKCYAN = "\033[96m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
+    BOLD = "\033[1m"
+
+
+STATE_FILE = "/var/cache/flatpak-automatic/state.json"
+CONFIG_FILE = "/etc/flatpak-automatic/config.yaml"
+TEMPLATE_DIR = "/etc/flatpak-automatic/templates"
+
+
+def load_state() -> Dict[str, Any]:
+    try:
+        with open(STATE_FILE, "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {"last_try": "Never", "last_success": "Never"}
+
+
+def save_state(state: Dict[str, Any]) -> None:
+    try:
+        os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
+        with open(STATE_FILE, "w") as f:
+            json.dump(state, f)
+    except Exception as e:
+        logging.warning(f"Failed to save state: {e}")
+
+
+def exit_clean(code: int = 0):
+    print("")
+    sys.exit(code)
 
 
 class JSONFormatter(logging.Formatter):
@@ -25,7 +64,6 @@ class JSONFormatter(logging.Formatter):
         return json.dumps(log_record)
 
 
-# Configure native Systemd logging (syslog/journald ready)
 class ANSIFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         colors = {"INFO": "\033[36m", "WARNING": "\033[33m", "ERROR": "\033[31m"}
@@ -78,7 +116,6 @@ class SnapperManager:
                 )
                 self.interface = dbus.Interface(self.proxy, "org.opensuse.Snapper")
             except Exception as e:
-                # Graceful degradation for systems lacking Snapper
                 logging.info(
                     f"Notice: Snapper DBus unavailable. Bypassing snapshots gracefully. ({type(e).__name__})"
                 )
@@ -104,10 +141,10 @@ class SnapperManager:
 
 
 class FlatpakUpdater:
-    def __init__(self, excludes: str = "") -> None:
+    def __init__(self, excludes: List[str] = None) -> None:
         self.updates_available: bool = False
         self.update_log: str = ""
-        self.excludes = [x.strip() for x in excludes.split(",") if x.strip()]
+        self.excludes = excludes or []
 
     def check_updates(self) -> bool:
         cmd = ["flatpak", "update", "--dry-run", "--columns=application,branch,version"]
@@ -135,8 +172,8 @@ class FlatpakUpdater:
 
 
 class DesktopNotifier:
-    def __init__(self, enabled: str = "no") -> None:
-        self.enabled = enabled.lower() in ("yes", "true", "1")
+    def __init__(self, enabled: bool = False) -> None:
+        self.enabled = enabled
 
     def send_notification(
         self, title: str, body: str, icon: str = "software-update-available"
@@ -144,7 +181,6 @@ class DesktopNotifier:
         if not self.enabled:
             return
         try:
-            # Safely traverse session boundary to find active graphical user
             users_out = subprocess.run(
                 ["loginctl", "list-users", "--no-legend"],
                 capture_output=True,
@@ -156,14 +192,11 @@ class DesktopNotifier:
                 parts = line.split()
                 if len(parts) >= 2:
                     uid, user = parts[0], parts[1]
-
-                    # Fetch user's systemd environment to accurately detect graphical sessions
                     env_out = subprocess.run(
                         ["sudo", "-u", user, "systemctl", "--user", "show-environment"],
                         capture_output=True,
                         text=True,
                     ).stdout
-
                     env_dict = {}
                     for el in env_out.splitlines():
                         if "=" in el:
@@ -208,144 +241,80 @@ class DesktopNotifier:
             logging.error(f"Failed to dispatch desktop UI notification: {e}")
 
 
-class AppriseNotifier:
-    def __init__(self, urls: str) -> None:
-        self.urls = [url.strip() for url in urls.split(",") if url.strip()]
+class TemplateRenderer:
+    @staticmethod
+    def render(template_name: str, context: Dict[str, str]) -> str:
+        path = os.path.join(TEMPLATE_DIR, f"{template_name}")
+        if not os.path.exists(path):
+            return context.get("BODY", "")
+        with open(path, "r") as f:
+            tpl = Template(f.read())
+            return tpl.safe_substitute(context)
 
-    def send_notification(self, title: str, body: str) -> None:
-        if not APPRISE_AVAILABLE or not self.urls:
-            logging.warning(
-                "Skipping Apprise notification: Apprise not available or no URLs configured."
-            )
+
+class NotificationRouter:
+    def __init__(self, config: Dict[str, Any]):
+        self.config = config
+        self.groups = config.get("notification_groups", [])
+
+    def dispatch_all(self, title: str, body: str, success: bool):
+        if not self.groups:
             return
-        try:
-            apobj = apprise.Apprise()
-            for url in self.urls:
-                apobj.add(url)
-            apobj.notify(body=body, title=title)
-            logging.info(
-                f"Apprise notification dispatched to {len(self.urls)} endpoints."
-            )
-        except Exception as e:
-            logging.error(f"Failed to dispatch Apprise notification: {e}")
 
+        context = {
+            "TITLE": title,
+            "BODY": body,
+            "STATUS": "SUCCESS" if success else "FAILED",
+            "DATE": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        }
 
-class WebhookNotifier:
-    def __init__(self, urls: str, secret: str = "") -> None:
-        self.urls = [url.strip() for url in urls.split(",") if url.strip()]
-        self.secret = secret.strip()
+        for group in self.groups:
+            urls = group.get("urls", [])
+            template_file = group.get("template_body", "")
 
-    def send_notification(self, title: str, body: str) -> None:
-        if not self.urls:
-            return
-        import urllib.request
-        import urllib.error
-        import json
-        import hmac
-        import hashlib
+            rendered_body = body
+            if template_file:
+                rendered_body = TemplateRenderer.render(template_file, context)
 
-        payload = json.dumps({"title": title, "body": body}).encode("utf-8")
-
-        for url in self.urls:
-            try:
-                req = urllib.request.Request(url, data=payload, method="POST")
-                req.add_header("Content-Type", "application/json")
-
-                if self.secret:
-                    signature = hmac.new(
-                        self.secret.encode("utf-8"), payload, hashlib.sha256
-                    ).hexdigest()
-                    req.add_header("X-Hub-Signature-256", f"sha256={signature}")
-
-                with urllib.request.urlopen(req, timeout=10) as response:
+            if APPRISE_AVAILABLE and urls:
+                try:
+                    apobj = apprise.Apprise()
+                    for url in urls:
+                        apobj.add(url)
+                    apobj.notify(body=rendered_body, title=title)
                     logging.info(
-                        f"Webhook dispatched to {url} (Status: {response.status})"
+                        f"Notification group '{group.get('name', 'unnamed')}' dispatched to {len(urls)} endpoints."
                     )
-            except Exception as e:
-                logging.error(f"Failed to dispatch webhook to {url}: {e}")
+                except Exception as e:
+                    logging.error(f"Failed to dispatch Apprise notification: {e}")
 
 
-class MailNotifier:
-    def __init__(self, to_address: str, from_address: str) -> None:
-        self.to_address: str = to_address
-        self.from_address: str = from_address
-        self.mail_cmd: Optional[str] = self._find_mail_cmd()
-
-    def _find_mail_cmd(self) -> Optional[str]:
-        for cmd in ["s-nail", "mailx", "mailutils", "mail"]:
-            if (
-                subprocess.run(["command", "-v", cmd], capture_output=True).returncode
-                == 0
-            ):
-                return cmd
-        return None
-
-    def send_mail(self, subject: str, body: str) -> None:
-        if not self.mail_cmd or not self.to_address:
-            logging.warning(
-                "Skipping mail notification: Mail client or recipient missing."
-            )
-            return
+def load_config() -> Dict[str, Any]:
+    if os.path.exists(CONFIG_FILE):
         try:
-            process = subprocess.Popen(
-                [
-                    self.mail_cmd,
-                    "-s",
-                    subject,
-                    "-r",
-                    self.from_address,
-                    self.to_address,
-                ],
-                stdin=subprocess.PIPE,
-            )
-            process.communicate(input=body.encode("utf-8"))
-            logging.info(
-                f"Notification dispatched to {self.to_address} via {self.mail_cmd}."
-            )
+            with open(CONFIG_FILE, "r") as f:
+                return yaml.safe_load(f) or {}
         except Exception as e:
-            logging.error(f"Failed to dispatch mail: {e}")
-
-
-def load_sysconfig() -> Dict[str, str]:
-    config: Dict[str, str] = {}
-    paths = ["/etc/flatpak-automatic/config.yaml", "/etc/default/flatpak-automatic"]
-    for path in paths:
-        if os.path.exists(path):
-            with open(path, "r") as f:
-                for line in f:
-                    line = line.strip()
-                    if line and not line.startswith("#") and "=" in line:
-                        k, v = line.split("=", 1)
-                        k = k.replace("export ", "").strip()
-                        v = v.strip()
-                        try:
-                            parsed = shlex.split(v)
-                            config[k] = parsed[0] if parsed else ""
-                        except ValueError:
-                            config[k] = v.strip("\"'")
-            break
-    return config
+            logging.error(f"Failed to parse YAML config: {e}")
+    return {}
 
 
 class BrandedArgumentParser(argparse.ArgumentParser):
     def print_help(self, file=None):
         banner = (
-            "\033[1m\033[38;2;0;155;155m  ___ _       _               _    \n"
-            "\033[38;2;42;123;202m | __| |__ _ | |_ _ __  __ _ | |__ \n"
-            "\033[38;2;138;58;185m | _|| / _` || ._| '_ \\/ _` || / / \n"
-            "\033[38;2;193;14;140m |_| |_\\__,_|\\__|| .__/\\__,_||_\\_\\\n"
-            "                 |_| AUTOMATIC\033[0m\n"
+            f"{Colors.BOLD}{Colors.OKCYAN}  ___ _       _               _    \n"
+            f"{Colors.OKBLUE} | __| |__ _ | |_ _ __  __ _ | |__ \n"
+            f"{Colors.HEADER} | _|| / _` || ._| '_ \\/ _` || / / \n"
+            f"{Colors.FAIL} |_| |_\\__,_|\\__|| .__//\\__,_||_\\_\\\n"
+            f"                 |_| AUTOMATIC{Colors.ENDC}\n"
         )
         if file is None:
-            import sys
-
             file = sys.stdout
         file.write(banner + "\n")
         super().print_help(file)
 
 
 def main() -> None:
-
     parser = BrandedArgumentParser(
         description="Flatpak Automatic - Enterprise Update Automation"
     )
@@ -385,40 +354,34 @@ def main() -> None:
         action="store_true",
         help="Apply systemd timer overrides based on config settings.",
     )
-
-    parser.add_argument(
-        "-u",
-        "--setup",
-        action="store_true",
-        help="Launch the interactive configuration wizard to generate sysconfig.",
-    )
     args = parser.parse_args()
 
     if sys.stdout.isatty():
         print(
-            "\033[1m\033[38;2;0;155;155m  ___ _       _               _    \n"
-            "\033[38;2;42;123;202m | __| |__ _ | |_ _ __  __ _ | |__ \n"
-            "\033[38;2;138;58;185m | _|| / _` || ._| '_ \\/ _` || / / \n"
-            "\033[38;2;193;14;140m |_| |_\\__,_|\\__|| .__/\\__,_||_\\_\\\n"
-            "                 |_| AUTOMATIC\033[0m\n"
+            f"{Colors.BOLD}{Colors.OKCYAN}  ___ _       _               _    \n"
+            f"{Colors.OKBLUE} | __| |__ _ | |_ _ __  __ _ | |__ \n"
+            f"{Colors.HEADER} | _|| / _` || ._| '_ \\/ _` || / / \n"
+            f"{Colors.FAIL} |_| |_\\__,_|\\__|| .__//\\__,_||_\\_\\\n"
+            f"                 |_| AUTOMATIC{Colors.ENDC}\n"
         )
 
-    config: Dict[str, str] = load_sysconfig()
+    config: Dict[str, Any] = load_config()
+    state = load_state()
 
     if os.geteuid() != 0:
         print(
-            "\033[31m❌ Error: This script requires root privileges. Please run with sudo.\033[0m"
+            f"{Colors.FAIL}❌ Error: This script requires root privileges. Please run with sudo.{Colors.ENDC}"
         )
-        sys.exit(1)
+        exit_clean(1)
 
     if args.apply_schedule:
-        schedule = config.get("TIMER_SCHEDULE", "daily")
-        delay = config.get("TIMER_DELAY", "1h")
+        schedule = config.get("timer_schedule", "daily")
+        delay = config.get("timer_delay", "1h")
         override_dir = "/etc/systemd/system/flatpak-automatic.timer.d"
         override_file = os.path.join(override_dir, "override.conf")
 
         try:
-            print("\033[1m⚙️  Applying Systemd Timer Override...\033[0m")
+            print(f"{Colors.BOLD}⚙️  Applying Systemd Timer Override...{Colors.ENDC}")
             os.makedirs(override_dir, exist_ok=True)
             with open(override_file, "w") as f:
                 f.write(
@@ -431,108 +394,70 @@ def main() -> None:
                 ["systemctl", "restart", "flatpak-automatic.timer"], check=True
             )
             print(
-                f"\033[32m✅ Successfully applied schedule: '{schedule}' with a '{delay}' randomization delay.\033[0m"
+                f"{Colors.OKGREEN}✅ Successfully applied schedule: '{schedule}' with a '{delay}' randomization delay.{Colors.ENDC}"
             )
         except Exception as e:
-            print(f"\033[31m❌ Failed to apply systemd schedule: {e}\033[0m")
-        sys.exit(0)
+            print(f"{Colors.FAIL}❌ Failed to apply systemd schedule: {e}{Colors.ENDC}")
+        exit_clean(0)
 
     if args.status:
-        print("\033[1m[ System Status & Monitoring Overview ]\033[0m")
-        print("\n\033[1m⚙️  Configuration (/etc/flatpak-automatic/config.yaml):\033[0m")
-        for k, v in config.items():
-            print(f"  {k}: {v}")
-        print("\n\033[1m📦 Flatpak Status:\033[0m")
-        subprocess.run(["flatpak", "list", "--app", "--columns=application,version"])
-        sys.exit(0)
+        print(
+            f"{Colors.HEADER}{Colors.BOLD}[ System Status & Monitoring Overview ]{Colors.ENDC}"
+        )
+
+        print(f"\n{Colors.OKCYAN}📊 Execution State:{Colors.ENDC}")
+        print(f"  Last Update Try: {state.get('last_try', 'Never')}")
+        print(f"  Last Success:    {state.get('last_success', 'Never')}")
+
+        print(f"\n{Colors.OKCYAN}⚙️  Configuration ({CONFIG_FILE}):{Colors.ENDC}")
+        print(yaml.dump(config, default_flow_style=False).replace("\n", "\n  "))
+
+        print(f"\n{Colors.OKCYAN}📦 Installed Flatpaks:{Colors.ENDC}")
+        result = subprocess.run(
+            ["flatpak", "list", "--app", "--columns=application,version"],
+            capture_output=True,
+            text=True,
+        )
+        for line in result.stdout.strip().split("\n"):
+            print(f"  {line}")
+        exit_clean(0)
 
     if args.history:
-        print("\033[1m[ Recent flatpak-automatic Execution History ]\033[0m")
+        print(
+            f"{Colors.HEADER}{Colors.BOLD}[ Recent flatpak-automatic Execution History ]{Colors.ENDC}"
+        )
         subprocess.run(
             ["journalctl", "-u", "flatpak-automatic.service", "-n", "20", "--no-pager"]
         )
-        sys.exit(0)
+        exit_clean(0)
 
     if args.test_notify:
         logging.info("Executing Test Notification dispatch...")
-        mailer = MailNotifier(
-            config.get("FLATPAK_MAIL_TO", config.get("EMAIL_TO", "")),
-            config.get(
-                "FLATPAK_MAIL_FROM",
-                config.get("EMAIL_FROM", f"flatpak-automatic@{socket.gethostname()}"),
-            ),
-        )
-        mailer.send_mail(
+        router = NotificationRouter(config)
+        router.dispatch_all(
             "[TEST] Flatpak Automatic",
             "This is a test notification from flatpak-automatic.",
+            True,
         )
-        apprise_urls = config.get("FLATPAK_APPRISE_URLS", "")
-        if apprise_urls:
-            apprise_notifier = AppriseNotifier(apprise_urls)
-            apprise_notifier.send_notification(
-                "[TEST] Flatpak Automatic",
-                "This is a test notification from flatpak-automatic.",
-            )
 
-        webhook_urls = config.get("WEBHOOK_URLS", "")
-        if webhook_urls:
-            webhook_notifier = WebhookNotifier(
-                webhook_urls, config.get("WEBHOOK_SECRET", "")
-            )
-            webhook_notifier.send_notification(
-                "[TEST] Flatpak Automatic",
-                "This is a test notification from flatpak-automatic.",
-            )
-        desktop = DesktopNotifier(
-            config.get("ENABLE_DESKTOP_NOTIFY", "yes")
-        )  # Force test to yes
+        desktop = DesktopNotifier(enabled=True)
         desktop.send_notification(
             "Test Notification", "This is a test notification from flatpak-automatic."
         )
-        sys.exit(0)
+        exit_clean(0)
 
-    auto_update = config.get("AUTO_UPDATE", "true").lower() == "true"
+    auto_update = config.get("auto_update", True)
     if not auto_update and not args.force:
         logging.info("Automatic updates are disabled via configuration.")
-        sys.exit(0)
+        exit_clean(0)
 
-    # Minimum delay check
-    delay_hours_str = config.get("MINIMUM_DELAY_HOURS", "0")
-    try:
-        delay_hours = float(delay_hours_str)
-    except ValueError:
-        delay_hours = 0.0
+    state["last_try"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    save_state(state)
 
-    state_dir = "/var/lib/flatpak-automatic"
-    state_file = os.path.join(state_dir, ".last_run")
-
-    if (
-        delay_hours > 0
-        and not args.force
-        and not getattr(args, "dry_run", False)
-        and not getattr(args, "test_notify", False)
-        and not getattr(args, "status", False)
-        and not getattr(args, "history", False)
-        and not getattr(args, "apply_schedule", False)
-    ):
-        if os.path.exists(state_file):
-            try:
-                with open(state_file, "r") as f:
-                    last_run = float(f.read().strip())
-                if (datetime.now(timezone.utc).timestamp() - last_run) < (
-                    delay_hours * 3600
-                ):
-                    logging.info(
-                        f"Minimum delay of {delay_hours}h has not elapsed. Skipping update. Use --force to override."
-                    )
-                    sys.exit(0)
-            except Exception as e:
-                logging.warning(f"Failed to read state file: {e}")
-
-    updater = FlatpakUpdater(excludes=config.get("FLATPAK_EXCLUDES", ""))
+    updater = FlatpakUpdater(excludes=config.get("excludes", []))
     if not updater.check_updates():
         logging.info("No Flatpak updates available.")
-        sys.exit(0)
+        exit_clean(0)
 
     logging.info("Updates found. Interfacing with System Services...")
 
@@ -541,81 +466,41 @@ def main() -> None:
             "[DRY-RUN] Updates found, but dry-run is active. Skipping snapshots and applying updates."
         )
         logging.info(f"[DRY-RUN] Would have updated:\n{updater.update_log}")
-        sys.exit(0)
+        exit_clean(0)
 
-    if config.get(
-        "ENABLE_SNAPSHOTS", config.get("FLATPAK_CREATE_SNAPSHOT", "true")
-    ).lower() in ("yes", "true", "1"):
-        snapper = SnapperManager(config=config.get("SNAPPER_CONFIG", "root"))
-        snapper.create_timeline_snapshot(
-            config.get("SNAPPER_DESC_PRE", "flatpak-automatic-pre")
-        )
+    if config.get("enable_snapshots", True):
+        snapper = SnapperManager(config=config.get("snapper_config", "root"))
+        snapper.create_timeline_snapshot("flatpak-automatic-pre")
 
     logging.info("Applying Flatpak updates...")
     success: bool = updater.apply_updates()
 
-    if success and config.get("ENABLE_SNAPSHOTS", "true").lower() in (
-        "yes",
-        "true",
-        "1",
-    ):
-        if "snapper" in locals():
-            snapper.create_timeline_snapshot(
-                config.get("SNAPPER_DESC_POST", "flatpak-automatic-post")
-            )
+    if success:
+        state["last_success"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        save_state(state)
+        if config.get("enable_snapshots", True):
+            if "snapper" in locals():
+                snapper.create_timeline_snapshot("flatpak-automatic-post")
 
-    notify_type: str = config.get(
-        "FLATPAK_AUTO_NOTIFY", config.get("ENABLE_EMAIL", "yes")
-    ).lower()
-    trigger_notify: bool = False
+    notify_type = config.get("auto_notify", "always").lower()
+    trigger_notify = False
 
-    if notify_type in ("always", "on-update", "yes", "true", "1"):
+    if notify_type in ("always", "on-update"):
         trigger_notify = True
     elif notify_type == "on-error" and not success:
         trigger_notify = True
 
     if trigger_notify:
-        subject_prefix: str = "[SUCCESS]" if success else "[FAILED]"
+        subject_prefix = "[SUCCESS]" if success else "[FAILED]"
         title = f"{subject_prefix} Flatpak Updates - {socket.gethostname()}"
-        mailer = MailNotifier(
-            config.get("FLATPAK_MAIL_TO", config.get("EMAIL_TO", "")),
-            config.get(
-                "FLATPAK_MAIL_FROM",
-                config.get("EMAIL_FROM", f"flatpak-automatic@{socket.gethostname()}"),
-            ),
-        )
-        mailer.send_mail(title, updater.update_log)
 
-        apprise_urls = config.get("FLATPAK_APPRISE_URLS", "")
-        if apprise_urls:
-            apprise_notifier = AppriseNotifier(apprise_urls)
-            apprise_notifier.send_notification(title, updater.update_log)
+        router = NotificationRouter(config)
+        router.dispatch_all(title, updater.update_log, success)
 
-        webhook_urls = config.get("WEBHOOK_URLS", "")
-        if webhook_urls:
-            webhook_notifier = WebhookNotifier(
-                webhook_urls, config.get("WEBHOOK_SECRET", "")
-            )
-            webhook_notifier.send_notification(title, updater.update_log)
-
-        desktop = DesktopNotifier(config.get("ENABLE_DESKTOP_NOTIFY", "no"))
+        desktop = DesktopNotifier(config.get("enable_desktop_notify", False))
         desktop.send_notification(title, updater.update_log)
 
-    if (
-        not getattr(args, "dry_run", False)
-        and not getattr(args, "test_notify", False)
-        and not getattr(args, "status", False)
-        and not getattr(args, "history", False)
-        and not getattr(args, "apply_schedule", False)
-    ):
-        try:
-            os.makedirs(state_dir, exist_ok=True)
-            with open(state_file, "w") as f:
-                f.write(str(datetime.now(timezone.utc).timestamp()))
-        except Exception as e:
-            logging.warning(f"Failed to write state file: {e}")
-
-    sys.exit(0 if success else 1)
+    exit_clean(0 if success else 1)
 
 
 if __name__ == "__main__":

@@ -17,10 +17,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - Native YAML configuration routing supporting notification groups and
   Markdown/Text template bodies.
 
 ### Changed
+
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
 
 - Deprecated `/etc/sysconfig/flatpak-automatic` in favor of
   `/etc/flatpak-automatic/config.yaml`.
@@ -34,6 +43,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.5.0] - 2026-04-27
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -81,6 +93,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -121,6 +136,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.20] - 2026-04-27
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -164,6 +182,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -194,6 +215,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Architecture**: Migrated application core to `src/`, consolidated
   environment templates to `config/`, and segregated CI/CD utilities into
   `scripts/build/` and `scripts/maintainer/`.
@@ -207,6 +234,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.16] - 2026-04-26
 
 ### Changed
+
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
 
 - **Refactor**: Reorganized repository structure by moving documentation to
   `docs/` and repository management scripts to `scripts/`.
@@ -237,6 +270,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **UX/UI**: Replaced traditional SVG logos and plain text headers in
   `README.md` and repository web index with the CLI-native ASCII gradient banner
   for strict brand consistency.
@@ -244,6 +283,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.12] - 2026-04-26
 
 ### Changed
+
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
 
 - **UX/UI**: Refactored CLI execution banner to use a compact, multicolored ANSI
   gradient.
@@ -254,6 +299,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.11] - 2026-04-26
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -283,6 +331,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.10] - 2026-04-26
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -314,6 +365,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -342,12 +396,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Core**: Refactored `load_sysconfig()` to use Python's native `shlex` module
   for robust, quote-safe environment variable parsing.
 
 ## [1.4.8] - 2026-04-25
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -384,6 +447,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Core**: Migrated standard text logging to structured JSON output using a
   native `JSONFormatter` for improved SIEM observability.
 - **CI/QA**: Resolved `mypy` strict type hinting violations in custom logging
@@ -409,6 +478,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Core**: Migrated daemon to use strict Python type hinting (`mypy`
   compliant).
 - **Core**: Transitioned standard output prints to the native `logging` module
@@ -419,6 +494,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.6] - 2026-04-24
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -449,6 +527,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Systemd**: Standardized service configuration paths by adding dual
   `EnvironmentFile` directives (`/etc/sysconfig` and `/etc/default`) to natively
   support both RPM and Debian-based systems.
@@ -463,6 +547,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.3] - 2026-04-24
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -494,6 +581,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Repository**: Overhauled Debian APT repository layout to use
   enterprise-standard `pool/` and `dists/` hierarchies via `apt-ftparchive`.
 - **Documentation**: Updated `README.md` and repository web index configuration
@@ -510,6 +603,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.0] - 2026-04-24
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -539,6 +635,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.3.6] - 2026-04-24
 
 ### Changed
+
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
 
 - **Repository**: Refactored repository structure to use separate `rpms/` and
   `debs/` subdirectories.
@@ -590,6 +692,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -617,12 +722,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Build System**: Updated `Makefile` DEB target to use native
   `dpkg-buildpackage`.
 
 ## [1.3.0] - 2026-04-24
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -653,6 +767,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -681,6 +798,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.13] - 2026-04-23
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -711,6 +831,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -740,6 +863,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.11] - 2026-04-23
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -773,6 +899,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.10] - 2026-04-23
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -820,6 +949,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -847,6 +979,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **CI/CD**: Refactored the primary pipeline (`pipeline.yml`) with descriptive
   job naming, structural reorganization, and improved internal documentation.
 - **CI/CD**: Moved `rpmlint` execution into the primary build job to resolve
@@ -864,6 +1002,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Documentation**: Updated CI/CD status badges in `README.md` to reflect the
   new unified `pipeline.yml`.
 
@@ -877,6 +1021,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.5] - 2026-04-23
 
 ### Changed
+
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
 
 - **CI/CD**: Unified `ci.yml` and `release.yml` into a single `pipeline.yml` to
   enforce strict artifact promotion. The HTML index is now built once, uploaded
@@ -893,12 +1043,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **CI/CD**: Switched `release.yml` to use `generate-index.py` with injected
   build metadata and added a pre-deployment `htmlhint` check.
 
 ## [1.2.2] - 2026-04-23
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -929,6 +1088,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -957,6 +1119,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.0] - 2026-04-23
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -988,6 +1153,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **UI/UX**: Constrained RPM package lists within channel `<details>` blocks to
   a max height with an `overflow-y` scrollbar to improve repository index
   scalability.
@@ -995,6 +1166,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.8] - 2026-04-23
 
 ### Changed
+
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
 
 - **UI/UX**: Refactored `generate-index.sh` to dynamically tag the newest
   version folder and patch RPMs as 'LATEST'.
@@ -1006,6 +1183,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.7] - 2026-04-23
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -1038,6 +1218,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
+
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
   updated `README.md` with new features.
@@ -1067,6 +1250,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
   deployment failure.
 
@@ -1080,6 +1269,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
   deployment failure.
 
@@ -1092,6 +1287,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.3] - 2026-04-22
 
 ### Changed
+
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
 
 - **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
   deployment failure.
@@ -1108,6 +1309,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
   deployment failure.
 
@@ -1120,6 +1327,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.1] - 2026-04-22
 
 ### Changed
+
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
 
 - **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
   deployment failure.
@@ -1144,6 +1357,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
   deployment failure.
 
@@ -1165,6 +1384,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.3] - 2026-03-29
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -1200,6 +1422,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
   deployment failure.
 
@@ -1215,6 +1443,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Added ANSI color formatting for improved CLI visual hierarchy.
+- Implemented execution state caching (`last_try` and `last_success` dates) in
+  status view.
+- Standardized list indentation across all CLI outputs.
+- Enforced trailing empty lines for cleaner terminal UX.
+
 - **Bugfix**: Resolved bash heredoc collision in `generate-index.sh` to fix CI
   deployment failure.
 
@@ -1229,6 +1463,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.1] - 2026-03-29
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
@@ -1265,6 +1502,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.0] - 2026-03-12
 
 ### Added
+
+- Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
+  Debian control files to resolve test failures.
 
 - **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
   configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
