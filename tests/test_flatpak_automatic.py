@@ -138,6 +138,7 @@ class TestJSONFormatter:
 
 
 class TestMainIntegration:
+    @patch("sys.argv", ["flatpak-automatic"])
     @patch.object(fa, "load_sysconfig")
     @patch.object(fa, "FlatpakUpdater")
     @patch.object(fa, "SnapperManager")

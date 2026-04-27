@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.4.18
+# Version: 1.4.19
 import os
 import sys
 import subprocess
