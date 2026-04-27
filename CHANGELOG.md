@@ -17,6 +17,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -59,6 +63,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -95,6 +103,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.20] - 2026-04-27
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -133,6 +145,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.18] - 2026-04-27
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -221,6 +237,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -245,6 +265,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.10] - 2026-04-26
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -271,6 +295,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.9] - 2026-04-26
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -302,6 +330,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.8] - 2026-04-25
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -370,6 +402,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -409,6 +445,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.3] - 2026-04-24
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -452,6 +492,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.0] - 2026-04-24
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -528,6 +572,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -558,6 +606,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -582,6 +634,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.14] - 2026-04-24
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -608,6 +664,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -632,6 +692,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.12] - 2026-04-23
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -658,6 +722,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.11] - 2026-04-23
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -687,6 +755,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.10] - 2026-04-23
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -729,6 +801,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   to successfully sign DNF repository metadata during release tags.
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -806,6 +882,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -831,6 +911,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -855,6 +939,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.0] - 2026-04-23
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -901,6 +989,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -927,6 +1019,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.6] - 2026-04-23
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
@@ -1052,6 +1148,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -1112,6 +1212,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
+
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and
   explicitly enforcing `0600` file permissions on config generation.
@@ -1143,6 +1247,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.0] - 2026-03-12
 
 ### Added
+
+- **Docs**: Authored standard `troff` man pages (`flatpak-automatic.1`),
+  configured `Makefile`, `rpm`, and `debian` packaging rules to install it, and
+  updated `README.md` with new features.
 
 - **Security**: Resolved CodeQL `py/clear-text-storage-sensitive-data`
   vulnerability by removing secret collection from the `--setup` wizard and

@@ -52,6 +52,7 @@ make install DESTDIR=%{buildroot} PREFIX=%{_prefix} SYSCONFDIR=%{_sysconfdir}
 
 %files
 %{_bindir}/flatpak-automatic
+%{_mandir}/man1/flatpak-automatic.1*
 %{_unitdir}/flatpak-automatic.service
 %{_unitdir}/flatpak-automatic.timer
 %config(noreplace) %{_sysconfdir}/sysconfig/flatpak-automatic
