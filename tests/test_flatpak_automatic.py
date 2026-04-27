@@ -160,7 +160,11 @@ class TestMainIntegration:
             fa.main()
 
         assert e.value.code == 0
-        snapper_instance.create_timeline_snapshot.assert_called_once_with(
-            "Pre-Flatpak Update Automation"
+        assert snapper_instance.create_timeline_snapshot.call_count == 2
+        snapper_instance.create_timeline_snapshot.assert_any_call(
+            "flatpak-automatic-pre"
+        )
+        snapper_instance.create_timeline_snapshot.assert_any_call(
+            "flatpak-automatic-post"
         )
         updater_instance.apply_updates.assert_called_once()
