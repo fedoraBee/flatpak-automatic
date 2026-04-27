@@ -1,24 +1,24 @@
 Architectures: all
 Codename: testing
 Components: main
-Date: Mon, 27 Apr 2026 09:14:39 +0000
+Date: Mon, 27 Apr 2026 12:02:04 +0000
 Description: Flatpak Automatic DEB Repository
 Label: Flatpak Automatic
 Origin: fedoraBee
 Suite: testing
 MD5Sum:
- 1ab70d1c31d98d4f203b6f990f721b48              196 Release
- f89b24fccb505d97cacb57d6e29e631b              775 main/binary-all/Packages
- 26935c1a52ce071185062421f05d8e30              524 main/binary-all/Packages.gz
+ 2d33fd797884627092fa02bca93cc1a6              196 Release
+ 617131fa46962afdb2ee5b137fb108a2              773 main/binary-all/Packages
+ e4181db5d4e1fef9d3aba4413f857f37              522 main/binary-all/Packages.gz
 SHA1:
- e63584f78f861c23edc5dfc789777349db5a72f3              196 Release
- b2aab3e38975c2e0229bcb33c29d9a974ecd0347              775 main/binary-all/Packages
- 00c27c21f15f93af665b2222ffa87a4cacd6bee6              524 main/binary-all/Packages.gz
+ b0c832209c502c9e09b0e028bdf1c2a55d350ef7              196 Release
+ f2bd9ae7d883b9db383c1e5cd742e4130099f00a              773 main/binary-all/Packages
+ f57bd69c954d30c6e17a763411d19dfabdb5d2b1              522 main/binary-all/Packages.gz
 SHA256:
- 150cf5a6da898b62ef5dbd7a66f9e9e5343891b91b293c0dfaf4ec1959e549e7              196 Release
- f142492e045adb618215618e95065c03299fa4f374c063a1ead59e42021ef6f4              775 main/binary-all/Packages
- 93ad6ca1eacc0b15d9e1064a61c98f7d0a3f4aa46586addf9d295c1a16a3192d              524 main/binary-all/Packages.gz
+ c8a5539d15be46dd75c1cc7179c4d2a9050192a74cb47dd3fc8d1aa2282dd8f6              196 Release
+ aa3aa8989eb4dc68b08a8df5ba46bccc9aed7b55f1b86bc026d5962eae1e30fb              773 main/binary-all/Packages
+ a3edea7e2978ae9bb2ef6987c48898fd7fbc185c5b00bc2c485e877e89b404f0              522 main/binary-all/Packages.gz
 SHA512:
- 704960f6b745b129792f82795e82a2ccef211a842f68afd9bf2e46212008a064d7de68332aa52d488b9760e5af75b1ca11049675a135d0c6f643692fd22791fb              196 Release
- 859eccaf30f27383e972b904704d40faabeaf5fb3318fc74e5ee33c106c53cb8ce3af7b44186a24e20366467a2711b717f20a4a50f27e13cd7159d2b6eece9db              775 main/binary-all/Packages
- 732680d852e1bd04673e3496581e68db77fd9cbd5cabb32eca8bd4dc93d788b6eafff91d17729d08255cbf7aec920832d57595b856ca63f5891b35137bdb70ec              524 main/binary-all/Packages.gz
+ 9fb6b09ad4bfe23ee342c4c4274d11c313e4806be717345d4cef2b03860e098735fe398c8904fd4a22e3c21f3321462c93f5465c1a71bc4f3d6f9c5826ac0562              196 Release
+ 93b9f951d6c2312c5d022dbf0a0760b4a8287e2d146f24dd097f6eca53071a110184991386179a467fa1e17220f0b3712ef1b6f028870a5e0c22417828bce1e4              773 main/binary-all/Packages
+ 940386d09712ba0b5677d32a2f9c97e006c829f6af017edd8f96a228667c8e91cbe85c4cf480b7717478b550fae27514e3db418090c99e9b018bf31123e62385              522 main/binary-all/Packages.gz
