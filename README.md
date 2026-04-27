@@ -106,12 +106,25 @@ Key options include:
 - `ENABLE_SNAPSHOTS`: Enable Snapper integration.
 - `SNAPPER_CONFIG`: The Snapper configuration to use (default: `root`).
 
-## 💾 Manual Execution
+## 💾 Manual Execution & CLI
 
-To trigger an update manually:
+To trigger an update manually or use the advanced CLI:
 
 ```bash
+# Standard manual run
 sudo flatpak-automatic
+
+# Simulate an update (Dry-run) without snapshots or changes
+sudo flatpak-automatic --dry-run
+
+# Test notification endpoints
+sudo flatpak-automatic --test-notify
+
+# Force an update (ignoring FLATPAK_AUTO_UPDATE safeguards)
+sudo flatpak-automatic --force
+
+# View all commands
+flatpak-automatic --help
 ```
 
 To monitor the logs of the automated service:

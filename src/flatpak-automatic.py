@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.4.17
+# Version: 1.4.18
 import os
 import sys
 import subprocess
@@ -7,6 +7,7 @@ import socket
 import logging
 import json
 import shlex
+import argparse
 from datetime import datetime, timezone
 from typing import Optional, Dict
 
@@ -198,6 +199,29 @@ def load_sysconfig() -> Dict[str, str]:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Flatpak Automatic - Enterprise Update Automation"
+    )
+    parser.add_argument(
+        "-d",
+        "--dry-run",
+        action="store_true",
+        help="Simulate the update process without applying changes or snapshots.",
+    )
+    parser.add_argument(
+        "-t",
+        "--test-notify",
+        action="store_true",
+        help="Send a test notification to configured endpoints and exit.",
+    )
+    parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="Force the update process, ignoring FLATPAK_AUTO_UPDATE config.",
+    )
+    args = parser.parse_args()
+
     if sys.stdout.isatty():
         # Gradient banner: Cyan -> Deep Blue -> Magenta
         print(
@@ -210,7 +234,28 @@ def main() -> None:
 
     config: Dict[str, str] = load_sysconfig()
 
-    if config.get("FLATPAK_AUTO_UPDATE", "true").lower() != "true":
+    if args.test_notify:
+        logging.info("Executing Test Notification dispatch...")
+        mailer = MailNotifier(
+            config.get("FLATPAK_MAIL_TO", ""),
+            config.get(
+                "FLATPAK_MAIL_FROM", f"flatpak-automatic@{socket.gethostname()}"
+            ),
+        )
+        mailer.send_mail(
+            "[TEST] Flatpak Automatic",
+            "This is a test notification from flatpak-automatic.",
+        )
+        apprise_urls = config.get("FLATPAK_APPRISE_URLS", "")
+        if apprise_urls:
+            apprise_notifier = AppriseNotifier(apprise_urls)
+            apprise_notifier.send_notification(
+                "[TEST] Flatpak Automatic",
+                "This is a test notification from flatpak-automatic.",
+            )
+        sys.exit(0)
+
+    if config.get("FLATPAK_AUTO_UPDATE", "true").lower() != "true" and not args.force:
         logging.info("Automatic updates are disabled via configuration.")
         sys.exit(0)
 
@@ -220,6 +265,13 @@ def main() -> None:
         sys.exit(0)
 
     logging.info("Updates found. Interfacing with System Services...")
+
+    if args.dry_run:
+        logging.info(
+            "[DRY-RUN] Updates found, but dry-run is active. Skipping snapshots and applying updates."
+        )
+        logging.info(f"[DRY-RUN] Would have updated:\\n{updater.update_log}")
+        sys.exit(0)
 
     if config.get("FLATPAK_CREATE_SNAPSHOT", "true").lower() == "true":
         snapper = SnapperManager()
