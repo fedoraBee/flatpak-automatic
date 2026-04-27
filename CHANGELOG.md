@@ -13,6 +13,22 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0-rc-1] - 2026-04-27
+
+### Added
+
+- **Core**: Implemented `os.geteuid() == 0` guard to gracefully enforce `sudo`
+  execution.
+- **Core**: Added `MINIMUM_DELAY_HOURS` configuration parameter to prevent
+  update spamming, tracking executions in
+  `/var/lib/flatpak-automatic/.last_run`.
+
+### Fixed
+
+- **CI/CD**: Fixed HTML index generation bug where semantic versions (e.g.,
+  `1.4.23`) were incorrectly sorted alphabetically below older versions (e.g.,
+  `1.4.9`).
+
 ## [1.4.23] - 2026-04-27
 
 ### Fixed

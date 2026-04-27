@@ -6,6 +6,10 @@ from typing import Optional, List, Dict, Any, Set
 from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
 
 
+def version_sort_key(ver_str: str) -> list[int]:
+    return [int(n) for n in re.findall(r"\d+", str(ver_str))]
+
+
 def get_version_info(filename: str) -> Optional[str]:
     """Extract full version string from RPM or DEB filename."""
     # RPM: flatpak-automatic-1.4.9-1.noarch.rpm -> 1.4.9
@@ -24,6 +28,7 @@ def main() -> None:
     if os.path.isdir(rpm_dir):
         major_minor_versions = sorted(
             [d for d in os.listdir(rpm_dir) if d.startswith("v") and d != "latest"],
+            key=version_sort_key,
             reverse=True,
         )
 
@@ -32,7 +37,9 @@ def main() -> None:
     deb_pkgs: List[str] = []
     if os.path.isdir(pool_dir):
         deb_pkgs = sorted(
-            [f for f in os.listdir(pool_dir) if f.endswith(".deb")], reverse=True
+            [f for f in os.listdir(pool_dir) if f.endswith(".deb")],
+            key=lambda x: version_sort_key(get_version_info(x) or "0"),
+            reverse=True,
         )
 
     # Map DEBs to MAJOR.MINOR
@@ -47,7 +54,9 @@ def main() -> None:
 
     # Unified list of MAJOR.MINOR versions
     all_mm = sorted(
-        list(set(major_minor_versions + list(deb_by_major_minor.keys()))), reverse=True
+        list(set(major_minor_versions + list(deb_by_major_minor.keys()))),
+        key=version_sort_key,
+        reverse=True,
     )
 
     versions: List[Dict[str, Any]] = []
