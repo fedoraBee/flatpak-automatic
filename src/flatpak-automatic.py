@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.4.23
+# Version: 1.5.0
 import os
 import sys
 import subprocess
@@ -318,6 +318,12 @@ def main() -> None:
 
     config: Dict[str, str] = load_sysconfig()
 
+    if os.geteuid() != 0:
+        print(
+            "\033[31m❌ Error: This script requires root privileges. Please run with sudo.\033[0m"
+        )
+        sys.exit(1)
+
     if args.apply_schedule:
         schedule = config.get("TIMER_SCHEDULE", "daily")
         delay = config.get("TIMER_DELAY", "1h")
@@ -393,6 +399,39 @@ def main() -> None:
         logging.info("Automatic updates are disabled via configuration.")
         sys.exit(0)
 
+    # Minimum delay check
+    delay_hours_str = config.get("MINIMUM_DELAY_HOURS", "0")
+    try:
+        delay_hours = float(delay_hours_str)
+    except ValueError:
+        delay_hours = 0.0
+
+    state_dir = "/var/lib/flatpak-automatic"
+    state_file = os.path.join(state_dir, ".last_run")
+
+    if (
+        delay_hours > 0
+        and not args.force
+        and not getattr(args, "dry_run", False)
+        and not getattr(args, "test_notify", False)
+        and not getattr(args, "status", False)
+        and not getattr(args, "history", False)
+        and not getattr(args, "apply_schedule", False)
+    ):
+        if os.path.exists(state_file):
+            try:
+                with open(state_file, "r") as f:
+                    last_run = float(f.read().strip())
+                if (datetime.now(timezone.utc).timestamp() - last_run) < (
+                    delay_hours * 3600
+                ):
+                    logging.info(
+                        f"Minimum delay of {delay_hours}h has not elapsed. Skipping update. Use --force to override."
+                    )
+                    sys.exit(0)
+            except Exception as e:
+                logging.warning(f"Failed to read state file: {e}")
+
     updater = FlatpakUpdater(excludes=config.get("FLATPAK_EXCLUDES", ""))
     if not updater.check_updates():
         logging.info("No Flatpak updates available.")
@@ -457,6 +496,20 @@ def main() -> None:
 
         desktop = DesktopNotifier(config.get("ENABLE_DESKTOP_NOTIFY", "no"))
         desktop.send_notification(title, updater.update_log)
+
+    if (
+        not getattr(args, "dry_run", False)
+        and not getattr(args, "test_notify", False)
+        and not getattr(args, "status", False)
+        and not getattr(args, "history", False)
+        and not getattr(args, "apply_schedule", False)
+    ):
+        try:
+            os.makedirs(state_dir, exist_ok=True)
+            with open(state_file, "w") as f:
+                f.write(str(datetime.now(timezone.utc).timestamp()))
+        except Exception as e:
+            logging.warning(f"Failed to write state file: {e}")
 
     sys.exit(0 if success else 1)
 
