@@ -17,6 +17,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -44,6 +47,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -93,6 +99,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -137,6 +146,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -182,6 +194,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -300,6 +315,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -332,6 +350,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -365,6 +386,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -409,6 +433,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -495,6 +522,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -548,6 +578,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -604,6 +637,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -692,6 +728,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -735,6 +774,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -767,6 +809,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -799,6 +844,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -831,6 +879,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -864,6 +915,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -900,6 +954,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -949,6 +1006,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -1056,6 +1116,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -1088,6 +1151,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -1120,6 +1186,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -1184,6 +1253,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -1218,6 +1290,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -1385,6 +1460,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -1464,6 +1542,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 
@@ -1503,6 +1584,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added customizable default and minimal notification templates.\n- Improved
+  documentation wording replacing generic terms with Ubuntu/Debian and
+  Fedora/RHEL.\n
 - Added `python3-yaml` (PyYAML) dependency to CI workflows, RPM specs, and
   Debian control files to resolve test failures.
 

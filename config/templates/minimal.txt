@@ -1,0 +1,5 @@
+[${STATUS}] ${TITLE}
+Date: ${DATE}
+
+Details:
+${BODY}

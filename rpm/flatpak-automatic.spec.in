@@ -52,6 +52,11 @@ make install DESTDIR=%{buildroot} PREFIX=%{_prefix} SYSCONFDIR=%{_sysconfdir}
 %systemd_postun_with_restart %{name}.service %{name}.timer
 
 %files
+%dir %{_sysconfdir}/flatpak-automatic
+%dir %{_sysconfdir}/flatpak-automatic/templates
+%config(noreplace) %{_sysconfdir}/flatpak-automatic/config.yaml.example
+%config(noreplace) %{_sysconfdir}/flatpak-automatic/templates/*
+
 %{_bindir}/flatpak-automatic
 %{_mandir}/man1/flatpak-automatic.1*
 %{_unitdir}/flatpak-automatic.service
