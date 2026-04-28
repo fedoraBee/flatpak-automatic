@@ -1,10 +1,8 @@
 import sys
 import importlib.util
-import socket
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, ANY
 from typing import Any
 
-# Mock dbus before importing fa
 mock_dbus = MagicMock()
 sys.modules["dbus"] = mock_dbus
 sys.modules["dbus.exceptions"] = MagicMock()
@@ -21,71 +19,60 @@ spec.loader.exec_module(fa)
 class TestNotificationRouter:
     @patch.object(fa, "MailNotifier")
     @patch.object(fa, "WebhookNotifier")
-    @patch.object(fa, "TemplateRenderer")
-    def test_dispatch_all_legacy_global(
-        self, mock_template: Any, mock_webhook: Any, mock_mail: Any
-    ) -> None:
-        config = {
-            "mail": {"enabled": True, "to": "admin@example.com"},
-            "webhooks": {"enabled": True, "urls": ["http://webhook.local"]},
-        }
-        router = fa.NotificationRouter(config)
-
-        router.dispatch_all("Test Title", "Test Body", True)
-
-        mock_mail.assert_called_once_with(
-            "admin@example.com", f"bot@{socket.gethostname()}"
-        )
-        mock_mail.return_value.send_mail.assert_called_once_with(
-            "Test Title", "Test Body"
-        )
-
-        mock_webhook.assert_called_once_with(["http://webhook.local"], "")
-        mock_webhook.return_value.send_notification.assert_called_once_with(
-            "Test Title", "Test Body"
-        )
-
-    @patch.object(fa, "MailNotifier")
-    @patch.object(fa, "WebhookNotifier")
-    def test_dispatch_all_group_specific(
+    def test_dispatch_all_state_dependent_resolution(
         self, mock_webhook: Any, mock_mail: Any
     ) -> None:
         config = {
             "notification_groups": [
                 {
-                    "name": "Admin",
-                    "mail": {"to": "admin@example.com"},
-                    "webhooks": {"urls": ["http://admin.local"]},
+                    "name": "StateDependentGroup",
+                    "title": {"success": "Group Success", "failure": "Group Failure"},
+                    "mail": {
+                        "to": "admin@example.com",
+                        "title": {"success": "Mail Success"},
+                        "body_template": {
+                            "success": "mail_success.md",
+                            "failure": "mail_failure.md",
+                        },
+                    },
+                    "webhooks": {
+                        "urls": ["http://admin.local"],
+                        "body_template": "flat_template.md",
+                    },
                 }
             ]
         }
-        router = fa.NotificationRouter(config)
 
-        router.dispatch_all("Test Title", "Test Body", True)
-
-        mock_mail.assert_called_once_with(
-            "admin@example.com", f"bot@{socket.gethostname()}"
-        )
-        # WebhookNotifier init takes List[str]
-        mock_webhook.assert_called_once_with(["http://admin.local"], "")
-
-    def test_apprise_dispatch(self) -> None:
-        fa.APPRISE_AVAILABLE = True
-        config = {
-            "notification_groups": [
-                {"name": "AppriseGroup", "urls": ["mailto://user@example.com"]}
-            ]
-        }
-
-        # Manually inject a mock apprise module if it doesn't exist
-        if not hasattr(fa, "apprise"):
-            fa.apprise = MagicMock()
-
-        with patch.object(fa.apprise, "Apprise") as mock_ap_class:
+        # Test 1: SUCCESS STATE
+        with patch.object(fa, "TemplateRenderer") as mock_template:
+            mock_template.render.return_value = "Rendered Body"
             router = fa.NotificationRouter(config)
-            router.dispatch_all("Title", "Body", True)
+            router.dispatch_all("Fallback Title", "Test Body", success=True)
 
-            mock_ap_class.return_value.add.assert_called_once_with(
-                "mailto://user@example.com"
+            # Mail should grab target 'success' title and 'success' template
+            mock_mail.return_value.send_mail.assert_called_with(
+                "Mail Success", "Rendered Body"
             )
-            mock_ap_class.return_value.notify.assert_called_once()
+            mock_template.render.assert_any_call("mail_success.md", ANY)
+
+            # Webhook should grab group 'success' title and its own flat template
+            mock_webhook.assert_called_with(["http://admin.local"], "")
+            mock_webhook.return_value.send_notification.assert_called_with(
+                "Group Success", "Rendered Body"
+            )
+            mock_template.render.assert_any_call("flat_template.md", ANY)
+
+        mock_mail.reset_mock()
+        mock_webhook.reset_mock()
+
+        # Test 2: FAILURE STATE
+        with patch.object(fa, "TemplateRenderer") as mock_template:
+            mock_template.render.return_value = "Rendered Error"
+            router = fa.NotificationRouter(config)
+            router.dispatch_all("Fallback Title", "Test Body", success=False)
+
+            # Mail lacks failure title, falls back to group failure title, but has failure template
+            mock_mail.return_value.send_mail.assert_called_with(
+                "Group Failure", "Rendered Error"
+            )
+            mock_template.render.assert_any_call("mail_failure.md", ANY)

@@ -16,19 +16,43 @@ snapshots:
 
 notification_groups:
   - name: Full extended group example
-    template_body: default.md
+    desktop_notify: true
+    title: # default title / subject if not overwritten in subgroups
+      success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
+      failure: "[$(hostname)] flatpak-automatic: FAILED"
+    body_template: default.md # use a custom template if desired
     mails:
       to:
-        - exampleTo@mail.example.com <exampleTo@mail.example.com>
-        - exampleTo2@mail.example.com <exampleTo2@mail.example.com>
-      from: exampleFrom@noreply.example.org
-      subjects:
+        - Bob Doe <bob-doe@mail.example.com>
+        - Lily Doe <lily-doe@mail.example.com>
+      from: Flatpak Automatic Bot <flatpak-automatic@noreply.example.org>
+      title: # specific title aka subject or use fallback
         success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
         failure: "[$(hostname)] flatpak-automatic: FAILED"
+      body_template:
+        success: default_success.md
+        failure: default_failure.md
     webhooks:
       urls:
-        - https://webhook.site/...
+        - https://webhook.site/a...
+        - https://webhook.site/b...
       secret: "optional_hmac_secret"
-    urls:
-      - mailto://user:pass@example.com
-    desktop_notify: true
+      title:
+        success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
+        failure: "[$(hostname)] flatpak-automatic: FAILED"
+      body_template: default.md
+    apprise:
+      urls:
+        - discord://user:pass@example.com
+        - telegram://user:pass@example.com
+        - slack://user:pass@example.com
+        - mailto://user:pass@example.com
+      title:
+        success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
+        failure: "[$(hostname)] flatpak-automatic: FAILED"
+      body_template: default.md
+
+  - name: Minimal text-only fallback
+    mails:
+      to: admin@example.com
+    body_template: minimal.txt
