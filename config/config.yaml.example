@@ -2,28 +2,33 @@ auto_update: true
 enable_snapshots: true
 auto_notify: always
 
-# Optional: Direct Mail & Webhook Integration (Legacy/Standalone)
-# mail:
-#   enabled: true
-#   to: admin@example.com
-#   from: bot@hostname
+timer:
+  schedule: daily
+  delay: 1h
+  minimum_delay: 1h
 
-# webhooks:
-#   enabled: true
-#   urls:
-#     - https://hooks.slack.com/services/...
-#   secret: "optional_hmac_secret"
+snapshots:
+  enabled: true
+  snapper_config: root
+  snapper_descriptions:
+    pre: "flatpak-automatic-pre"
+    post: "flatpak-automatic-post"
 
 notification_groups:
-  - name: Default Group
-    urls:
-      - mailto://user:pass@example.com
+  - name: Full extended group example
     template_body: default.md
-
-  # Group-specific legacy integrations
-  - name: Critical Alerts
-    mail:
-      to: emergency@example.com
+    mails:
+      to:
+        - exampleTo@mail.example.com <exampleTo@mail.example.com>
+        - exampleTo2@mail.example.com <exampleTo2@mail.example.com>
+      from: exampleFrom@noreply.example.org
+      subjects:
+        success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
+        failure: "[$(hostname)] flatpak-automatic: FAILED"
     webhooks:
       urls:
         - https://webhook.site/...
+      secret: "optional_hmac_secret"
+    urls:
+      - mailto://user:pass@example.com
+    desktop_notify: true

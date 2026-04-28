@@ -1,72 +1,17 @@
-# --- [ Universal Notifications (Apprise) ] ---
-# Comma-separated list of Apprise URLs (e.g., slack://..., discord://..., mailto://...)
-# Requires the python3-apprise package to be installed.
-FLATPAK_APPRISE_URLS=""
-
 # ==============================================================================
-# Flatpak Automatic - Configuration File
+# Flatpak Automatic - Legacy Configuration File (DEPRECATED)
 # Location: /etc/sysconfig/flatpak-automatic
+#
+# WARNING: Configuration has migrated to /etc/flatpak-automatic/config.yaml.
+# Please migrate your settings to the new YAML format.
 # ==============================================================================
 
-# --- [ Email Notification Settings ] ---
-# Set to "yes" to receive update reports, "no" to disable.
-ENABLE_EMAIL="yes"
+# Version: 1.5.2 | Built for Fedora & Universal RPM Systems
+# Built for Fedora & Universal RPM Systems
 
-# The email address that will receive the reports.
-EMAIL_TO="admin@example.com"
-
-# The address the email will appear to come from.
-EMAIL_FROM="bot@$(hostname)"
-
-# The display name shown in the "From" field of your email client.
-EMAIL_FROM_DISPLAY="Fedora Auto-Updater"
-
-# --- [ Dynamic Email Subjects ] ---
-# Use \$UPDATE_COUNT for package count and \$(hostname) for machine name.
-# Note: Variables must be escaped with a backslash (\) to be evaluated by the script.
-EMAIL_SUBJECT_SUCCESS="[$(hostname)] flatpak-automatic: \$UPDATE_COUNT new
-upgrades have been installed." EMAIL_SUBJECT_FAILURE="[$(hostname)]
-flatpak-automatic: FAILED"
-
-# --- [ Snapshot Settings ] ---
-# Set to "yes" to create Snapper pre/post snapshots, "no" to disable.
-# UNIVERSAL LOGIC: The script automatically detects if Btrfs/Snapper is available.
-# If detection fails, snapshots are disabled regardless of this setting.
-ENABLE_SNAPSHOTS="yes"
-
-# The Snapper configuration to use (usually "root").
-SNAPPER_CONFIG="root"
-
-# Descriptions that will appear in 'snapper list'.
-SNAPPER_DESC_PRE="flatpak-automatic-pre"
-SNAPPER_DESC_POST="flatpak-automatic-post"
-
-# --- [ Advanced Overrides ] ---
-# Only modify these for non-standard mail clients or custom snapshot logic.
-# MAIL_CMD="mailx -S sendwait -r \"\$EMAIL_FROM_DISPLAY <\$EMAIL_FROM>\" -s \"\$1\" \"\$2\""
-# SNAPPER_PRE_CMD="snapper -c \"\$SNAPPER_CONFIG\" create --type pre --description \"\$SNAPPER_DESC_PRE\" --cleanup-algorithm number --print-number"
-
-# ==============================================================================
-# Version: 1.5.1 | Built for Fedora & Universal RPM Systems
+# --- [ Universal Notifications (Apprise) ] ---
+FLATPAK_APPRISE_URLS=""
 
 # --- [ Application Overrides ] ---
 # Comma-separated list of Flatpak App IDs to exclude from automatic updates.
 # FLATPAK_EXCLUDES="org.gimp.GIMP"
-
-# --- [ Desktop Notifications ] ---
-# Set to "yes" to send native UI notifications to active graphical sessions.
-ENABLE_DESKTOP_NOTIFY="no"
-
-# --- [ Systemd Timer & Scheduling ] ---
-# Requires executing 'sudo flatpak-automatic --apply-schedule' to take effect.
-# Standard systemd calendar event syntax (e.g., daily, weekly, *-*-* 02:00:00)
-TIMER_SCHEDULE="daily"
-# Randomization delay to prevent thundering herd problems on multiple machines
-TIMER_DELAY="1h"
-
-# Telemetry & Webhook Integration
-WEBHOOK_URLS=""
-WEBHOOK_SECRET=""
-
-# Minimum Delay in Hours (0 to disable, prevents manual execution spam)
-MINIMUM_DELAY_HOURS="0"
