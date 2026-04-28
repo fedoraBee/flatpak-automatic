@@ -365,21 +365,30 @@ class NotificationRouter:
         }
 
         def _resolve(group_cfg, target_cfg, field_name, default_val):
-            # Target fallback -> Group fallback -> Default
-            val = (
+            target_val = (
                 target_cfg.get(field_name)
                 if target_cfg and field_name in target_cfg
                 else None
             )
-            if val is None:
-                val = group_cfg.get(field_name)
-            if val is None:
-                val = default_val
+            group_val = group_cfg.get(field_name)
+            state_key = "success" if success else "failure"
 
-            # State resolution: check if value is a dict for success/failure mappings
-            if isinstance(val, dict):
-                return val.get("success" if success else "failure", default_val)
-            return val
+            def get_state_val(v):
+                if isinstance(v, dict):
+                    return v.get(state_key)
+                return v
+
+            res = None
+            if target_val is not None:
+                res = get_state_val(target_val)
+
+            if res is None and group_val is not None:
+                res = get_state_val(group_val)
+
+            if res is None:
+                res = default_val
+
+            return res.get("success" if success else "failure", default_val)
 
         for group in self.groups:
             # 1. Apprise (Universal)
