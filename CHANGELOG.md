@@ -9,6 +9,21 @@ Banner" width="450"></div>
 This is the changelog for **Flatpak Automatic**. All notable changes to this
 project will be documented in this file.
 
+## [1.5.3] - 2026-04-28
+
+### Added
+
+- **Config**: Introduced hierarchical resolution for `title` and `body_template`
+  fields in `notification_groups`. Allows for distinct subjects and templates
+  per notification target (Mail, Webhook, Apprise).
+- **Config**: Added a Minimal example configuration block to
+  `config.yaml.example`.
+
+### Changed
+
+- **Core**: Overhauled `NotificationRouter.dispatch_all` to support cascading
+  templates and titles from specific targets up to the group level.
+
 ## [1.5.2] - 2026-04-28
 
 ### Changed
