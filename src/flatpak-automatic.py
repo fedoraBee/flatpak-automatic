@@ -144,6 +144,7 @@ class FlatpakUpdater:
     def __init__(self, excludes: List[str] = None) -> None:
         self.updates_available: bool = False
         self.update_log: str = ""
+        self.update_count: int = 0
         self.excludes = excludes or []
 
     def check_updates(self) -> bool:
@@ -160,6 +161,7 @@ class FlatpakUpdater:
             if filtered_lines:
                 self.updates_available = True
                 self.update_log = "\n".join(filtered_lines)
+                self.update_count = len(filtered_lines)
         return self.updates_available
 
     def apply_updates(self) -> bool:
@@ -344,12 +346,12 @@ class NotificationRouter:
             self.groups.append(
                 {
                     "name": "Legacy Global Group",
-                    "mail": legacy_mail if legacy_mail else {},
+                    "mails": legacy_mail if legacy_mail else {},
                     "webhooks": legacy_webhooks if legacy_webhooks else {},
                 }
             )
 
-    def dispatch_all(self, title: str, body: str, success: bool):
+    def dispatch_all(self, title: str, body: str, success: bool, update_count: int = 0):
         if not self.groups:
             return
 
@@ -359,6 +361,7 @@ class NotificationRouter:
             "STATUS": "SUCCESS" if success else "FAILED",
             "DATE": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "HOSTNAME": socket.gethostname(),
+            "UPDATE_COUNT": str(update_count),
         }
 
         for group in self.groups:
@@ -382,22 +385,40 @@ class NotificationRouter:
                 except Exception as e:
                     logging.error(f"Failed to dispatch Apprise notification: {e}")
 
-            # 2. Legacy/Direct Mail
-            mail_cfg = group.get("mail", {})
-            if mail_cfg.get("enabled", False) or "to" in mail_cfg:
-                to_addr = mail_cfg.get("to")
-                from_addr = mail_cfg.get("from", f"bot@{socket.gethostname()}")
-                if to_addr:
-                    mailer = MailNotifier(to_addr, from_addr)
-                    mailer.send_mail(title, rendered_body)
+            # Subject Resolution (Multi-Tenant)
+            custom_subject = title
+            mails_cfg = group.get("mails", group.get("mail", {}))
+            if "subjects" in mails_cfg:
+                custom_subject = mails_cfg["subjects"].get(
+                    "success" if success else "failure", title
+                )
+                custom_subject = custom_subject.replace(
+                    "$UPDATE_COUNT", str(update_count)
+                ).replace("$(hostname)", socket.gethostname())
 
-            # 3. Legacy/Direct Webhooks
+            # 2. Direct Mails
+            if mails_cfg.get("enabled", False) or "to" in mails_cfg:
+                to_addrs = mails_cfg.get("to", [])
+                if isinstance(to_addrs, str):
+                    to_addrs = [to_addrs]
+                from_addr = mails_cfg.get("from", f"bot@{socket.gethostname()}")
+
+                for to_addr in to_addrs:
+                    mailer = MailNotifier(to_addr, from_addr)
+                    mailer.send_mail(custom_subject, rendered_body)
+
+            # 3. Direct Webhooks
             webhook_cfg = group.get("webhooks", {})
             wh_urls = webhook_cfg.get("urls", [])
             if wh_urls:
                 secret = webhook_cfg.get("secret", "")
                 wh = WebhookNotifier(wh_urls, secret)
-                wh.send_notification(title, rendered_body)
+                wh.send_notification(custom_subject, rendered_body)
+
+            # 4. Native Desktop Notifications (Per-Group)
+            if group.get("desktop_notify", False):
+                desktop = DesktopNotifier(enabled=True)
+                desktop.send_notification(custom_subject, rendered_body)
 
 
 def load_config() -> Dict[str, Any]:
@@ -486,8 +507,9 @@ def main() -> None:
         exit_clean(1)
 
     if args.apply_schedule:
-        schedule = config.get("timer_schedule", "daily")
-        delay = config.get("timer_delay", "1h")
+        timer_cfg = config.get("timer", {})
+        schedule = timer_cfg.get("schedule", "daily")
+        delay = timer_cfg.get("delay", "1h")
         override_dir = "/etc/systemd/system/flatpak-automatic.timer.d"
         override_file = os.path.join(override_dir, "override.conf")
 
@@ -579,9 +601,11 @@ def main() -> None:
         logging.info(f"[DRY-RUN] Would have updated:\n{updater.update_log}")
         exit_clean(0)
 
-    if config.get("enable_snapshots", True):
-        snapper = SnapperManager(config=config.get("snapper_config", "root"))
-        snapper.create_timeline_snapshot("flatpak-automatic-pre")
+    snap_cfg = config.get("snapshots", {})
+    if snap_cfg.get("enabled", config.get("enable_snapshots", True)):
+        snapper = SnapperManager(config=snap_cfg.get("snapper_config", "root"))
+        desc_cfg = snap_cfg.get("snapper_descriptions", {})
+        snapper.create_timeline_snapshot(desc_cfg.get("pre", "flatpak-automatic-pre"))
 
     logging.info("Applying Flatpak updates...")
     success: bool = updater.apply_updates()
@@ -589,9 +613,13 @@ def main() -> None:
     if success:
         state["last_success"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         save_state(state)
-        if config.get("enable_snapshots", True):
+        snap_cfg = config.get("snapshots", {})
+        if snap_cfg.get("enabled", config.get("enable_snapshots", True)):
             if "snapper" in locals():
-                snapper.create_timeline_snapshot("flatpak-automatic-post")
+                desc_cfg = snap_cfg.get("snapper_descriptions", {})
+                snapper.create_timeline_snapshot(
+                    desc_cfg.get("post", "flatpak-automatic-post")
+                )
 
     notify_type = config.get("auto_notify", "always").lower()
     trigger_notify = False
@@ -606,10 +634,7 @@ def main() -> None:
         title = f"{subject_prefix} Flatpak Updates - {socket.gethostname()}"
 
         router = NotificationRouter(config)
-        router.dispatch_all(title, updater.update_log, success)
-
-        desktop = DesktopNotifier(config.get("enable_desktop_notify", False))
-        desktop.send_notification(title, updater.update_log)
+        router.dispatch_all(title, updater.update_log, success, updater.update_count)
 
     exit_clean(0 if success else 1)
 
