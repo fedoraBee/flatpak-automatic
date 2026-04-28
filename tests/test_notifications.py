@@ -1,6 +1,6 @@
 import sys
 import importlib.util
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, ANY
 from typing import Any
 
 mock_dbus = MagicMock()
@@ -53,14 +53,14 @@ class TestNotificationRouter:
             mock_mail.return_value.send_mail.assert_called_with(
                 "Mail Success", "Rendered Body"
             )
-            mock_template.render.assert_any_call("mail_success.md", MagicMock())
+            mock_template.render.assert_any_call("mail_success.md", ANY)
 
             # Webhook should grab group 'success' title and its own flat template
             mock_webhook.assert_called_with(["http://admin.local"], "")
             mock_webhook.return_value.send_notification.assert_called_with(
                 "Group Success", "Rendered Body"
             )
-            mock_template.render.assert_any_call("flat_template.md", MagicMock())
+            mock_template.render.assert_any_call("flat_template.md", ANY)
 
         mock_mail.reset_mock()
         mock_webhook.reset_mock()
@@ -75,4 +75,4 @@ class TestNotificationRouter:
             mock_mail.return_value.send_mail.assert_called_with(
                 "Group Failure", "Rendered Error"
             )
-            mock_template.render.assert_any_call("mail_failure.md", MagicMock())
+            mock_template.render.assert_any_call("mail_failure.md", ANY)

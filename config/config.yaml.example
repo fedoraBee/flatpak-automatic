@@ -17,13 +17,10 @@ snapshots:
 notification_groups:
   - name: Full extended group example
     desktop_notify: true
-    # title: "[$(hostname)] flatpak-automatic - success or failure # optional fallback title also possible
     title: # default title / subject if not overwritten in subgroups
       success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
       failure: "[$(hostname)] flatpak-automatic: FAILED"
     body_template: default.md # use a custom template if desired
-      # success: default_success.md
-      # failure: default_failure.md
     mails:
       to:
         - Bob Doe <bob-doe@mail.example.com>
@@ -32,9 +29,9 @@ notification_groups:
       title: # specific title aka subject or use fallback
         success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
         failure: "[$(hostname)] flatpak-automatic: FAILED"
-      body_template: # default.md # use a custom template if desired
-        success: default_success.md # use a custom template if desired
-        failure: default_failure.md # use a custom template if desired
+      body_template:
+        success: default_success.md
+        failure: default_failure.md
     webhooks:
       urls:
         - https://webhook.site/a...
@@ -43,7 +40,7 @@ notification_groups:
       title:
         success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
         failure: "[$(hostname)] flatpak-automatic: FAILED"
-      body_template: default.md # use a custom template if desired
+      body_template: default.md
     apprise:
       urls:
         - discord://user:pass@example.com
@@ -53,7 +50,7 @@ notification_groups:
       title:
         success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
         failure: "[$(hostname)] flatpak-automatic: FAILED"
-      body_template: default.md # use a custom template if desired
+      body_template: default.md
 
   - name: Minimal text-only fallback
     mails:
