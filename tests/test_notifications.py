@@ -30,16 +30,13 @@ class TestNotificationRouter:
             "webhooks": {"enabled": True, "urls": ["http://webhook.local"]},
         }
         router = fa.NotificationRouter(config)
-
         router.dispatch_all("Test Title", "Test Body", True)
-
         mock_mail.assert_called_once_with(
             "admin@example.com", f"bot@{socket.gethostname()}"
         )
         mock_mail.return_value.send_mail.assert_called_once_with(
             "Test Title", "Test Body"
         )
-
         mock_webhook.assert_called_once_with(["http://webhook.local"], "")
         mock_webhook.return_value.send_notification.assert_called_once_with(
             "Test Title", "Test Body"
@@ -47,44 +44,52 @@ class TestNotificationRouter:
 
     @patch.object(fa, "MailNotifier")
     @patch.object(fa, "WebhookNotifier")
-    def test_dispatch_all_group_specific(
+    def test_dispatch_all_hierarchical_resolution(
         self, mock_webhook: Any, mock_mail: Any
     ) -> None:
         config = {
             "notification_groups": [
                 {
-                    "name": "Admin",
-                    "mail": {"to": "admin@example.com"},
+                    "name": "CascadeGroup",
+                    "title": {"success": "Group Success"},
+                    "mail": {
+                        "to": "admin@example.com",
+                        "title": {"success": "Mail Success"},
+                    },
                     "webhooks": {"urls": ["http://admin.local"]},
                 }
             ]
         }
         router = fa.NotificationRouter(config)
-
         router.dispatch_all("Test Title", "Test Body", True)
 
-        mock_mail.assert_called_once_with(
-            "admin@example.com", f"bot@{socket.gethostname()}"
+        # Mail uses specific title override
+        mock_mail.return_value.send_mail.assert_called_once_with(
+            "Mail Success", "Test Body"
         )
-        # WebhookNotifier init takes List[str]
+
+        # Webhook falls back to group title
         mock_webhook.assert_called_once_with(["http://admin.local"], "")
+        mock_webhook.return_value.send_notification.assert_called_once_with(
+            "Group Success", "Test Body"
+        )
 
     def test_apprise_dispatch(self) -> None:
         fa.APPRISE_AVAILABLE = True
         config = {
             "notification_groups": [
-                {"name": "AppriseGroup", "urls": ["mailto://user@example.com"]}
+                {
+                    "name": "AppriseGroup",
+                    "apprise": {"urls": ["mailto://user@example.com"]},
+                }
             ]
         }
-
-        # Manually inject a mock apprise module if it doesn't exist
         if not hasattr(fa, "apprise"):
             fa.apprise = MagicMock()
 
         with patch.object(fa.apprise, "Apprise") as mock_ap_class:
             router = fa.NotificationRouter(config)
             router.dispatch_all("Title", "Body", True)
-
             mock_ap_class.return_value.add.assert_called_once_with(
                 "mailto://user@example.com"
             )
