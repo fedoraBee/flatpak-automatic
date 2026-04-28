@@ -45,6 +45,10 @@ install:
 	install -d $(DESTDIR)/etc/flatpak-automatic/templates
 	install -m 0644 config/config.yaml.example $(DESTDIR)/etc/flatpak-automatic/config.yaml.example
 	install -m 0644 config/templates/default.md $(DESTDIR)/etc/flatpak-automatic/templates/default.md
+	install -m 0644 config/templates/default_success.md $(DESTDIR)/etc/flatpak-automatic/templates/default_success.md
+	install -m 0644 config/templates/default_failure.md $(DESTDIR)/etc/flatpak-automatic/templates/default_failure.md
+	install -m 0644 config/templates/default_mail_success.md $(DESTDIR)/etc/flatpak-automatic/templates/default_mail_success.md
+	install -m 0644 config/templates/default_mail_failure.md $(DESTDIR)/etc/flatpak-automatic/templates/default_mail_failure.md
 	install -m 0644 config/templates/minimal.txt $(DESTDIR)/etc/flatpak-automatic/templates/minimal.txt
 
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
