@@ -1,0 +1,61 @@
+auto_update: true
+enable_snapshots: true
+auto_notify: always
+
+timer:
+  schedule: daily
+  delay: 1h
+  minimum_delay: 1h
+
+snapshots:
+  enabled: true
+  snapper_config: root
+  snapper_descriptions:
+    pre: "flatpak-automatic-pre"
+    post: "flatpak-automatic-post"
+
+notification_groups:
+  - name: Full extended group example
+    desktop_notify: true
+    # title: "[$(hostname)] flatpak-automatic - success or failure # optional fallback title also possible
+    title: # default title / subject if not overwritten in subgroups
+      success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
+      failure: "[$(hostname)] flatpak-automatic: FAILED"
+    body_template: default.md # use a custom template if desired
+      # success: default_success.md
+      # failure: default_failure.md
+    mails:
+      to:
+        - Bob Doe <bob-doe@mail.example.com>
+        - Lily Doe <lily-doe@mail.example.com>
+      from: Flatpak Automatic Bot <flatpak-automatic@noreply.example.org>
+      title: # specific title aka subject or use fallback
+        success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
+        failure: "[$(hostname)] flatpak-automatic: FAILED"
+      body_template: # default.md # use a custom template if desired
+        success: default_success.md # use a custom template if desired
+        failure: default_failure.md # use a custom template if desired
+    webhooks:
+      urls:
+        - https://webhook.site/a...
+        - https://webhook.site/b...
+      secret: "optional_hmac_secret"
+      title:
+        success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
+        failure: "[$(hostname)] flatpak-automatic: FAILED"
+      body_template: default.md # use a custom template if desired
+    apprise:
+      urls:
+        - discord://user:pass@example.com
+        - telegram://user:pass@example.com
+        - slack://user:pass@example.com
+        - mailto://user:pass@example.com
+      title:
+        success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT new upgrades have been installed."
+        failure: "[$(hostname)] flatpak-automatic: FAILED"
+      body_template: default.md # use a custom template if desired
+
+  - name: Minimal text-only fallback
+    mails:
+      to: admin@example.com
+    body_template: minimal.txt

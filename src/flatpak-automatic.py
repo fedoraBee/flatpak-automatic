@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.5.2
+# Version: 1.5.3
 import os
 import sys
 import json
@@ -364,61 +364,93 @@ class NotificationRouter:
             "UPDATE_COUNT": str(update_count),
         }
 
+        def _resolve(group_cfg, target_cfg, field_name, default_val):
+            # Target fallback -> Group fallback -> Default
+            val = (
+                target_cfg.get(field_name)
+                if target_cfg and field_name in target_cfg
+                else None
+            )
+            if val is None:
+                val = group_cfg.get(field_name)
+            if val is None:
+                val = default_val
+
+            # State resolution: check if value is a dict for success/failure mappings
+            if isinstance(val, dict):
+                return val.get("success" if success else "failure", default_val)
+            return val
+
         for group in self.groups:
-            urls = group.get("urls", [])
-            template_file = group.get("template_body", "")
-
-            rendered_body = body
-            if template_file:
-                rendered_body = TemplateRenderer.render(template_file, context)
-
             # 1. Apprise (Universal)
-            if APPRISE_AVAILABLE and urls:
+            apprise_cfg = group.get("apprise", {})
+            if not apprise_cfg and group.get("urls"):
+                apprise_cfg = {"urls": group.get("urls", [])}
+
+            if APPRISE_AVAILABLE and apprise_cfg.get("urls"):
+                app_urls = apprise_cfg.get("urls", [])
+                app_title = _resolve(group, apprise_cfg, "title", title)
+                app_title = app_title.replace(
+                    "$UPDATE_COUNT", str(update_count)
+                ).replace("$(hostname)", socket.gethostname())
+                app_tpl = _resolve(group, apprise_cfg, "body_template", "")
+                app_body = (
+                    TemplateRenderer.render(app_tpl, context) if app_tpl else body
+                )
                 try:
                     apobj = apprise.Apprise()
-                    for url in urls:
+                    for url in app_urls:
                         apobj.add(url)
-                    apobj.notify(body=rendered_body, title=title)
+                    apobj.notify(body=app_body, title=app_title)
                     logging.info(
-                        f"Notification group '{group.get('name', 'unnamed')}' dispatched to {len(urls)} endpoints via Apprise."
+                        f"Notification group '{group.get('name', 'unnamed')}' dispatched to {len(app_urls)} endpoints via Apprise."
                     )
                 except Exception as e:
                     logging.error(f"Failed to dispatch Apprise notification: {e}")
 
-            # Subject Resolution (Multi-Tenant)
-            custom_subject = title
-            mails_cfg = group.get("mails", group.get("mail", {}))
-            if "subjects" in mails_cfg:
-                custom_subject = mails_cfg["subjects"].get(
-                    "success" if success else "failure", title
-                )
-                custom_subject = custom_subject.replace(
-                    "$UPDATE_COUNT", str(update_count)
-                ).replace("$(hostname)", socket.gethostname())
-
             # 2. Direct Mails
+            mails_cfg = group.get("mails", group.get("mail", {}))
             if mails_cfg.get("enabled", False) or "to" in mails_cfg:
                 to_addrs = mails_cfg.get("to", [])
                 if isinstance(to_addrs, str):
                     to_addrs = [to_addrs]
                 from_addr = mails_cfg.get("from", f"bot@{socket.gethostname()}")
+                m_title = _resolve(group, mails_cfg, "title", title)
+                m_title = m_title.replace("$UPDATE_COUNT", str(update_count)).replace(
+                    "$(hostname)", socket.gethostname()
+                )
+                m_tpl = _resolve(group, mails_cfg, "body_template", "")
+                m_body = TemplateRenderer.render(m_tpl, context) if m_tpl else body
 
                 for to_addr in to_addrs:
                     mailer = MailNotifier(to_addr, from_addr)
-                    mailer.send_mail(custom_subject, rendered_body)
+                    mailer.send_mail(m_title, m_body)
 
             # 3. Direct Webhooks
             webhook_cfg = group.get("webhooks", {})
             wh_urls = webhook_cfg.get("urls", [])
             if wh_urls:
                 secret = webhook_cfg.get("secret", "")
+                wh_title = _resolve(group, webhook_cfg, "title", title)
+                wh_title = wh_title.replace("$UPDATE_COUNT", str(update_count)).replace(
+                    "$(hostname)", socket.gethostname()
+                )
+                wh_tpl = _resolve(group, webhook_cfg, "body_template", "")
+                wh_body = TemplateRenderer.render(wh_tpl, context) if wh_tpl else body
+
                 wh = WebhookNotifier(wh_urls, secret)
-                wh.send_notification(custom_subject, rendered_body)
+                wh.send_notification(wh_title, wh_body)
 
             # 4. Native Desktop Notifications (Per-Group)
             if group.get("desktop_notify", False):
+                dt_title = _resolve(group, {}, "title", title)
+                dt_title = dt_title.replace("$UPDATE_COUNT", str(update_count)).replace(
+                    "$(hostname)", socket.gethostname()
+                )
+                dt_tpl = _resolve(group, {}, "body_template", "")
+                dt_body = TemplateRenderer.render(dt_tpl, context) if dt_tpl else body
                 desktop = DesktopNotifier(enabled=True)
-                desktop.send_notification(custom_subject, rendered_body)
+                desktop.send_notification(dt_title, dt_body)
 
 
 def load_config() -> Dict[str, Any]:
