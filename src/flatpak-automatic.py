@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.5.3
+# Version: 1.5.4
 import os
 import sys
 import json

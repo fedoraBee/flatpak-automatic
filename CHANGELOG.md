@@ -9,6 +9,12 @@ Banner" width="450"></div>
 This is the changelog for **Flatpak Automatic**. All notable changes to this
 project will be documented in this file.
 
+## [1.5.4] - 2026-04-28
+
+### Added
+
+- Prepared execution roadmap phase for state-aware notification suite.
+
 ## [1.5.3] - 2026-04-28
 
 ### Added
