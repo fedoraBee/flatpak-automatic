@@ -388,7 +388,7 @@ class NotificationRouter:
             if res is None:
                 res = default_val
 
-            return res.get("success" if success else "failure", default_val)
+            return res
 
         for group in self.groups:
             # 1. Apprise (Universal)
