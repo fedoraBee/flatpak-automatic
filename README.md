@@ -125,6 +125,8 @@ sudo flatpak-automatic --history
 
 # Apply timer schedule configuration to systemd
 sudo flatpak-automatic --apply-schedule
+* `-c`, `--check-config`: Validate and print the current configuration, then exit.
+* `-r`, `--reload`: Send SIGHUP to a running instance to reload its config.
 
 # Test notification endpoints (Email, Apprise, Desktop UI)
 sudo flatpak-automatic --test-notify
