@@ -74,13 +74,15 @@ snapshots:  # Globally enable or disable snapshot creation.
 # Each group can have multiple notification methods (desktop, mail, webhooks, apprise).
 
 # TODO(Doc Lead): Enforce Type/Default comments
-notification_policy: desktop: true
-    mails: false
-    webhooks: false
-    apprise: false
+notification_policy:
+  desktop: true
+  mails: false
+  webhooks: false
+  apprise: false
 
 # TODO(Doc Lead): Enforce Type/Default comments
-notification_groups: - name: "Default Local Notifications"
+notification_groups:
+  - name: "Default Local Notifications"
 
     # Notification title (supports $UPDATE_COUNT and $hostname).
     title:

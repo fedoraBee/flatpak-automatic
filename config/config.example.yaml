@@ -45,7 +45,8 @@ timer:  # Schedule format as defined in systemd.time(7).
 # ------------------------------------------------------------------------------
 
 # TODO(Doc Lead): Enforce Type/Default comments
-snapshots: enabled: true
+snapshots:
+  enabled: true
   snapper_config: root
   snapper_descriptions:
     pre: "flatpak-automatic-pre"
@@ -64,10 +65,11 @@ snapshots: enabled: true
 # ------------------------------------------------------------------------------
 
 # TODO(Doc Lead): Enforce Type/Default comments
-notification_policy: desktop: true
-    mails: true
-    webhooks: true
-    apprise: true
+notification_policy:
+  desktop: true
+  mails: true
+  webhooks: true
+  apprise: true
 
 # TODO(Doc Lead): Enforce Type/Default comments
 notification_groups:  # ----------------------------------------------------------------------------
