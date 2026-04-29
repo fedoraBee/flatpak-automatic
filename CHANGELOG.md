@@ -21,6 +21,9 @@ project will be documented in this file.
 
 ### Changed
 
+- Synchronized `README.md` and `docs/flatpak-automatic.1` man pages with the new
+  `--check-config` and `--reload` CLI arguments.
+
 - Refactored mail and notification templates to strictly adhere to Markdown
   standards by moving `Subject` metadata into `config.default.yaml`.
 
