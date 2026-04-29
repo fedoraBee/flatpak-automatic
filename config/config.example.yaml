@@ -1,4 +1,13 @@
 # ==============================================================================
+# ENTERPRISE CONFIGURATION SCHEMA
+# ==============================================================================
+# ENFORCEMENT: Every configuration key below MUST define:
+# - Description: Operational purpose of the key.
+# - Type: Valid data type (e.g., string, boolean, integer).
+# - Default: Fallback value if omitted.
+# ==============================================================================
+
+# ==============================================================================
 # Flatpak Automatic - Example Configuration
 # ==============================================================================
 # This file provides a comprehensive overview of all available configuration
@@ -12,18 +21,20 @@
 # ------------------------------------------------------------------------------
 
 # Automatically install available updates.
+# TODO(Doc Lead): Enforce Type/Default comments
 auto_update: true
 
 
 # Notification policy: 'always', 'on-change', 'on-failure', or 'never'.
+# TODO(Doc Lead): Enforce Type/Default comments
 auto_notify: always
 
 # ------------------------------------------------------------------------------
 # Systemd Timer Settings
 # ------------------------------------------------------------------------------
 
-timer:
-  # Schedule format as defined in systemd.time(7).
+# TODO(Doc Lead): Enforce Type/Default comments
+timer:  # Schedule format as defined in systemd.time(7).
   schedule: daily
   # Randomized delay to avoid thundering herd on mirror servers.
   delay: 1h
@@ -33,6 +44,7 @@ timer:
 # Snapper Snapshot Settings
 # ------------------------------------------------------------------------------
 
+# TODO(Doc Lead): Enforce Type/Default comments
 snapshots:
   enabled: true
   snapper_config: root
@@ -52,15 +64,15 @@ snapshots:
 #   $hostname     : System hostname.
 # ------------------------------------------------------------------------------
 
+# TODO(Doc Lead): Enforce Type/Default comments
 notification_policy:
-    desktop: true
-    mails: true
-    webhooks: true
-    apprise: true
+  desktop: true
+  mails: true
+  webhooks: true
+  apprise: true
 
-notification_groups:
-
-  # ----------------------------------------------------------------------------
+# TODO(Doc Lead): Enforce Type/Default comments
+notification_groups:  # ----------------------------------------------------------------------------
   # Example 1: Full extended group with multiple plugins
   # ----------------------------------------------------------------------------
   - name: "Admin & Operations Alerting"
