@@ -1,4 +1,13 @@
 # ==============================================================================
+# ENTERPRISE CONFIGURATION SCHEMA
+# ==============================================================================
+# ENFORCEMENT: Every configuration key below MUST define:
+# - Description: Operational purpose of the key.
+# - Type: Valid data type (e.g., string, boolean, integer).
+# - Default: Fallback value if omitted.
+# ==============================================================================
+
+# ==============================================================================
 # Flatpak Automatic - Default Configuration
 # ==============================================================================
 # This file contains the default configuration for flatpak-automatic.
@@ -13,6 +22,7 @@
 
 # Automatically install available updates.
 # If set to false, the script will only perform dry-runs and send notifications.
+# TODO(Doc Lead): Enforce Type/Default comments
 auto_update: true
 
 
@@ -21,6 +31,7 @@ auto_update: true
 # 'on-change': Send a notification only when updates were installed.
 # 'on-failure': Send a notification only when an error occurred.
 # 'never': Disable all notifications.
+# TODO(Doc Lead): Enforce Type/Default comments
 auto_notify: always
 
 # ------------------------------------------------------------------------------
@@ -29,8 +40,8 @@ auto_notify: always
 # These settings control the systemd timer execution schedule.
 # Changes require running 'flatpak-automatic --apply-timer' or restarting the timer.
 
-timer:
-  # The execution schedule (e.g., 'daily', 'weekly', '*-*-* 04:00:00').
+# TODO(Doc Lead): Enforce Type/Default comments
+timer:  # The execution schedule (e.g., 'daily', 'weekly', '*-*-* 04:00:00').
   schedule: daily
 
   # Maximum randomized delay before starting the update process.
@@ -44,8 +55,8 @@ timer:
 # Snapper Snapshot Settings
 # ------------------------------------------------------------------------------
 
-snapshots:
-  # Globally enable or disable snapshot creation.
+# TODO(Doc Lead): Enforce Type/Default comments
+snapshots:  # Globally enable or disable snapshot creation.
   enabled: true
 
   # The Snapper configuration to use (usually 'root').
@@ -62,14 +73,14 @@ snapshots:
 # Define where and how to send update reports and alerts.
 # Each group can have multiple notification methods (desktop, mail, webhooks, apprise).
 
-notification_policy:
-    desktop: true
+# TODO(Doc Lead): Enforce Type/Default comments
+notification_policy: desktop: true
     mails: false
     webhooks: false
     apprise: false
 
-notification_groups:
-  - name: "Default Local Notifications"
+# TODO(Doc Lead): Enforce Type/Default comments
+notification_groups: - name: "Default Local Notifications"
 
     # Notification title (supports $UPDATE_COUNT and $hostname).
     title:
