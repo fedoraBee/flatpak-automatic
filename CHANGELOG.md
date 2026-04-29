@@ -23,19 +23,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   Shift-Left testing matrix (DBus & Notifications).
 - **Documentation**: Synchronized `README.md` to reference the comprehensive QA
   workflow.
+- **Core**: Adjusted `flatpak-automatic.py` and tests to work with new
+  configuration. Added constructor policy chack to notification classes.
+- **Core**: Improved cli banner creation.
 
 ### Added
 
-- Added mail success and failure html templates.
-- Added `notification_policy` to yaml configuration files.
-
-### Changed
-
-- Adjusted `flatpak-automatic.py` and tests to work with new configuration.
+- **Features**: Added mail success and failure html templates.
+- **Core**: Added `notification_policy` to yaml configuration files.
 
 ### Fixed
 
-- Improved cli output.
+- **Style**: Improved cli output and cli banner typo.
 
 ## [1.5.5] - 2026-04-29
 
