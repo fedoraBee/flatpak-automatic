@@ -15,6 +15,9 @@ project will be documented in this file.
 
 ### Fixed
 
+- Resolved desktop UI notification bottleneck on Wayland/GNOME by dynamically
+  targeting `DBUS_SESSION_BUS_ADDRESS` via `/run/user/<UID>/bus`.
+
 ## [1.5.4] - 2026-04-29
 
 ### Added
