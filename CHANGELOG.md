@@ -16,7 +16,13 @@ project will be documented in this file.
 - Added `--check-config` and `--reload` CLI directives for configuration
   validation and dynamic hot-reloading via `SIGHUP`.
 
+- Added `--check-config` and `--reload` CLI directives for configuration
+  validation and dynamic hot-reloading via `SIGHUP`.
+
 ### Fixed
+
+- Resolved desktop UI notification bottleneck on Wayland/GNOME by dynamically
+  targeting `DBUS_SESSION_BUS_ADDRESS` via `/run/user/<UID>/bus`.
 
 - Resolved desktop UI notification bottleneck on Wayland/GNOME by dynamically
   targeting `DBUS_SESSION_BUS_ADDRESS` via `/run/user/<UID>/bus`.

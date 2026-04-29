@@ -222,9 +222,14 @@ class DesktopNotifier:
                             k, v = el.split("=", 1)
                             env_dict[k] = v
 
-                    if "WAYLAND_DISPLAY" not in env_dict and "DISPLAY" not in env_dict:
+                    bus_path = f"/run/user/{uid}/bus"
+                    if (
+                        "WAYLAND_DISPLAY" not in env_dict
+                        and "DISPLAY" not in env_dict
+                        and not os.path.exists(bus_path)
+                    ):
                         logging.info(
-                            f"Skipping desktop notification for {user}: Headless session detected (No WAYLAND_DISPLAY/DISPLAY)."
+                            f"Skipping desktop notification for {user}: Headless session detected (No active display or D-Bus session)."
                         )
                         continue
 
