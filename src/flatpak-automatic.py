@@ -584,7 +584,9 @@ def main() -> None:
         print(f"  Last Success:    {state.get('last_success', 'Never')}")
 
         print(f"\n{Colors.OKCYAN}⚙️  Configuration ({CONFIG_FILE}):{Colors.ENDC}")
-        print(yaml.dump(config, default_flow_style=False).replace("\n", "\n  "))
+        print(
+            f" {yaml.dump(config, default_flow_style=False, sort_keys=False).replace('\n', '\n  ')}"
+        )
 
         print(f"\n{Colors.OKCYAN}📦 Installed Flatpaks:{Colors.ENDC}")
         result = subprocess.run(

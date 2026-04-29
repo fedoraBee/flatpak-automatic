@@ -9,11 +9,25 @@ Banner" width="450"></div>
 This is the changelog for **Flatpak Automatic**. All notable changes to this
 project will be documented in this file.
 
-## [1.5.4] - 2026-04-28
+## [1.5.4] - 2026-04-29
 
 ### Added
 
-- Prepared execution roadmap phase for state-aware notification suite.
+- Introduced `config/config.default.yaml` with sane default values to serve as
+  the initial configuration.
+- Added `config/config.example.yaml` (renamed from `config.yaml.example`) as a
+  comprehensive reference for all settings.
+
+### Changed
+
+- Standardized configuration file naming to use `.yaml` extension consistently.
+
+### Fixed
+
+- Improved `Makefile` linting targets (`lint-shell`, `lint-md`) for better
+  robustness.
+- Enhanced YAML configuration output in the CLI with preserved key ordering and
+  better indentation.
 
 ## [1.5.3] - 2026-04-28
 
