@@ -194,3 +194,8 @@ project. Use at your own discretion.
 - 🤝 [Contribution Guidelines](.github/CONTRIBUTING.md)
 - 📜 [Changelog](CHANGELOG.md)
 - 🧑‍💻 [Maintainers' Guide](MAINTAINERS.md)
+
+## Development & QA
+
+See `docs/development.md` for our strict testing matrix (DBus & Notifications)
+and GitOps patcher workflows.
