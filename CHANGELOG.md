@@ -9,6 +9,12 @@ Banner" width="450"></div>
 This is the changelog for **Flatpak Automatic**. All notable changes to this
 project will be documented in this file.
 
+## [1.5.5] - 2026-04-29
+
+### Added
+
+### Fixed
+
 ## [1.5.4] - 2026-04-29
 
 ### Added
