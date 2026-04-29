@@ -510,22 +510,27 @@ def load_config() -> Dict[str, Any]:
 
 
 def verify_policy(policy_key: str) -> bool:
-    return bool(load_config().get(policy_key, False))
+    return bool(load_config().get("notification_policy", {}).get(policy_key, False))
+
+
+def banner() -> str:
+
+    return (
+        f"{Colors.BOLD}{Colors.OKCYAN}  ___ _       _               _    \n"
+        f"{Colors.OKBLUE} | __| |__ _ | |_ _ __  __ _ | |__ \n"
+        f"{Colors.HEADER} | _|| / _` || ._| '_ \\/ _` || / / \n"
+        f"{Colors.FAIL} |_| |_\\__,_|\\__|| .__/\\__,_||_\\_\\\n"
+        f"                 |_| AUTOMATIC{Colors.ENDC}\n"
+    )
 
 
 class BrandedArgumentParser(argparse.ArgumentParser):
     def print_help(self, file=None):
-        banner = (
-            f"{Colors.BOLD}{Colors.OKCYAN}  ___ _       _               _    \n"
-            f"{Colors.OKBLUE} | __| |__ _ | |_ _ __  __ _ | |__ \n"
-            f"{Colors.HEADER} | _|| / _` || ._| '_ \\/ _` || / / \n"
-            f"{Colors.FAIL} |_| |_\\__,_|\\__|| .__//\\__,_||_\\_\\\n"
-            f"                 |_| AUTOMATIC{Colors.ENDC}\n"
-        )
         if file is None:
             file = sys.stdout
-        file.write(banner + "\n")
+        file.write(banner() + "\n")
         super().print_help(file)
+        file.write("\n")
 
 
 def main() -> None:
@@ -583,13 +588,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if sys.stdout.isatty():
-        print(
-            f"{Colors.BOLD}{Colors.OKCYAN}  ___ _       _               _    \n"
-            f"{Colors.OKBLUE} | __| |__ _ | |_ _ __  __ _ | |__ \n"
-            f"{Colors.HEADER} | _|| / _` || ._| '_ \\/ _` || / / \n"
-            f"{Colors.FAIL} |_| |_\\__,_|\\__|| .__//\\__,_||_\\_\\\n"
-            f"                 |_| AUTOMATIC{Colors.ENDC}\n"
-        )
+        print(banner())
 
     config: Dict[str, Any] = load_config()
 
@@ -612,7 +611,8 @@ def main() -> None:
         if chk_config:
             print(f"{Colors.OKGREEN}✅ Configuration is valid.{Colors.ENDC}")
             print(
-                f"   {yaml.dump(chk_config, default_flow_style=False, sort_keys=False).replace('\n', '\n   ')}"
+                f"   {yaml.dump(chk_config, default_flow_style=False, sort_keys=False).replace('\n', '\n   ')}",
+                end="",
             )
         else:
             print(f"{Colors.WARNING}⚠️ Configuration is empty or invalid.{Colors.ENDC}")
