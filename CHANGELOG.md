@@ -13,6 +13,9 @@ project will be documented in this file.
 
 ### Added
 
+- Added `--check-config` and `--reload` CLI directives for configuration
+  validation and dynamic hot-reloading via `SIGHUP`.
+
 ### Fixed
 
 - Resolved desktop UI notification bottleneck on Wayland/GNOME by dynamically
