@@ -13,6 +13,22 @@ from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 
 
+def _resolve_active_dbus_sessions() -> dict:
+    """
+    Dynamically resolve active DBUS_SESSION_BUS_ADDRESS for local users.
+    Bypasses strict $DISPLAY/$WAYLAND_DISPLAY requirements for background systemd timers.
+    """
+    sessions = {}
+    base_dir = "/run/user"
+    if os.path.exists(base_dir):
+        for uid in os.listdir(base_dir):
+            if uid.isdigit() and int(uid) >= 1000:
+                bus_path = os.path.join(base_dir, uid, "bus")
+                if os.path.exists(bus_path):
+                    sessions[uid] = f"unix:path={bus_path}"
+    return sessions
+
+
 class Colors:
     HEADER = "\033[95m"
     OKBLUE = "\033[94m"
