@@ -15,6 +15,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.5.6] - 2026-04-29
 
+### Changed (Enterprise Standards Hardening)
+
+- **Configuration**: Enforced strict enterprise YAML schema templates for
+  `config.default.yaml` and `config.example.yaml` (Type, Description, Default).
+- **Documentation**: Updated `docs/development.md` to explicitly outline the
+  Shift-Left testing matrix (DBus & Notifications).
+- **Documentation**: Synchronized `README.md` to reference the comprehensive QA
+  workflow.
+
 ### Added
 
 - Added mail success and failure html templates.
