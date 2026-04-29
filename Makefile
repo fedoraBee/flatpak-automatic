@@ -26,11 +26,11 @@ rpm: prep rpm-build
 lint: lint-shell lint-md lint-spec
 
 lint-shell:
-	shellcheck $(CURDIR)/scripts/*.sh
+	find $(CURDIR)/scripts -name "*.sh" -exec shellcheck {} +
 
 lint-md:
 	@if command -v markdownlint > /dev/null; then \
-		markdownlint --config $(CURDIR)/rpm/.markdownlint.jsonc *.md docs/**/*.md .github/**/*.md; \
+		git ls-files '*.md' | xargs -I {} markdownlint --config rpm/.markdownlint.jsonc {}; \
 	else \
 		echo "Warning: markdownlint not found. Skipping markdown lint."; \
 	fi
@@ -43,7 +43,8 @@ lint-rpm:
 
 install:
 	install -d $(DESTDIR)/etc/flatpak-automatic/templates
-	install -m 0644 config/config.yaml.example $(DESTDIR)/etc/flatpak-automatic/config.yaml.example
+	install -m 0644 config/config.example.yaml $(DESTDIR)/etc/flatpak-automatic/config.example.yaml
+	install -m 0644 config/config.default.yaml $(DESTDIR)/etc/flatpak-automatic/config.yaml
 	install -m 0644 config/templates/default.md $(DESTDIR)/etc/flatpak-automatic/templates/default.md
 	install -m 0644 config/templates/default_success.md $(DESTDIR)/etc/flatpak-automatic/templates/default_success.md
 	install -m 0644 config/templates/default_failure.md $(DESTDIR)/etc/flatpak-automatic/templates/default_failure.md

@@ -1,0 +1,103 @@
+# ==============================================================================
+# Flatpak Automatic - Default Configuration
+# ==============================================================================
+# This file contains the default configuration for flatpak-automatic.
+# It is typically installed at /etc/flatpak-automatic/config.yaml
+#
+# For more advanced examples and documentation, see config.example.yaml
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Core Settings
+# ------------------------------------------------------------------------------
+
+# Automatically install available updates.
+# If set to false, the script will only perform dry-runs and send notifications.
+auto_update: true
+
+# Enable Snapper integration for atomic-like rollbacks.
+# Requires Btrfs and Snapper to be configured on the system.
+enable_snapshots: true
+
+# Notification policy: 'always', 'on-change', 'on-failure', or 'never'.
+# 'always': Send a notification after every run.
+# 'on-change': Send a notification only when updates were installed.
+# 'on-failure': Send a notification only when an error occurred.
+# 'never': Disable all notifications.
+auto_notify: always
+
+# ------------------------------------------------------------------------------
+# Systemd Timer Settings
+# ------------------------------------------------------------------------------
+# These settings control the systemd timer execution schedule.
+# Changes require running 'flatpak-automatic --apply-timer' or restarting the timer.
+
+timer:
+  # The execution schedule (e.g., 'daily', 'weekly', '*-*-* 04:00:00').
+  schedule: daily
+
+  # Maximum randomized delay before starting the update process.
+  # This helps prevent server congestion when many clients update at once.
+  delay: 1h
+
+  # Minimum randomized delay before starting the update process.
+  minimum_delay: 1h
+
+# ------------------------------------------------------------------------------
+# Snapper Snapshot Settings
+# ------------------------------------------------------------------------------
+
+snapshots:
+  # Globally enable or disable snapshot creation.
+  enabled: true
+
+  # The Snapper configuration to use (usually 'root').
+  snapper_config: root
+
+  # Descriptions for pre and post snapshots.
+  snapper_descriptions:
+    pre: "flatpak-automatic-pre"
+    post: "flatpak-automatic-post"
+
+# ------------------------------------------------------------------------------
+# Notification Groups
+# ------------------------------------------------------------------------------
+# Define where and how to send update reports and alerts.
+# Each group can have multiple notification methods (desktop, mail, webhooks, apprise).
+
+notification_groups:
+  - name: "Default Local Notifications"
+
+    # Enable desktop notifications via DBus.
+    desktop_notify: true
+
+    # Notification title (supports $UPDATE_COUNT and $hostname).
+    title:
+      success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT upgrades installed."
+      failure: "[$(hostname)] flatpak-automatic: Update failed"
+
+    # Templates for the notification body (located in /etc/flatpak-automatic/templates/).
+    body_template:
+      success: default_success.md
+      failure: default_failure.md
+
+    # Example: Email Notifications (requires s-nail or mailx)
+    # mails:
+    #   to:
+    #     - admin@example.com
+    #   from: "Flatpak Automatic <noreply@$(hostname)>"
+    #   body_template:
+    #     success: default_mail_success.md
+    #     failure: default_mail_failure.md
+
+    # Example: Webhook Notifications
+    # webhooks:
+    #   urls:
+    #     - https://webhook.site/your-unique-id
+    #   secret: "your-hmac-secret"
+
+    # Example: Apprise Notifications (supports Discord, Telegram, Slack, etc.)
+    # apprise:
+    #   urls:
+    #     - discord://webhook_id/webhook_token
+    #     - telegram://bot_token/chat_id

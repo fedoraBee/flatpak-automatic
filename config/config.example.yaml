@@ -1,0 +1,117 @@
+# ==============================================================================
+# Flatpak Automatic - Example Configuration
+# ==============================================================================
+# This file provides a comprehensive overview of all available configuration
+# options for flatpak-automatic.
+#
+# Use this as a reference for customizing your installation.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Core Settings
+# ------------------------------------------------------------------------------
+
+# Automatically install available updates.
+auto_update: true
+
+# Enable Snapper integration for atomic-like rollbacks.
+enable_snapshots: true
+
+# Notification policy: 'always', 'on-change', 'on-failure', or 'never'.
+auto_notify: always
+
+# ------------------------------------------------------------------------------
+# Systemd Timer Settings
+# ------------------------------------------------------------------------------
+
+timer:
+  # Schedule format as defined in systemd.time(7).
+  schedule: daily
+  # Randomized delay to avoid thundering herd on mirror servers.
+  delay: 1h
+  minimum_delay: 1h
+
+# ------------------------------------------------------------------------------
+# Snapper Snapshot Settings
+# ------------------------------------------------------------------------------
+
+snapshots:
+  enabled: true
+  snapper_config: root
+  snapper_descriptions:
+    pre: "flatpak-automatic-pre"
+    post: "flatpak-automatic-post"
+
+# ------------------------------------------------------------------------------
+# Notification Routing Engine
+# ------------------------------------------------------------------------------
+# 'title' and 'body_template' support state-aware routing.
+# You may provide a flat string for universal application OR a dictionary
+# specifying distinct 'success' and 'failure' values.
+#
+# Available Variables:
+#   $UPDATE_COUNT : Number of updates installed.
+#   $hostname     : System hostname.
+# ------------------------------------------------------------------------------
+
+notification_groups:
+
+  # ----------------------------------------------------------------------------
+  # Example 1: Full extended group with multiple plugins
+  # ----------------------------------------------------------------------------
+  - name: "Admin & Operations Alerting"
+    desktop_notify: true
+
+    # Group-level state-aware defaults
+    title:
+      success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT upgrades installed."
+      failure: "[$(hostname)] flatpak-automatic: Update failed"
+
+    # Generic body template for all plugins in this group
+    body_template: default.md
+
+    # Plugin: Email
+    mails:
+      to:
+        - IT Ops <ops@example.com>
+        - Security Team <security@example.com>
+      from: "Flatpak Auto Bot <flatpak-automatic@$(hostname)>"
+
+      # Plugin-level override for specific templates
+      body_template:
+        success: default_mail_success.md
+        failure: default_mail_failure.md
+
+    # Plugin: Webhooks (JSON POST requests)
+    webhooks:
+      urls:
+        - https://hooks.example.com/flatpak-updates
+      secret: "optional_hmac_secret_for_verification"
+      # Inherits 'title' and 'body_template' from group level
+
+    # Plugin: Apprise (Universal notification library)
+    apprise:
+      urls:
+        - discord://user:pass@example.com
+        - telegram://user:pass@example.com
+        - slack://user:pass@example.com
+
+      # Overriding titles for Apprise specifically
+      title:
+        success: "🚀 Flatpak Success: $UPDATE_COUNT updates"
+        failure: "⚠️ Flatpak Failure on $hostname"
+
+      # Overriding templates for Apprise specifically
+      body_template:
+        success: custom_apprise_success.md
+        failure: custom_apprise_failure.md
+
+  # ----------------------------------------------------------------------------
+  # Example 2: Minimal text-only fallback group
+  # ----------------------------------------------------------------------------
+  - name: "Simple Text Log"
+    mails:
+      to: admin@example.com
+
+    # Universal flat string applied to both success and failure states
+    body_template: minimal.txt
