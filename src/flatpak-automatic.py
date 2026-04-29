@@ -2,6 +2,7 @@
 # Version: 1.5.5
 import os
 import sys
+import signal
 import json
 import subprocess
 import socket
@@ -543,6 +544,18 @@ def main() -> None:
         action="store_true",
         help="Apply systemd timer overrides based on config settings.",
     )
+    parser.add_argument(
+        "-c",
+        "--check-config",
+        action="store_true",
+        help="Validate and print the current configuration, then exit.",
+    )
+    parser.add_argument(
+        "-r",
+        "--reload",
+        action="store_true",
+        help="Send SIGHUP to a running instance to reload its config.",
+    )
     args = parser.parse_args()
 
     if sys.stdout.isatty():
@@ -555,7 +568,45 @@ def main() -> None:
         )
 
     config: Dict[str, Any] = load_config()
+
+    def sighup_handler(signum, frame):
+        logging.info("SIGHUP received. Hot-reloading configuration...")
+        nonlocal config
+        config = load_config()
+
+    try:
+        signal.signal(signal.SIGHUP, sighup_handler)
+    except AttributeError:
+        pass  # Handle OS environments that do not support SIGHUP safely
     state = load_state()
+
+    if args.check_config:
+        print(
+            f"{Colors.BOLD}{Colors.OKCYAN}⚙️  Validating Configuration...{Colors.ENDC}"
+        )
+        chk_config = load_config()
+        if chk_config:
+            print(f"{Colors.OKGREEN}✅ Configuration is valid.{Colors.ENDC}")
+            print(yaml.dump(chk_config, default_flow_style=False, sort_keys=False))
+        else:
+            print(f"{Colors.WARNING}⚠️ Configuration is empty or invalid.{Colors.ENDC}")
+        exit_clean(0)
+
+    if args.reload:
+        print(
+            f"{Colors.BOLD}{Colors.OKCYAN}🔄 Sending SIGHUP to flatpak-automatic.service...{Colors.ENDC}"
+        )
+        try:
+            subprocess.run(
+                ["systemctl", "kill", "-s", "HUP", "flatpak-automatic.service"],
+                check=True,
+            )
+            print(
+                f"{Colors.OKGREEN}✅ Reload signal (SIGHUP) sent successfully.{Colors.ENDC}"
+            )
+        except Exception as e:
+            print(f"{Colors.FAIL}❌ Failed to send reload signal: {e}{Colors.ENDC}")
+        exit_clean(0)
 
     if os.geteuid() != 0:
         print(
