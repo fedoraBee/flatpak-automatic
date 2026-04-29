@@ -9,6 +9,13 @@ Banner" width="450"></div>
 This is the changelog for **Flatpak Automatic**. All notable changes to this
 project will be documented in this file.
 
+## [1.5.5]
+
+### CI/CD
+
+- fix: update GitHub Actions (checkout, download-artifact, ruff) to resolve
+  Node.js 20 deprecation warnings.
+
 ## [1.5.4] - 2026-04-29
 
 ### Added

@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4.2.2
 
       - name: Lint Shell Scripts
         uses: ludeeus/action-shellcheck@2.0.0
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4.2.2
       - name: Validate tbump versioning configuration
         run: |
           pipx install tbump
@@ -60,11 +60,11 @@ jobs:
           tbump --non-interactive --dry-run 1.4.7
 
       - name: Run Ruff Lint
-        uses: astral-sh/ruff-action@v3
+        uses: astral-sh/ruff-action@v3.2.1
         with:
           args: 'check scripts/ tests/'
       - name: Run Ruff Format
-        uses: astral-sh/ruff-action@v3
+        uses: astral-sh/ruff-action@v3.2.1
         with:
           args: 'format --check scripts/ tests/'
       - name: Run Mypy Type Check
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4.2.2
 
       - name: Install Actionlint
         run: |
@@ -98,7 +98,7 @@ jobs:
     container: fedora:latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4.2.2
 
       - name: Install Build Tools
         run: dnf install -y rpmlint make python3 dpkg-dev debhelper python3-yaml
@@ -121,7 +121,7 @@ jobs:
       image: ${{ matrix.os }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4.2.2
       - name: Install Test Dependencies
         run: |
           if command -v dnf >/dev/null 2>&1; then
@@ -143,7 +143,7 @@ jobs:
       rpm_artifact_id: ${{ steps.upload_rpms.outputs.artifact-id }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4.2.2
       - name: Install Build Dependencies
         run: dnf install -y python3 rpm-build systemd-rpm-macros make tar gnupg2 rpm-sign which rpmlint dpkg fakeroot python3-yaml
       - name: Compile Packages
@@ -186,7 +186,7 @@ jobs:
     container: debian:latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4.2.2
       - name: Install Build Dependencies
         run: apt-get update && apt-get install -y dpkg-dev debhelper make python3 tar build-essential lintian python3-yaml
       - name: Compile Packages
@@ -214,7 +214,7 @@ jobs:
       options: --privileged
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4.2.2
       - name: Install Runtime Dependencies
         run: |
           if [ -f /etc/debian_version ]; then
@@ -224,13 +224,13 @@ jobs:
           fi
       - name: Retrieve RPM Artifacts
         if: contains(matrix.os, 'fedora')
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: rpms
           path: rpms
       - name: Retrieve DEB Artifacts
         if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'debian')
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: debs
           path: debs
@@ -271,7 +271,7 @@ jobs:
     environment: ${{ startsWith(github.ref, 'refs/tags/v') && 'gh-pages' || '' }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4.2.2
 
       - name: Install Web Dependencies
         run: |
@@ -281,13 +281,13 @@ jobs:
           sudo npm install -g htmlhint pa11y
 
       - name: Retrieve RPM Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: rpms
           path: .rpmbuild/RPMS/noarch
 
       - name: Retrieve DEB Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: debs
           path: debs
@@ -314,7 +314,7 @@ jobs:
           make rpm-repo GPG_KEY_ID=${{ vars.GPG_KEY_ID }} CHANNEL=$CHANNEL
 
       - name: Synchronize Legacy Assets
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4.2.2
         continue-on-error: true
         with:
           ref: gh-pages
@@ -357,19 +357,19 @@ jobs:
     environment: gh-pages
     steps:
       - name: Retrieve Public Assets
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: public-site
           path: public
 
       - name: Retrieve RPM Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: rpms
           path: rpms
 
       - name: Retrieve DEB Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: debs
           path: debs
@@ -395,7 +395,7 @@ jobs:
     container: fedora:latest
     needs: lint-python
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: Install System Dependencies
         run: |
           dnf install -y python3 python3-pytest python3-dbus python3-dbusmock dbus-daemon flatpak python3-yaml
