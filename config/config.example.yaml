@@ -14,8 +14,6 @@
 # Automatically install available updates.
 auto_update: true
 
-# Enable Snapper integration for atomic-like rollbacks.
-enable_snapshots: true
 
 # Notification policy: 'always', 'on-change', 'on-failure', or 'never'.
 auto_notify: always
@@ -54,6 +52,12 @@ snapshots:
 #   $hostname     : System hostname.
 # ------------------------------------------------------------------------------
 
+notification_policy:
+    desktop: true
+    mails: true
+    webhooks: true
+    apprise: true
+
 notification_groups:
 
   # ----------------------------------------------------------------------------
@@ -84,6 +88,8 @@ notification_groups:
 
     # Plugin: Webhooks (JSON POST requests)
     webhooks:
+      # Disable webhook by setting 'enabled: false'; defaults to 'enabled: true'
+      enabled: false
       urls:
         - https://hooks.example.com/flatpak-updates
       secret: "optional_hmac_secret_for_verification"
