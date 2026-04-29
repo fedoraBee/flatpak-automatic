@@ -80,3 +80,14 @@ Usage:
   [--remote origin] \
   [--dry-run]
 ```
+
+### Testing Matrix
+
+This project enforces a Shift-Left testing approach.
+
+- **Integration Tests:** Execute `tests/integration_test_dbus.py` for DBus
+  validation.
+- **Notification Tests:** Execute `tests/test_notifications.py` for UI/UX
+  alerting validation.
+- **Automation:** The GitOps patcher logic ensures test coverage is maintained
+  on all PRs.
