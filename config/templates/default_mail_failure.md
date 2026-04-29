@@ -1,4 +1,4 @@
-# Update Report: Failure
+# ❌ Update Report: Failure
 
 The `flatpak-automatic` agent encountered a critical error while attempting to
 process updates on **${HOSTNAME}**.

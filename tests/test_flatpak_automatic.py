@@ -83,11 +83,10 @@ class TestLoadConfig:
         mock_exists.side_effect = lambda path: (
             path == "/etc/flatpak-automatic/config.yaml"
         )
-        mock_file_content = "auto_update: false\nenable_snapshots: true\n"
+        mock_file_content = "auto_update: false\n"
         with patch("builtins.open", mock_open(read_data=mock_file_content)):
             config = fa.load_config()
             assert config.get("auto_update") is False
-            assert config.get("enable_snapshots") is True
 
 
 class TestJSONFormatter:
@@ -158,8 +157,15 @@ class TestMainIntegration:
     ) -> None:
         mock_load.return_value = {
             "auto_update": True,
-            "enable_snapshots": True,
             "auto_notify": "none",
+            "snapshots": {
+                "enabled": True,
+                "snapper_config": "root",
+                "snapper_descriptions": {
+                    "pre": "flatpak-automatic-pre",
+                    "post": "flatpak-automatic-post",
+                },
+            },
         }
         mock_load_state.return_value = {"last_try": "Never", "last_success": "Never"}
 

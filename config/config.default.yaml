@@ -15,9 +15,6 @@
 # If set to false, the script will only perform dry-runs and send notifications.
 auto_update: true
 
-# Enable Snapper integration for atomic-like rollbacks.
-# Requires Btrfs and Snapper to be configured on the system.
-enable_snapshots: true
 
 # Notification policy: 'always', 'on-change', 'on-failure', or 'never'.
 # 'always': Send a notification after every run.
@@ -65,11 +62,14 @@ snapshots:
 # Define where and how to send update reports and alerts.
 # Each group can have multiple notification methods (desktop, mail, webhooks, apprise).
 
+notification_policy:
+    desktop: true
+    mails: false
+    webhooks: false
+    apprise: false
+
 notification_groups:
   - name: "Default Local Notifications"
-
-    # Enable desktop notifications via DBus.
-    desktop_notify: true
 
     # Notification title (supports $UPDATE_COUNT and $hostname).
     title:
@@ -81,23 +81,34 @@ notification_groups:
       success: default_success.md
       failure: default_failure.md
 
+    desktop:
+      title:
+        success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT upgrades installed."
+        failure: "[$(hostname)] flatpak-automatic: Update failed"
+      body_template:
+        success: default_desktop_success.md
+        failure: default_desktop_failure.md
+
     # Example: Email Notifications (requires s-nail or mailx)
-    # mails:
-    #   to:
-    #     - admin@example.com
-    #   from: "Flatpak Automatic <noreply@$(hostname)>"
-    #   body_template:
-    #     success: default_mail_success.md
-    #     failure: default_mail_failure.md
+    mails:
+      enabled: false
+      to:
+        - admin@example.com
+      from: "Flatpak Automatic <noreply@$(hostname)>"
+      body_template:
+        success: default_mail_success.html
+        failure: default_mail_failure.html
 
     # Example: Webhook Notifications
-    # webhooks:
-    #   urls:
-    #     - https://webhook.site/your-unique-id
-    #   secret: "your-hmac-secret"
+    webhooks:
+      enabled: false
+      urls:
+        - https://webhook.site/your-unique-id
+      secret: "your-hmac-secret"
 
     # Example: Apprise Notifications (supports Discord, Telegram, Slack, etc.)
-    # apprise:
-    #   urls:
-    #     - discord://webhook_id/webhook_token
-    #     - telegram://bot_token/chat_id
+    apprise:
+      enabled: false
+      urls:
+        - discord://webhook_id/webhook_token
+        - telegram://bot_token/chat_id

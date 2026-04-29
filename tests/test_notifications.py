@@ -28,6 +28,8 @@ class TestNotificationRouter:
                     "name": "StateDependentGroup",
                     "title": {"success": "Group Success", "failure": "Group Failure"},
                     "mail": {
+                        "enabled": True,
+                        "from": "test@example.com",
                         "to": "admin@example.com",
                         "title": {"success": "Mail Success"},
                         "body_template": {
@@ -36,6 +38,7 @@ class TestNotificationRouter:
                         },
                     },
                     "webhooks": {
+                        "enabled": True,
                         "urls": ["http://admin.local"],
                         "body_template": "flat_template.md",
                     },

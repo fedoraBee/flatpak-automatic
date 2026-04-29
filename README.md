@@ -103,7 +103,6 @@ Key options include:
 - `EMAIL_TO`: Recipient for update reports.
 - `FLATPAK_APPRISE_URLS`: Comma-separated Apprise URLs for Slack, Discord,
   Gotify, Matrix, etc.
-- `ENABLE_SNAPSHOTS`: Enable Snapper integration.
 - `SNAPPER_CONFIG`: The Snapper configuration to use (default: `root`).
 
 ## 💾 Manual Execution & CLI

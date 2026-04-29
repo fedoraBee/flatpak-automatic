@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.5.5
+# Version: 1.5.6
 import os
 import sys
 import signal
@@ -191,12 +191,13 @@ class FlatpakUpdater:
 
 
 class DesktopNotifier:
-    def __init__(self, enabled: bool = False) -> None:
-        self.enabled = enabled
+    def __init__(self) -> None:
+        self.enabled = verify_policy("desktop")
 
     def send_notification(
         self, title: str, body: str, icon: str = "software-update-available"
     ) -> None:
+
         if not self.enabled:
             return
         try:
@@ -267,6 +268,7 @@ class DesktopNotifier:
 
 class WebhookNotifier:
     def __init__(self, urls: List[str], secret: str = "") -> None:
+        self.enabled = verify_policy("webhooks")
         self.urls = urls
         self.secret = secret.strip()
 
@@ -301,6 +303,7 @@ class WebhookNotifier:
 
 class MailNotifier:
     def __init__(self, to_address: str, from_address: str) -> None:
+        self.enabled = verify_policy("mails")
         self.to_address: str = to_address
         self.from_address: str = from_address
         self.mail_cmd: Optional[str] = self._find_mail_cmd()
@@ -363,13 +366,13 @@ class NotificationRouter:
 
         # Support top-level legacy config by injecting it into a virtual group
         legacy_mail = config.get("mail")
-        legacy_webhooks = config.get("webhooks")
-        if legacy_mail or legacy_webhooks:
+        legacy_webhook = config.get("webhook")
+        if legacy_mail or legacy_webhook:
             self.groups.append(
                 {
                     "name": "Legacy Global Group",
                     "mails": legacy_mail if legacy_mail else {},
-                    "webhooks": legacy_webhooks if legacy_webhooks else {},
+                    "webhooks": legacy_webhook if legacy_webhook else {},
                 }
             )
 
@@ -387,6 +390,7 @@ class NotificationRouter:
         }
 
         def _resolve(group_cfg, target_cfg, field_name, default_val):
+
             target_val = (
                 target_cfg.get(field_name)
                 if target_cfg and field_name in target_cfg
@@ -415,10 +419,14 @@ class NotificationRouter:
         for group in self.groups:
             # 1. Apprise (Universal)
             apprise_cfg = group.get("apprise", {})
-            if not apprise_cfg and group.get("urls"):
-                apprise_cfg = {"urls": group.get("urls", [])}
+            # if not apprise_cfg and group.get("urls"):
+            #     apprise_cfg = {"urls": group.get("urls", [])}
 
-            if APPRISE_AVAILABLE and apprise_cfg.get("urls"):
+            if (
+                APPRISE_AVAILABLE
+                and apprise_cfg.get("enabled", False)
+                and apprise_cfg.get("urls")
+            ):
                 app_urls = apprise_cfg.get("urls", [])
                 app_title = _resolve(group, apprise_cfg, "title", title)
                 app_title = app_title.replace(
@@ -428,20 +436,26 @@ class NotificationRouter:
                 app_body = (
                     TemplateRenderer.render(app_tpl, context) if app_tpl else body
                 )
-                try:
-                    apobj = apprise.Apprise()
-                    for url in app_urls:
-                        apobj.add(url)
-                    apobj.notify(body=app_body, title=app_title)
-                    logging.info(
-                        f"Notification group '{group.get('name', 'unnamed')}' dispatched to {len(app_urls)} endpoints via Apprise."
-                    )
-                except Exception as e:
-                    logging.error(f"Failed to dispatch Apprise notification: {e}")
+                if verify_policy("apprise"):
+                    try:
+                        apobj = apprise.Apprise()
+                        for url in app_urls:
+                            apobj.add(url)
+                        apobj.notify(body=app_body, title=app_title)
+                        logging.info(
+                            f"Notification group '{group.get('name', 'unnamed')}' dispatched to {len(app_urls)} endpoints via Apprise."
+                        )
+                    except Exception as e:
+                        logging.error(f"Failed to dispatch Apprise notification: {e}")
 
             # 2. Direct Mails
             mails_cfg = group.get("mails", group.get("mail", {}))
-            if mails_cfg.get("enabled", False) or "to" in mails_cfg:
+            if (
+                mails_cfg
+                and mails_cfg.get("enabled", False)
+                and "to" in mails_cfg
+                and "from" in mails_cfg
+            ):
                 to_addrs = mails_cfg.get("to", [])
                 if isinstance(to_addrs, str):
                     to_addrs = [to_addrs]
@@ -458,9 +472,9 @@ class NotificationRouter:
                     mailer.send_mail(m_title, m_body)
 
             # 3. Direct Webhooks
-            webhook_cfg = group.get("webhooks", {})
+            webhook_cfg = group.get("webhooks", group.get("webhook", {}))
             wh_urls = webhook_cfg.get("urls", [])
-            if wh_urls:
+            if wh_urls and webhook_cfg.get("enabled", False):
                 secret = webhook_cfg.get("secret", "")
                 wh_title = _resolve(group, webhook_cfg, "title", title)
                 wh_title = wh_title.replace("$UPDATE_COUNT", str(update_count)).replace(
@@ -473,14 +487,15 @@ class NotificationRouter:
                 wh.send_notification(wh_title, wh_body)
 
             # 4. Native Desktop Notifications (Per-Group)
-            if group.get("desktop_notify", False):
-                dt_title = _resolve(group, {}, "title", title)
+            desktop_cfg = group.get("desktop", {})
+            if desktop_cfg and desktop_cfg.get("enabled", False):
+                dt_title = _resolve(group, desktop_cfg, "title", title)
                 dt_title = dt_title.replace("$UPDATE_COUNT", str(update_count)).replace(
                     "$(hostname)", socket.gethostname()
                 )
-                dt_tpl = _resolve(group, {}, "body_template", "")
+                dt_tpl = _resolve(group, desktop_cfg, "body_template", "")
                 dt_body = TemplateRenderer.render(dt_tpl, context) if dt_tpl else body
-                desktop = DesktopNotifier(enabled=True)
+                desktop = DesktopNotifier()
                 desktop.send_notification(dt_title, dt_body)
 
 
@@ -492,6 +507,10 @@ def load_config() -> Dict[str, Any]:
         except Exception as e:
             logging.error(f"Failed to parse YAML config: {e}")
     return {}
+
+
+def verify_policy(policy_key: str) -> bool:
+    return bool(load_config().get(policy_key, False))
 
 
 class BrandedArgumentParser(argparse.ArgumentParser):
@@ -592,7 +611,9 @@ def main() -> None:
         chk_config = load_config()
         if chk_config:
             print(f"{Colors.OKGREEN}✅ Configuration is valid.{Colors.ENDC}")
-            print(yaml.dump(chk_config, default_flow_style=False, sort_keys=False))
+            print(
+                f"   {yaml.dump(chk_config, default_flow_style=False, sort_keys=False).replace('\n', '\n   ')}"
+            )
         else:
             print(f"{Colors.WARNING}⚠️ Configuration is empty or invalid.{Colors.ENDC}")
         exit_clean(0)
@@ -657,7 +678,7 @@ def main() -> None:
 
         print(f"\n{Colors.OKCYAN}⚙️  Configuration ({CONFIG_FILE}):{Colors.ENDC}")
         print(
-            f" {yaml.dump(config, default_flow_style=False, sort_keys=False).replace('\n', '\n  ')}"
+            f"   {yaml.dump(config, default_flow_style=False, sort_keys=False).replace('\n', '\n   ')}"
         )
 
         print(f"\n{Colors.OKCYAN}📦 Installed Flatpaks:{Colors.ENDC}")
@@ -667,7 +688,7 @@ def main() -> None:
             text=True,
         )
         for line in result.stdout.strip().split("\n"):
-            print(f"  {line}")
+            print(f"   {line}")
         exit_clean(0)
 
     if args.history:
@@ -687,8 +708,8 @@ def main() -> None:
             "This is a test notification from flatpak-automatic.",
             True,
         )
+        desktop = DesktopNotifier()
 
-        desktop = DesktopNotifier(enabled=True)
         desktop.send_notification(
             "Test Notification", "This is a test notification from flatpak-automatic."
         )
@@ -717,7 +738,7 @@ def main() -> None:
         exit_clean(0)
 
     snap_cfg = config.get("snapshots", {})
-    if snap_cfg.get("enabled", config.get("enable_snapshots", True)):
+    if snap_cfg and snap_cfg.get("enabled", False):
         snapper = SnapperManager(config=snap_cfg.get("snapper_config", "root"))
         desc_cfg = snap_cfg.get("snapper_descriptions", {})
         snapper.create_timeline_snapshot(desc_cfg.get("pre", "flatpak-automatic-pre"))
@@ -729,7 +750,7 @@ def main() -> None:
         state["last_success"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         save_state(state)
         snap_cfg = config.get("snapshots", {})
-        if snap_cfg.get("enabled", config.get("enable_snapshots", True)):
+        if snap_cfg and snap_cfg.get("enabled", False):
             if "snapper" in locals():
                 desc_cfg = snap_cfg.get("snapper_descriptions", {})
                 snapper.create_timeline_snapshot(
