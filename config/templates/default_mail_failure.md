@@ -1,7 +1,5 @@
 # Update Report: Failure
 
-Subject: [${HOSTNAME}] ❌ ALERT: Flatpak Updates Failed
-
 The `flatpak-automatic` agent encountered a critical error while attempting to
 process updates on **${HOSTNAME}**.
 

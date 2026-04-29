@@ -19,6 +19,11 @@ project will be documented in this file.
 - Added `--check-config` and `--reload` CLI directives for configuration
   validation and dynamic hot-reloading via `SIGHUP`.
 
+### Changed
+
+- Refactored mail and notification templates to strictly adhere to Markdown
+  standards by moving `Subject` metadata into `config.default.yaml`.
+
 ### Fixed
 
 - Resolved desktop UI notification bottleneck on Wayland/GNOME by dynamically
