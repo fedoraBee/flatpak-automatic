@@ -1,0 +1,9 @@
+[Unit]
+Description=Flatpak Automatic Update Service (User-Level)
+Documentation=man:flatpak-automatic(1)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/flatpak-automatic --user

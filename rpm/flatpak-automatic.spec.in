@@ -65,6 +65,9 @@ install -m 644 assets/icon.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/ap
 %{_mandir}/man1/flatpak-automatic.1*
 %{_unitdir}/flatpak-automatic.service
 %{_unitdir}/flatpak-automatic.timer
+
+%{_prefix}/lib/systemd/user/flatpak-automatic-user.service
+%{_prefix}/lib/systemd/user/flatpak-automatic-user.timer
 %config(noreplace) %{_sysconfdir}/sysconfig/flatpak-automatic
 %license LICENSE
 %doc README.md CHANGELOG.md docs/development.md .github/CONTRIBUTING.md AGENTS.md MAINTAINERS.md
