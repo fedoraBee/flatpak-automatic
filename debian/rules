@@ -10,3 +10,8 @@ override_dh_auto_install:
 
 override_dh_auto_test:
 	# Skip tests during packaging since they run independently in the CI unit-tests job.
+
+
+override_dh_install:
+	dh_install
+	mv debian/flatpak-automatic/usr/share/icons/hicolor/scalable/apps/icon.svg debian/flatpak-automatic/usr/share/icons/hicolor/scalable/apps/flatpak-automatic.svg || true

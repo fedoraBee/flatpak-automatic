@@ -51,6 +51,12 @@ make install DESTDIR=%{buildroot} PREFIX=%{_prefix} SYSCONFDIR=%{_sysconfdir}
 %postun
 %systemd_postun_with_restart %{name}.service %{name}.timer
 
+
+install -d %{buildroot}%{_datadir}/applications
+install -m 644 assets/flatpak-automatic.desktop %{buildroot}%{_datadir}/applications/
+install -d %{buildroot}%{_datadir}/icons/hicolor/scalable/apps
+install -m 644 assets/icon.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/flatpak-automatic.svg
+
 %files
 %dir %{_sysconfdir}/flatpak-automatic
 %dir %{_sysconfdir}/flatpak-automatic/templates
@@ -67,3 +73,6 @@ make install DESTDIR=%{buildroot} PREFIX=%{_prefix} SYSCONFDIR=%{_sysconfdir}
 %doc README.md CHANGELOG.md docs/development.md .github/CONTRIBUTING.md AGENTS.md MAINTAINERS.md
 
 # NOTE: The %%changelog directive is automatically appended by the python script during the build process.
+
+%{_datadir}/applications/flatpak-automatic.desktop
+%{_datadir}/icons/hicolor/scalable/apps/flatpak-automatic.svg

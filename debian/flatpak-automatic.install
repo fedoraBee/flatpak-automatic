@@ -1,3 +1,5 @@
 config/config.default.yaml /etc/flatpak-automatic/config.yaml
 config/config.example.yaml /etc/flatpak-automatic/
 config/templates/* /etc/flatpak-automatic/templates/
+assets/flatpak-automatic.desktop usr/share/applications/
+assets/icon.svg usr/share/icons/hicolor/scalable/apps/
