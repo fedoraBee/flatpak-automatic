@@ -32,6 +32,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - feat(notifications): wire DBus desktop notifications to utilize the new 1:1
   `icon.svg`
 
+### Fixed
+
+- fix: respect global notification policy
+
 ## [1.5.7] - 2026-04-30
 
 ### Changed
