@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.5.9
+# Version: 1.5.10
 import os
 import sys
 import signal
@@ -540,7 +540,7 @@ def banner() -> str:
         f"{Colors.OKBLUE} | __| |__ _ | |_ _ __  __ _ | |__ \n"
         f"{Colors.HEADER} | _|| / _` || ._| '_ \\/ _` || / / \n"
         f"{Colors.OKPINK} |_| |_\\__,_|\\__|| .__/\\__,_||_\\_\\\n"
-        f"    AUTOMATIC    |_| {Colors.ENDC}     {Colors.OKCYAN} v1.5.9{Colors.ENDC}\n"
+        f"    AUTOMATIC    |_| {Colors.ENDC}     {Colors.OKCYAN} v1.5.10{Colors.ENDC}\n"
     )
 
 
@@ -605,7 +605,16 @@ def main() -> None:
         action="store_true",
         help="Send SIGHUP to a running instance to reload its config.",
     )
+    parser.add_argument(
+        "-u",
+        "--user",
+        action="store_true",
+        help="Operate strictly on user-level flatpak installations.",
+    )
     args = parser.parse_args()
+
+    # Dynamic Flatpak Scope for non-root execution
+    flatpak_scope = ["--user"] if args.user else ["--system"]
 
     if sys.stdout.isatty():
         print(banner())
