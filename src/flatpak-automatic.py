@@ -206,6 +206,7 @@ class DesktopNotifier:
     ) -> None:
 
         if not self.enabled:
+            logging.info("Desktop notifications disabled by global policy. Skipping.")
             return
         try:
             users_out = subprocess.run(
@@ -280,6 +281,11 @@ class WebhookNotifier:
         self.secret = secret.strip()
 
     def send_notification(self, title: str, body: str) -> None:
+
+        if not self.enabled:
+            logging.info("Webhook notifications disabled by global policy. Skipping.")
+            return
+
         if not self.urls:
             return
         import urllib.request
@@ -330,6 +336,10 @@ class MailNotifier:
         return None
 
     def send_mail(self, subject: str, body: str) -> None:
+        if not self.enabled:
+            logging.info("Mail notifications disabled by global policy. Skipping.")
+            return
+
         if not self.mail_cmd or not self.to_address:
             logging.warning(
                 "Skipping mail notification: Mail client or recipient missing."
@@ -431,7 +441,7 @@ class NotificationRouter:
 
             if (
                 APPRISE_AVAILABLE
-                and apprise_cfg.get("enabled", False)
+                and apprise_cfg.get("enabled", True)
                 and apprise_cfg.get("urls")
             ):
                 app_urls = apprise_cfg.get("urls", [])
@@ -443,23 +453,26 @@ class NotificationRouter:
                 app_body = (
                     TemplateRenderer.render(app_tpl, context) if app_tpl else body
                 )
-                if verify_policy("apprise"):
-                    try:
-                        apobj = apprise.Apprise()
-                        for url in app_urls:
-                            apobj.add(url)
-                        apobj.notify(body=app_body, title=app_title)
-                        logging.info(
-                            f"Notification group '{group.get('name', 'unnamed')}' dispatched to {len(app_urls)} endpoints via Apprise."
-                        )
-                    except Exception as e:
-                        logging.error(f"Failed to dispatch Apprise notification: {e}")
+                if not verify_policy("apprise"):
+                    logging.info(
+                        "Apprise notifications disabled by global policy. Skipping."
+                    )
+                    return
+                try:
+                    apobj = apprise.Apprise()
+                    for url in app_urls:
+                        apobj.add(url)
+                    apobj.notify(body=app_body, title=app_title)
+                    logging.info(
+                        f"Notification group '{group.get('name', 'unnamed')}' dispatched to {len(app_urls)} endpoints via Apprise."
+                    )
+                except Exception as e:
+                    logging.error(f"Failed to dispatch Apprise notification: {e}")
 
             # 2. Direct Mails
             mails_cfg = group.get("mails", group.get("mail", {}))
             if (
-                mails_cfg
-                and mails_cfg.get("enabled", False)
+                mails_cfg.get("enabled", True)
                 and "to" in mails_cfg
                 and "from" in mails_cfg
             ):
@@ -481,7 +494,7 @@ class NotificationRouter:
             # 3. Direct Webhooks
             webhook_cfg = group.get("webhooks", group.get("webhook", {}))
             wh_urls = webhook_cfg.get("urls", [])
-            if wh_urls and webhook_cfg.get("enabled", False):
+            if wh_urls and webhook_cfg.get("enabled", True):
                 secret = webhook_cfg.get("secret", "")
                 wh_title = _resolve(group, webhook_cfg, "title", title)
                 wh_title = wh_title.replace("$UPDATE_COUNT", str(update_count)).replace(
@@ -495,7 +508,7 @@ class NotificationRouter:
 
             # 4. Native Desktop Notifications (Per-Group)
             desktop_cfg = group.get("desktop", {})
-            if desktop_cfg and desktop_cfg.get("enabled", False):
+            if desktop_cfg.get("enabled", True):
                 dt_title = _resolve(group, desktop_cfg, "title", title)
                 dt_title = dt_title.replace("$UPDATE_COUNT", str(update_count)).replace(
                     "$(hostname)", socket.gethostname()
@@ -503,7 +516,7 @@ class NotificationRouter:
                 dt_tpl = _resolve(group, desktop_cfg, "body_template", "")
                 dt_body = TemplateRenderer.render(dt_tpl, context) if dt_tpl else body
                 desktop = DesktopNotifier()
-                desktop.send_notification(dt_title, dt_body)
+                desktop.send_notification(dt_title, dt_body, "icon.svg")
 
 
 def load_config() -> Dict[str, Any]:
@@ -745,7 +758,7 @@ def main() -> None:
         exit_clean(0)
 
     snap_cfg = config.get("snapshots", {})
-    if snap_cfg and snap_cfg.get("enabled", False):
+    if snap_cfg.get("enabled", True):
         snapper = SnapperManager(config=snap_cfg.get("snapper_config", "root"))
         desc_cfg = snap_cfg.get("snapper_descriptions", {})
         snapper.create_timeline_snapshot(desc_cfg.get("pre", "flatpak-automatic-pre"))
@@ -757,7 +770,7 @@ def main() -> None:
         state["last_success"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         save_state(state)
         snap_cfg = config.get("snapshots", {})
-        if snap_cfg and snap_cfg.get("enabled", False):
+        if snap_cfg.get("enabled", True):
             if "snapper" in locals():
                 desc_cfg = snap_cfg.get("snapper_descriptions", {})
                 snapper.create_timeline_snapshot(
