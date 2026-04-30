@@ -17,6 +17,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Design/UI:** Inlined `logo.svg` directly into the Jinja2 HTML template for
+  zero-dependency standalone output.
 - **Branding**: Updated the SVG logo with enhanced colors and integrated version
   string to align with the CLI banner.
 - **CLI**: Improved terminal output with new colors (`OKPINK`) and refined
