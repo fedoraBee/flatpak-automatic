@@ -205,3 +205,9 @@ and GitOps patcher workflows.
 - **`banner.svg`**: The primary logotype/header used in documentation and CLIs.
 - **`icon.svg`**: The 1:1 scalable logomark used for desktop notifications and
   compact contexts.
+
+## GUI / Desktop Integration
+
+**Desktop Integration:** Native XDG `.desktop` entry included for seamless
+launching from GUI application menus (GNOME, KDE, etc.) with automated terminal
+routing.
