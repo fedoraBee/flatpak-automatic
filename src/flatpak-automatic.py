@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.5.6
+# Version: 1.5.7
 import os
 import sys
 import signal
@@ -35,6 +35,8 @@ class Colors:
     OKBLUE = "\033[94m"
     OKCYAN = "\033[96m"
     OKGREEN = "\033[92m"
+    OKPINK = "\033[38;5;125m"
+    DEEPPINK = "\033[38;5;125m"
     WARNING = "\033[93m"
     FAIL = "\033[91m"
     ENDC = "\033[0m"
@@ -519,8 +521,8 @@ def banner() -> str:
         f"{Colors.BOLD}{Colors.OKCYAN}  ___ _       _               _    \n"
         f"{Colors.OKBLUE} | __| |__ _ | |_ _ __  __ _ | |__ \n"
         f"{Colors.HEADER} | _|| / _` || ._| '_ \\/ _` || / / \n"
-        f"{Colors.FAIL} |_| |_\\__,_|\\__|| .__/\\__,_||_\\_\\\n"
-        f"                 |_| AUTOMATIC{Colors.ENDC}\n"
+        f"{Colors.OKPINK} |_| |_\\__,_|\\__|| .__/\\__,_||_\\_\\\n"
+        f"                 |_| {Colors.OKCYAN}AUTOMATIC{Colors.ENDC}{Colors.OKCYAN} v1.5.7{Colors.ENDC}\n"
     )
 
 
@@ -673,13 +675,13 @@ def main() -> None:
         )
 
         print(f"\n{Colors.OKCYAN}📊 Execution State:{Colors.ENDC}")
-        print(f"  Last Update Try: {state.get('last_try', 'Never')}")
-        print(f"  Last Success:    {state.get('last_success', 'Never')}")
+        print(f"   Last Update Try: {state.get('last_try', 'Never')}")
+        print(f"   Last Success:    {state.get('last_success', 'Never')}")
 
-        print(f"\n{Colors.OKCYAN}⚙️  Configuration ({CONFIG_FILE}):{Colors.ENDC}")
-        print(
-            f"   {yaml.dump(config, default_flow_style=False, sort_keys=False).replace('\n', '\n   ')}"
-        )
+        # print(f"\n{Colors.OKCYAN}⚙️  Configuration ({CONFIG_FILE}):{Colors.ENDC}")
+        # print(
+        #     f"   {yaml.dump(config, default_flow_style=False, sort_keys=False).replace('\n', '\n   ')}"
+        # )
 
         print(f"\n{Colors.OKCYAN}📦 Installed Flatpaks:{Colors.ENDC}")
         result = subprocess.run(
