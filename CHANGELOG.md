@@ -13,12 +13,17 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 1.5.9
+## [1.5.9] - 2026-04-30
+
+- **Security/UX:** Wrapped GUI application launcher execution with `pkexec` to
+  trigger standard graphical authentication (Polkit) for required privileges.
+
+### Added
 
 - **UI/UX:** Added XDG `.desktop` entry for GUI application menu integration and
   CLI launch routing.
 
-## [1.5.8]
+## [1.5.8] - 2026-04-30
 
 ### Changed
 

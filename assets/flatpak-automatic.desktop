@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Flatpak Automatic
 Comment=Automatic update service for Flatpak apps
-Exec=/usr/bin/flatpak-automatic
+Exec=pkexec /usr/bin/flatpak-automatic
 Icon=flatpak-automatic
 Terminal=true
 Type=Application
