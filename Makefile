@@ -61,6 +61,9 @@ install:
 	install -p -m 644 config/sysconfig/flatpak-automatic $(DESTDIR)$(SYSCONFDIR)/sysconfig/flatpak-automatic
 	install -p -m 644 config/systemd/flatpak-automatic.service $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.service
 	install -p -m 644 config/systemd/flatpak-automatic.timer $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.timer
+	install -d $(DESTDIR)$(PREFIX)/lib/systemd/user
+	install -p -m 644 config/systemd/flatpak-automatic-user.service $(DESTDIR)$(PREFIX)/lib/systemd/user/flatpak-automatic-user.service
+	install -p -m 644 config/systemd/flatpak-automatic-user.timer $(DESTDIR)$(PREFIX)/lib/systemd/user/flatpak-automatic-user.timer
 
 rpm-build:
 	@./scripts/build/build-rpm-local.sh "$(NAME)" "$(EPOCH)" "$(VERSION)" "$(REL_NUM)" "$(TOPDIR)"
