@@ -1,6 +1,6 @@
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line MD033 MD041-->
-<div align="center"><img src="assets/logo.svg" alt="Flatpak Automatic CLI
+<div align="center"><img src="assets/banner.svg" alt="Flatpak Automatic CLI
 Banner" width="450"></div>
 <!-- prettier-ignore-end -->
 
@@ -12,6 +12,18 @@ project will be documented in this file.
 The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.5.8] - 2026-04-30
+
+### Changed
+
+- refactor(assets): rename `logo.svg` to `banner.svg` to clarify brand
+  architecture
+
+### Added
+
+- feat(assets): introduce 1:1 `icon.svg` for desktop notifications and compact
+  elements
 
 ## [1.5.7] - 2026-04-30
 
