@@ -4,7 +4,7 @@
     .c1 { fill: #00FFFF; }
     .c2 { fill: #55AAFF; }
     .c3 { fill: #AA55FF; }
-    .c4 { fill: #FF00FF; }
+    .c4 { fill: #AF005F; }
     .c-auto { fill: #2c3e50; } /* Light mode default text color */
     @media (prefers-color-scheme: dark) {
       .c-auto { fill: #e0e0e0; } /* Dark mode text color */
@@ -16,6 +16,6 @@
     <tspan x="50%" dy="1.2em" class="c2"> | __| |__ _ | |_ _ __  __ _ | |__ </tspan>
     <tspan x="50%" dy="1.2em" class="c3"> | _|| / _` || ._| '_ \/ _` || / / </tspan>
     <tspan x="50%" dy="1.2em" class="c4"> |_| |_\__,_|\__|| .__/\__,_||_\_\ </tspan>
-    <tspan x="50%" dy="1.2em" class="c4">          |_|<tspan class="c-text"> AUTOMATIC</tspan></tspan>
+    <tspan x="50%" dy="1.2em" class="c-auto">          |_|<tspan class="c1"> AUTOMATIC</tspan><tspan class="c1"> v1.5.7</tspan></tspan>
   </text>
 </svg>

@@ -13,6 +13,20 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.7] - 2026-04-30
+
+### Changed
+
+- **Design/UI:** Inlined `logo.svg` directly into the Jinja2 HTML template for
+  zero-dependency standalone output.
+- **Branding**: Updated the SVG logo with enhanced colors and integrated version
+  string to align with the CLI banner.
+- **CLI**: Improved terminal output with new colors (`OKPINK`) and refined
+  banner layout.
+- **Documentation**: Updated the repository index template to use the enhanced
+  SVG logo instead of the manual ASCII implementation.
+- **CI/CD**: Added `assets/logo.svg` to version tracking in `tbump.toml`.
+
 ## [1.5.6] - 2026-04-29
 
 ### Changed (Enterprise Standards Hardening)

@@ -2,6 +2,7 @@
 import os
 import datetime
 import re
+import shutil
 from typing import Optional, List, Dict, Any, Set
 from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
 
@@ -143,6 +144,12 @@ def main() -> None:
     )
 
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+    # Copy assets
+    assets_dest = os.path.join(repo_root, "assets")
+    os.makedirs(assets_dest, exist_ok=True)
+    shutil.copy2("assets/logo.svg", os.path.join(assets_dest, "logo.svg"))
+
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(html_out)
 
