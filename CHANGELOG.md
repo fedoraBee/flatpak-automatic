@@ -15,24 +15,22 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.5.8]
 
-- fix(packaging): update Makefile, RPM spec, and Debian install files to package
-  `icon.svg` alongside `banner.svg`
-- feat(templates): embed 1:1 icon into HTML email template headers for unified
-  brand identity
-
-- feat(notifications): wire DBus desktop notifications to utilize the new 1:1
-  `icon.svg`
-- 2026-04-30
-
 ### Changed
 
 - refactor(assets): rename `logo.svg` to `banner.svg` to clarify brand
   architecture
+- fix(packaging): update Makefile, RPM spec, and Debian install files to package
+  `icon.svg` alongside `banner.svg`
+- use source `banner.svg` in image tag of `index.html`
 
 ### Added
 
 - feat(assets): introduce 1:1 `icon.svg` for desktop notifications and compact
   elements
+- feat(templates): embed 1:1 icon into HTML email template headers for unified
+  brand identity
+- feat(notifications): wire DBus desktop notifications to utilize the new 1:1
+  `icon.svg`
 
 ## [1.5.7] - 2026-04-30
 
