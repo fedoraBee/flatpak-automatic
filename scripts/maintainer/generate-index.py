@@ -148,7 +148,7 @@ def main() -> None:
     # Copy assets
     assets_dest = os.path.join(repo_root, "assets")
     os.makedirs(assets_dest, exist_ok=True)
-    shutil.copy2("assets/logo.svg", os.path.join(assets_dest, "logo.svg"))
+    shutil.copy2("assets/banner.svg", os.path.join(assets_dest, "banner.svg"))
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(html_out)

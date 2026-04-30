@@ -1,5 +1,5 @@
 [version]
-current = "1.5.7"
+current = "1.5.8"
 regex = '''
   (?P<major>\d+)
   \.
@@ -29,5 +29,5 @@ src = "config/sysconfig/flatpak-automatic"
 search = "# Version: {current_version}"
 
 [[file]]
-src = "assets/logo.svg"
+src = "assets/banner.svg"
 search = "v{current_version}"

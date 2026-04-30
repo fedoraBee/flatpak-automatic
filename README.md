@@ -1,6 +1,6 @@
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line MD033 MD041-->
-<div align="center"><img src="assets/logo.svg" alt="Flatpak Automatic CLI
+<div align="center"><img src="assets/banner.svg" alt="Flatpak Automatic CLI
 Banner" width="450"></div>
 <!-- prettier-ignore-end -->
 
@@ -199,3 +199,9 @@ project. Use at your own discretion.
 
 See `docs/development.md` for our strict testing matrix (DBus & Notifications)
 and GitOps patcher workflows.
+
+### Brand Assets
+
+- **`banner.svg`**: The primary logotype/header used in documentation and CLIs.
+- **`icon.svg`**: The 1:1 scalable logomark used for desktop notifications and
+  compact contexts.
