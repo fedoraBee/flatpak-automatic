@@ -605,6 +605,12 @@ def main() -> None:
         action="store_true",
         help="Send SIGHUP to a running instance to reload its config.",
     )
+    parser.add_argument(
+        "-u",
+        "--user",
+        action="store_true",
+        help="Operate strictly on user-level flatpak installations.",
+    )
     args = parser.parse_args()
 
     # Dynamic Flatpak Scope for non-root execution
