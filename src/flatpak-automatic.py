@@ -14,6 +14,11 @@ from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 
 
+# Brand Asset Paths
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ICON_PATH = os.path.join(BASE_DIR, "assets", "icon.svg")
+
+
 def _resolve_active_dbus_sessions() -> dict:
     """
     Dynamically resolve active DBUS_SESSION_BUS_ADDRESS for local users.
