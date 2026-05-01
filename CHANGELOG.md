@@ -17,16 +17,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- **SecOps**: Implemented GitHub Private Vulnerability Reporting in
-  `.github/SECURITY.md`.
-
-### Fixed
-
-- **Packaging**: Corrected Debian installation path for systemd user units in
-  `debian/flatpak-automatic.install`.
-
 ### Changed
 
+- **Docs**: Updated project descriptions across `README.md`, `AGENTS.md`,
+  `docs/flatpak-automatic.1`, `rpm/flatpak-automatic.spec.in`, and
+  `debian/control` for consistency and accuracy.
+- **Core**: Updated the CLI description in `src/flatpak-automatic.py` to align
+  with the new project description.
 - **Docs**: Major overhaul of `README.md` for better clarity on features,
   non-root execution, and configuration.
 - **Docs**: Updated `flatpak-automatic.1` man page to reflect current CLI
@@ -35,6 +32,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Docs**: Consolidated Technical Manifest in `AGENTS.md` and cleaned up
   redundant documentation in `docs/development.md` and
   `docs/templates/index.html.j2`.
+- **SecOps**: Implemented GitHub Private Vulnerability Reporting in
+  `.github/SECURITY.md`.
 
 ## [1.5.11] - 2026-05-01
 
