@@ -21,6 +21,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   types, and non-root systemd mode.
 
 - Initialize patch run for 1.5.12 documentation sync.
+- **UX/Docs**: Actualized `docs/templates/index.html.j2` with updated features,
+  notification explanations, and standard bash formatting for non-root commands.
 
 ## [1.5.11] - 2026-05-01
 
