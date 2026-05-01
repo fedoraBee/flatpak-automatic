@@ -13,6 +13,14 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.13] - 2026-05-01
+
+### Changed
+
+- **Docs**: Removed SVG banners from GitHub Issue and Pull Request templates for
+  cleaner rendering and better accessibility.
+- **Maintenance**: Bumped version to v1.5.13.
+
 ## [1.5.12] - 2026-05-01
 
 ### Added

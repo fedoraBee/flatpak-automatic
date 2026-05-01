@@ -1,9 +1,3 @@
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable-next-line MD033 MD041-->
-<div align="center"><img src="../assets/banner.svg" alt="Flatpak Automatic CLI
-Banner" width="450"></div>
-<!-- prettier-ignore-end -->
-
 # Pull Request
 
 ## Description
