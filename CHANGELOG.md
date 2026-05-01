@@ -17,6 +17,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **UX**: Added "Run as Administrator (Root)" action to
+  `flatpak-automatic.desktop` using `pkexec`.
+
 ### Changed
 
 - **Docs**: Updated project descriptions across `README.md`, `AGENTS.md`,
@@ -32,6 +35,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Docs**: Consolidated Technical Manifest in `AGENTS.md` and cleaned up
   redundant documentation in `docs/development.md` and
   `docs/templates/index.html.j2`.
+- **Docs**: Major update to the technical manifest in `AGENTS.md`, adding DEB
+  support details, multi-channel notification specifics, and updated CI/CD
+  requirements.
+- **UX**: Improved `.desktop` launcher with a persistent terminal window after
+  execution.
 - **SecOps**: Implemented GitHub Private Vulnerability Reporting in
   `.github/SECURITY.md`.
 
