@@ -26,6 +26,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Docs**: Synchronized manpage (`docs/flatpak-automatic.1`) and
   `docs/development.md` with non-root mode constraints and template architecture
   guidelines.
+- **SecOps/Docs**: Enforced `>= 1.5` security support policy in
+  `.github/SECURITY.md` and modernized internal role definitions in `AGENTS.md`.
 
 ## [1.5.11] - 2026-05-01
 
