@@ -17,6 +17,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Docs**: Complete architectural rewrite of `README.md`, manpages, and web
+  templates to formally document parallel System (Root) and User (Rootless)
+  deployment models.
+- **Docs**: Expanded notification feature lists to include Mail, Desktop, and
+  Log formats.
+
 - **Docs**: Synchronized `README.md` with updated feature list, notification
   types, and non-root systemd mode.
 

@@ -242,8 +242,12 @@
   </head>
   <body>
     <div class="container">
-      <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
-        <img src="assets/banner.svg" alt="Flatpak Automatic Banner" style="max-width: 450px; width: 100%;">
+      <div style="display: flex; justify-content: center; margin-bottom: 2rem">
+        <img
+          src="assets/banner.svg"
+          alt="Flatpak Automatic Banner"
+          style="max-width: 450px; width: 100%"
+        />
       </div>
       <p>
         Welcome to the official repository of
@@ -252,34 +256,45 @@
         with Snapper snapshot integration.
       </p>
 
+      <section id="features" class="feature-set">
+        <h2>Core Capabilities</h2>
+        <ul>
+          <li>
+            <strong>Automated Updates:</strong> Keep flatpak applications
+            up-to-date seamlessly in the background.
+          </li>
+          <li>
+            <strong>Flexible Notifications:</strong> Supports Desktop popups,
+            rich HTML/Markdown Emails, and standard logs.
+          </li>
+          <li>
+            <strong>Non-Root Execution:</strong> Secure, user-level systemd
+            integration via <code>flatpak-automatic-user</code>.
+          </li>
+        </ul>
+      </section>
+
       <div class="card">
         <h2>📦 Installation (Fedora/RHEL)</h2>
         <p>
           Add the repository and install the package on Fedora or compatible
           Fedora/RHEL systems:
         </p>
-        <div class="code-block"># Add the repository configuration
-sudo tee /etc/yum.repos.d/flatpak-automatic.repo &lt;&lt;'EOF'
-[flatpak-automatic]
-name=Flatpak Automatic - Stable
-baseurl=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/rpms/latest/stable/
-enabled=1
-gpgcheck=1
-gpgkey=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpg.key
-
-[flatpak-automatic-testing]
-name=Flatpak Automatic - Testing
-baseurl=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/rpms/latest/testing/
-enabled=0
-gpgcheck=1
-gpgkey=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpg.key
-EOF
-
-# Update the package metadata cache
-sudo dnf makecache
-
-# Install the flatpak-automatic package
-sudo dnf install flatpak-automatic</div>
+        <div class="code-block">
+          # Add the repository configuration sudo tee
+          /etc/yum.repos.d/flatpak-automatic.repo &lt;&lt;'EOF'
+          [flatpak-automatic] name=Flatpak Automatic - Stable baseurl=https://{{
+          github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1]
+          }}/rpms/latest/stable/ enabled=1 gpgcheck=1 gpgkey=https://{{
+          github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1]
+          }}/gpg.key [flatpak-automatic-testing] name=Flatpak Automatic -
+          Testing baseurl=https://{{ github_repo.split('/')[0] }}.github.io/{{
+          github_repo.split('/')[1] }}/rpms/latest/testing/ enabled=0 gpgcheck=1
+          gpgkey=https://{{ github_repo.split('/')[0] }}.github.io/{{
+          github_repo.split('/')[1] }}/gpg.key EOF # Update the package metadata
+          cache sudo dnf makecache # Install the flatpak-automatic package sudo
+          dnf install flatpak-automatic
+        </div>
       </div>
 
       <div class="card">
@@ -288,17 +303,19 @@ sudo dnf install flatpak-automatic</div>
           Add the repository and install the package on Ubuntu, Debian, or
           compatible systems:
         </p>
-        <div class="code-block"># Download the GPG key and convert it to a format APT understands
-curl -fsSL https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
-
-# Add the repository to your system's sources list
-echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/debs stable main" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
-
-# Update your local package index
-sudo apt-get update
-
-# Install the flatpak-automatic package
-sudo apt-get install flatpak-automatic</div>
+        <div class="code-block">
+          # Download the GPG key and convert it to a format APT understands curl
+          -fsSL https://{{ github_repo.split('/')[0] }}.github.io/{{
+          github_repo.split('/')[1] }}/gpg.key | sudo gpg --dearmor -o
+          /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg # Add the
+          repository to your system's sources list echo "deb
+          [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg]
+          https://{{ github_repo.split('/')[0] }}.github.io/{{
+          github_repo.split('/')[1] }}/debs stable main" | sudo tee
+          /etc/apt/sources.list.d/flatpak-automatic.list # Update your local
+          package index sudo apt-get update # Install the flatpak-automatic
+          package sudo apt-get install flatpak-automatic
+        </div>
       </div>
 
       <div class="card">
@@ -391,22 +408,5 @@ sudo apt-get install flatpak-automatic</div>
         </p>
       </div>
     </div>
-
-<section id="features" class="feature-set">
-    <h2>Core Capabilities</h2>
-    <ul>
-        <li><strong>Automated Updates:</strong> Keep flatpak applications up-to-date seamlessly in the background.</li>
-        <li><strong>Flexible Notifications:</strong> Supports Desktop popups, rich HTML/Markdown Emails, and standard logs.</li>
-        <li><strong>Non-Root Execution:</strong> Secure, user-level systemd integration via <code>flatpak-automatic-user</code>.</li>
-    </ul>
-</section>
-
-<section id="quickstart-non-root" class="code-instructions">
-    <h2>Non-Root Mode Activation</h2>
-    <p>Run without privileges using user-level systemd units:</p>
-    <pre><code class="language-bash">systemctl --user enable flatpak-automatic-user.timer
-systemctl --user start flatpak-automatic-user.timer</code></pre>
-</section>
-
-</body>
+  </body>
 </html>
