@@ -51,8 +51,8 @@ components:
 - **Configuration Persistence**: The `/etc/sysconfig/flatpak-automatic` file is
   marked as `noreplace` to preserve user overrides during package updates.
 - **Automated RPM Spec**: The RPM changelog is generated from `CHANGELOG.md`
-  using `scripts/build/update-package-metadata.py` and included in the spec file
-  via `%include %{_topdir}/changelog`.
+  using `scripts/build/update-package-metadata.py` and injected directly into
+  the `%changelog` section of the `.spec` file.
 - **Markdown Linting**: All changes to Markdown files (`.md`) must adhere to the
   project's Markdown linting rules (enforced via `.markdownlint.jsonc`),
   especially MD013 to prevent line length overflows.
@@ -128,12 +128,13 @@ To deploy changes locally for testing:
 
 - **Versioning & Release Process (`tbump`):** Do **NOT** manually edit
   `CHANGELOG.md` during feature development.
-  1. For a new release, use `tbump` (`tbump.toml`).
-  2. `tbump` will automatically sync/generate the `CHANGELOG.md` based on commit
-     history, bump the version in `Makefile` and
-     `rpm/flatpak-automatic.spec.in`, and bundle it into a single commit.
-  3. This commit is then pushed as the **final "Release PR"**. Once merged, the
-     version tag is cut.
+  1. For a new release, you MUST use tbump in no-push mode:
+     `tbump <version> --no-push`.
+  2. `tbump` will automatically trigger the hook to sync/generate the
+     `CHANGELOG.md` based on commit history, bump the version in `Makefile` and
+     metadata files, and bundle it into a single commit.
+  3. This commit is then pushed manually to open the **final "Release PR"**.
+     Once merged, the version tag is manually pushed to trigger the CI release.
 
 - **Script Requirements:** All scripts (`scripts/maintainer/`, `scripts/build/`)
   must be idempotent, failure-tolerant (using `set -euo pipefail` for bash), and

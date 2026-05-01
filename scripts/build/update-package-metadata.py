@@ -311,6 +311,12 @@ def main() -> None:
     if os.path.exists(deb_changelog_path):
         with open(deb_changelog_path, "r") as f:
             existing_deb = f.read()
+            # Avoid duplicate entries if the script is run multiple times for the same version
+            if f"flatpak-automatic ({version}-{args.rel_num})" in existing_deb:
+                print(
+                    f"ℹ️ Debian entry for {version}-{args.rel_num} already exists. Skipping."
+                )
+                return
 
     with open(deb_changelog_path, "w") as f:
         f.write(
