@@ -15,6 +15,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.5.10] - 2026-04-30
 
+### Changed
+
+- **Security/UX:** Removed `pkexec` from the `.desktop` launcher; GUI execution
+  now defaults to non-root `--user` mode for a seamless desktop experience.
+
 ### Added
 
 - **Feature:** Added `--user` CLI flag to support non-root user-level Flatpak
