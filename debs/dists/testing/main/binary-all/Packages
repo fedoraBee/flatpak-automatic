@@ -8,11 +8,11 @@ Installed-Size: 105
 Depends: flatpak, systemd, python3, python3-yaml, python3-dbus
 Recommends: python3-apprise
 Filename: pool/main/f/flatpak-automatic/flatpak-automatic_1.5.10-1_all.deb
-Size: 25880
-MD5sum: 4d9204f8fa454d554c0125eaf24fce15
-SHA1: db2751d78fbfc1197ae0792622555d991c1d1d9b
-SHA256: bb3427a429beed676ac0a736527da3654a6ba75d89b3ba9541452edce777564e
-SHA512: b7e20433fb075491f999c19e128340ff8101fd064761e7ce7cd3157f80723286d887c699a25e771c20c5ed80b8261e20d6844e7d997a10636c00c3f0ebe851ad
+Size: 25944
+MD5sum: 60440d98ab2889bd946a4a5de03b1f02
+SHA1: 2f9eb50d5a93e625269973e805fee21f8d6ca0ff
+SHA256: 73d0e200e140fd5b96036382ea3b820f631d6ecb2dc257b1787246aacae2bf5e
+SHA512: c07b0ee6b630c56925ee3baf27a5ba2ace9280352b0599201597df0689bb86bc4888e2050397b586e3f8dc0e5dbb7b518063927774e9ebd4aed08ecb0d23531c
 Description: Automated Flatpak updates via systemd
  A simple script and systemd service/timer to automatically
  update Flatpak applications.
