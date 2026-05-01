@@ -11,6 +11,7 @@ permissions:
   actions: read
   checks: write
   contents: write
+  pull-requests: write
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -364,7 +365,36 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: public-site
-          path: public
+          path: public-site
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+
+      - name: Update gh-pages Content
+        run: |
+          # Synchronize the artifact content to the gh-pages checkout
+          # We use --delete to match the artifact exactly but exclude .git
+          rsync -av --delete --exclude .git public-site/ .
+          rm -rf public-site
+
+      - name: Create Pull Request to gh-pages
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: release/gh-pages-update-${{ github.ref_name }}
+          base: gh-pages
+          title: "chore(release): update repository site for ${{ github.ref_name }}"
+          body: |
+            Automated update of the repository website and package metadata for release ${{ github.ref_name }}.
+
+            This PR was automatically generated because the `gh-pages` branch is protected.
+            Please review and merge to update the live repository.
+          commit-message: "chore(release): update repository site for ${{ github.ref_name }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            release
+            documentation
 
       - name: Retrieve RPM Artifacts
         uses: actions/download-artifact@v4
@@ -377,14 +407,6 @@ jobs:
         with:
           name: debs
           path: debs
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: public
-          keep_files: true
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
