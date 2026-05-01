@@ -6,4 +6,4 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/flatpak-automatic --user
+ExecStart=/usr/bin/flatpak-automatic

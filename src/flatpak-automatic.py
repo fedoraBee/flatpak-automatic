@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.5.10
+# Version: 1.5.11
 import os
 import sys
 import signal
@@ -49,22 +49,27 @@ class Colors:
 
 
 STATE_FILE = "/var/cache/flatpak-automatic/state.json"
+USER_STATE_FILE = os.path.expanduser("~/.cache/flatpak-automatic/state.json")
 CONFIG_FILE = "/etc/flatpak-automatic/config.yaml"
 TEMPLATE_DIR = "/etc/flatpak-automatic/templates"
 
 
-def load_state() -> Dict[str, Any]:
+def get_state_path(user_scope: bool = False) -> str:
+    return user_scope and USER_STATE_FILE or STATE_FILE
+
+
+def load_state(user_scope: bool = False) -> Dict[str, Any]:
     try:
-        with open(STATE_FILE, "r") as f:
+        with open(get_state_path(user_scope), "r") as f:
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         return {"last_try": "Never", "last_success": "Never"}
 
 
-def save_state(state: Dict[str, Any]) -> None:
+def save_state(state: Dict[str, Any], user_scope: bool = False) -> None:
     try:
-        os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
-        with open(STATE_FILE, "w") as f:
+        os.makedirs(os.path.dirname(get_state_path(user_scope)), exist_ok=True)
+        with open(get_state_path(user_scope), "w") as f:
             json.dump(state, f)
     except Exception as e:
         logging.warning(f"Failed to save state: {e}")
@@ -540,7 +545,7 @@ def banner() -> str:
         f"{Colors.OKBLUE} | __| |__ _ | |_ _ __  __ _ | |__ \n"
         f"{Colors.HEADER} | _|| / _` || ._| '_ \\/ _` || / / \n"
         f"{Colors.OKPINK} |_| |_\\__,_|\\__|| .__/\\__,_||_\\_\\\n"
-        f"    AUTOMATIC    |_| {Colors.ENDC}     {Colors.OKCYAN} v1.5.10{Colors.ENDC}\n"
+        f"    AUTOMATIC    |_| {Colors.ENDC}     {Colors.OKCYAN} v1.5.11{Colors.ENDC}\n"
     )
 
 
@@ -605,16 +610,11 @@ def main() -> None:
         action="store_true",
         help="Send SIGHUP to a running instance to reload its config.",
     )
-    parser.add_argument(
-        "-u",
-        "--user",
-        action="store_true",
-        help="Operate strictly on user-level flatpak installations.",
-    )
     args = parser.parse_args()
 
     # Dynamic Flatpak Scope for non-root execution
-    flatpak_scope = ["--user"] if args.user else ["--system"]
+    user_scope = os.geteuid() != 0
+    flatpak_scope = ["--user"] if user_scope else ["--system"]
 
     if sys.stdout.isatty():
         print(banner())
@@ -630,7 +630,7 @@ def main() -> None:
         signal.signal(signal.SIGHUP, sighup_handler)
     except AttributeError:
         pass  # Handle OS environments that do not support SIGHUP safely
-    state = load_state()
+    state = load_state(user_scope)
 
     if args.check_config:
         print(
@@ -653,7 +653,8 @@ def main() -> None:
         )
         try:
             subprocess.run(
-                ["systemctl", "kill", "-s", "HUP", "flatpak-automatic.service"],
+                ["systemctl", "kill", "-s", "HUP", "flatpak-automatic.service"]
+                + flatpak_scope,
                 check=True,
             )
             print(
@@ -662,12 +663,6 @@ def main() -> None:
         except Exception as e:
             print(f"{Colors.FAIL}❌ Failed to send reload signal: {e}{Colors.ENDC}")
         exit_clean(0)
-
-    if os.geteuid() != 0:
-        print(
-            f"{Colors.FAIL}❌ Error: This script requires root privileges. Please run with sudo.{Colors.ENDC}"
-        )
-        exit_clean(1)
 
     if args.apply_schedule:
         timer_cfg = config.get("timer", {})
@@ -685,9 +680,10 @@ def main() -> None:
                 )
             print(f"  Wrote configuration to: {override_file}")
 
-            subprocess.run(["systemctl", "daemon-reload"], check=True)
+            subprocess.run(["systemctl", "daemon-reload"] + flatpak_scope, check=True)
             subprocess.run(
-                ["systemctl", "restart", "flatpak-automatic.timer"], check=True
+                ["systemctl", "restart", "flatpak-automatic.timer"] + flatpak_scope,
+                check=True,
             )
             print(
                 f"{Colors.OKGREEN}✅ Successfully applied schedule: '{schedule}' with a '{delay}' randomization delay.{Colors.ENDC}"
@@ -750,7 +746,7 @@ def main() -> None:
         exit_clean(0)
 
     state["last_try"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    save_state(state)
+    save_state(state, user_scope)
 
     updater = FlatpakUpdater(excludes=config.get("excludes", []))
     if not updater.check_updates():
@@ -777,7 +773,7 @@ def main() -> None:
 
     if success:
         state["last_success"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        save_state(state)
+        save_state(state, user_scope)
         snap_cfg = config.get("snapshots", {})
         if snap_cfg.get("enabled", True):
             if "snapper" in locals():

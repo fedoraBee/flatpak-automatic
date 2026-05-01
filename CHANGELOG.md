@@ -13,6 +13,26 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.11] - 2026-05-01
+
+### Added
+
+- Automatic detection of Flatpak scope (user vs system) based on user ID.
+- User-level state file support in `~/.cache/flatpak-automatic/state.json`.
+
+### Changed
+
+- Improved systemd integration for user-level services by renaming unit files.
+- Removed mandatory root privilege check to allow rootless operation.
+- Updated `systemctl` commands to respect user/system scope.
+- Updated `flatpak-automatic.desktop` and user service to rely on auto-detection
+  instead of `--user` flag.
+
+### Fixed
+
+- Fixed bug where `save_state` was called with incorrect arguments.
+- Fixed path expansion for user state file.
+
 ## [1.5.10] - 2026-04-30
 
 ### Changed
