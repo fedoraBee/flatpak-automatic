@@ -1,27 +1,24 @@
 .\" Manpage for flatpak-automatic.
-.TH FLATPAK-AUTOMATIC 1 "April 2026" "flatpak-automatic" "User Commands"
+.TH FLATPAK-AUTOMATIC 1 "May 2026" "flatpak-automatic" "User Commands"
 .SH NAME
 flatpak-automatic \- Enterprise update automation for Flatpak
 .SH SYNOPSIS
 .B flatpak-automatic
-[\fB\-d\fR] [\fB\-t\fR] [\fB\-f\fR] [\fB\-s\fR] [\fB\-l\fR] [\fB\-a\fR] [\fB\-u\fR]
+[\fB\-d\fR] [\fB\-t\fR] [\fB\-f\fR] [\fB\-s\fR] [\fB\-l\fR] [\fB\-a\fR] [\fB\-c\fR] [\fB\-r\fR]
 .SH DESCRIPTION
 .B flatpak-automatic
-is a strictly typed, enterprise-grade Python daemon designed to autonomously manage Flatpak updates. It features systemd integration, Snapper filesystem rollback support, and comprehensive alerting via Apprise, Mail, and native Webhooks.
+is a strictly typed, enterprise-grade Python tool designed to autonomously manage Flatpak updates. It features systemd integration, Snapper filesystem rollback support, and comprehensive alerting via Apprise, Mail, and native Webhooks.
 
 .SH NON-ROOT MODE
 To execute the updater without elevated privileges, utilize the user-level systemd units:
 .PP
-\fBsystemctl --user enable flatpak-automatic-user.timer\fR
+\fBsystemctl --user enable flatpak-automatic.timer\fR
 .br
-\fBsystemctl --user start flatpak-automatic-user.timer\fR
+\fBsystemctl --user start flatpak-automatic.timer\fR
 .PP
 This isolates update operations within the user session for enhanced security.
 
 .SH OPTIONS
-.TP
-.BR \-u ", " \-\-setup
-Launch the interactive configuration wizard to generate the sysconfig file.
 .TP
 .BR \-d ", " \-\-dry\-run
 Simulate the update process without applying changes or triggering snapshots.
@@ -30,7 +27,7 @@ Simulate the update process without applying changes or triggering snapshots.
 Send a test notification to all configured endpoints.
 .TP
 .BR \-f ", " \-\-force
-Force the update process, bypassing the minimum delay guard.
+Force the update process, bypassing the minimum delay guard and auto_update policy.
 .TP
 .BR \-s ", " \-\-status
 Display a system monitoring overview of configuration and pending updates.
@@ -40,10 +37,28 @@ Display recent execution history from journalctl.
 .TP
 .BR \-a ", " \-\-apply\-schedule
 Apply systemd timer overrides based on config settings.
+.TP
+.BR \-c ", " \-\-check\-config
+Validate and print the current YAML configuration, then exit.
+.TP
+.BR \-r ", " \-\-reload
+Send SIGHUP to the running flatpak-automatic.service to reload its configuration.
 .SH FILES
-.I /etc/sysconfig/flatpak-automatic
+.I /etc/flatpak-automatic/config.yaml
 .RS
-Primary configuration file.
+Primary YAML configuration file.
+.RE
+.I /etc/flatpak-automatic/templates/
+.RS
+Directory containing Markdown and HTML notification templates.
+.RE
+.I /var/cache/flatpak-automatic/state.json
+.RS
+System-wide execution state and history.
+.RE
+.I ~/.cache/flatpak-automatic/state.json
+.RS
+User-level execution state and history.
 .RE
 .SH AUTHOR
-Maintained by the FedoraBee community.
+Maintained by FedoraBee.
