@@ -2,7 +2,7 @@
 
 NAME := flatpak-automatic
 EPOCH := 1
-VERSION := 1.5.10
+VERSION := 1.5.11
 REL_NUM := 1
 DATE := $(shell LC_ALL=C date +"%a %b %d %Y")
 AUTHOR := "fedoraBee <9395414+fedoraBee@users.noreply.github.com>"
@@ -62,8 +62,8 @@ install:
 	install -p -m 644 config/systemd/flatpak-automatic.service $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.service
 	install -p -m 644 config/systemd/flatpak-automatic.timer $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.timer
 	install -d $(DESTDIR)$(PREFIX)/lib/systemd/user
-	install -p -m 644 config/systemd/flatpak-automatic-user.service $(DESTDIR)$(PREFIX)/lib/systemd/user/flatpak-automatic-user.service
-	install -p -m 644 config/systemd/flatpak-automatic-user.timer $(DESTDIR)$(PREFIX)/lib/systemd/user/flatpak-automatic-user.timer
+	install -p -m 644 config/systemd/flatpak-automatic-user.service $(DESTDIR)$(PREFIX)/lib/systemd/user/flatpak-automatic.service
+	install -p -m 644 config/systemd/flatpak-automatic-user.timer $(DESTDIR)$(PREFIX)/lib/systemd/user/flatpak-automatic.timer
 
 rpm-build:
 	@./scripts/build/build-rpm-local.sh "$(NAME)" "$(EPOCH)" "$(VERSION)" "$(REL_NUM)" "$(TOPDIR)"

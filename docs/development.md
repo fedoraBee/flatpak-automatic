@@ -17,12 +17,6 @@ To build the RPM package:
 make rpm
 ```
 
-This generates the following packages in `.rpmbuild/RPMS/noarch/`:
-
-- `flatpak-automatic`: Core configuration.
-- `flatpak-automatic-user`: Rootless deployment.
-- `flatpak-automatic-root`: Rootfull deployment.
-
 ## Customizing at Build Time
 
 You can override variables during the RPM build:

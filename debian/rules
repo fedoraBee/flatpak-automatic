@@ -15,3 +15,5 @@ override_dh_auto_test:
 override_dh_install:
 	dh_install
 	mv debian/flatpak-automatic/usr/share/icons/hicolor/scalable/apps/icon.svg debian/flatpak-automatic/usr/share/icons/hicolor/scalable/apps/flatpak-automatic.svg || true
+	mv debian/flatpak-automatic/usr/lib/systemd/user/flatpak-automatic-user.service debian/flatpak-automatic/usr/lib/systemd/user/flatpak-automatic.service || true
+	mv debian/flatpak-automatic/usr/lib/systemd/user/flatpak-automatic-user.timer debian/flatpak-automatic/usr/lib/systemd/user/flatpak-automatic.timer || true
