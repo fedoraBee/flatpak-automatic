@@ -21,6 +21,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   cleaner rendering and better accessibility.
 - **Maintenance**: Bumped version to v1.5.13.
 
+### 🚀 Features
+
+- Integrate git-cliff for automated changelogs and update release workflow
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to v1.5.13 and cleanup templates
+
 ## [1.5.12] - 2026-05-01
 
 ### Added

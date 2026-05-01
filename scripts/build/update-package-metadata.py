@@ -39,28 +39,62 @@ def get_version_from_makefile(makefile: str = "Makefile") -> Optional[str]:
     return None
 
 
-def run_git_cliff(version: str, changelog_file: str) -> None:
-    """Runs git-cliff to prepend the latest conventional commits to the changelog."""
+def update_changelog_file(version: str, changelog_file: str) -> None:
+    """Runs git-cliff and safely injects the new entries below the static header."""
     print(f"🔄 Running git-cliff to generate changelog for version {version}...")
     try:
-        subprocess.run(
-            [
-                "git-cliff",
-                "--unreleased",
-                "--tag",
-                version,
-                "--prepend",
-                changelog_file,
-            ],
+        # 1. Capture the new markdown from git-cliff instead of modifying the file directly
+        result = subprocess.run(
+            ["git-cliff", "--unreleased", "--tag", version],
             check=True,
+            capture_output=True,
+            text=True,
         )
-        print("✅ git-cliff successfully updated CHANGELOG.md")
+        new_changelog_block = result.stdout.strip()
+
+        # 2. Strip out the default git-cliff header so we don't duplicate your static text
+        new_changelog_block = re.sub(
+            r"^# Changelog\n+All notable changes to this project will be documented in this file\.\n+",
+            "",
+            new_changelog_block,
+        )
+
+        # 3. Read your current CHANGELOG.md
+        with open(changelog_file, "r") as f:
+            content = f.read()
+
+        # 4. Find your static header's end point
+        injection_marker = (
+            "adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)."
+        )
+
+        if injection_marker in content:
+            # Split the file exactly at the marker and sandwich the new block in between
+            parts = content.split(injection_marker)
+            updated_content = (
+                parts[0]
+                + injection_marker
+                + "\n\n"
+                + new_changelog_block
+                + "\n"
+                + parts[1]
+            )
+
+            with open(changelog_file, "w") as f:
+                f.write(updated_content)
+            print("✅ Safely injected new changelog below the static header.")
+        else:
+            print("⚠️ Warning: Injection marker not found. Appending to top instead.")
+            with open(changelog_file, "w") as f:
+                f.write(new_changelog_block + "\n\n" + content)
+
     except FileNotFoundError:
         print("❌ Error: 'git-cliff' is not installed or not in PATH.", file=sys.stderr)
         sys.exit(1)
     except subprocess.CalledProcessError as e:
         print(
-            f"❌ Error: git-cliff failed with exit code {e.returncode}", file=sys.stderr
+            f"❌ Error: git-cliff failed with exit code {e.returncode}\n{e.stderr}",
+            file=sys.stderr,
         )
         sys.exit(1)
 
@@ -211,7 +245,7 @@ def main() -> None:
 
     # 1. Automatically generate the markdown changelog via git-cliff if requested by tbump
     if args.generate_changelog:
-        run_git_cliff(version, args.changelog_in)
+        update_changelog_file(version, args.changelog_in)
 
     # 2. Parse the (now updated) Changelog
     rpm_changelog_content, latest_entries = parse_and_format_changelogs(

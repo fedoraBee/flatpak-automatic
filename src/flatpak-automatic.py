@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.5.14
+# Version: 1.5.13
 import os
 import sys
 import signal
@@ -548,7 +548,7 @@ def banner() -> str:
         f"{Colors.OKBLUE} | __| |__ _ | |_ _ __  __ _ | |__ \n"
         f"{Colors.HEADER} | _|| / _` || ._| '_ \\/ _` || / / \n"
         f"{Colors.OKPINK} |_| |_\\__,_|\\__|| .__/\\__,_||_\\_\\\n"
-        f"    AUTOMATIC    |_| {Colors.ENDC}     {Colors.OKCYAN} v1.5.14{Colors.ENDC}\n"
+        f"    AUTOMATIC    |_| {Colors.ENDC}     {Colors.OKCYAN} v1.5.13{Colors.ENDC}\n"
     )
 
 
