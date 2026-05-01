@@ -27,6 +27,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Updated `systemctl` commands to respect user/system scope.
 - Updated `flatpak-automatic.desktop` and user service to rely on auto-detection
   instead of `--user` flag.
+- **CI/CD**: Added `--retry-wait-time` to lychee link checker job and increased
+  wait time from 5 to 30 seconds during retries for better chance of retry
+  success.
 
 ### Fixed
 
