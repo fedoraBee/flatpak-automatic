@@ -16,7 +16,7 @@ fi
 # -----------------------------
 usage() {
     cat <<EOF
-GitOps PR CLI Tool v3 (Template-aware)
+GitOps PR CLI Tool v4 (Conventional Commits Aware)
 
 Usage:
   $(basename "$0") [options]
@@ -110,7 +110,7 @@ if [[ ! "$TARGET_BRANCH" =~ ^(feat|fix|chore|refactor|docs|ci|style|test|revert|
     exit 1
 fi
 
-# Extract version
+# Extract version (Used for labeling/context, but not strictly validated against files anymore)
 if [[ "$TARGET_BRANCH" =~ v([0-9]+\.[0-9]+\.[0-9]+) ]]; then
     VERSION="${BASH_REMATCH[1]}"
 else
@@ -129,12 +129,12 @@ if [[ "$DRY_RUN" == true ]]; then
     echo "PR title: ${PR_TITLE:-auto-generated}"
     echo "PR body: ${PR_BODY:-auto-generated}"
     echo "Reviewers: ${REVIEWERS:-none}"
-    echo "Version: v$VERSION"
+    echo "Targeting Milestone: v$VERSION"
     echo "🚨 [DRY-RUN] ... no changes were made."
     exit 0
 fi
 
-echo "📦 Detected version: v$VERSION"
+echo "📦 Targeting version milestone: v$VERSION"
 
 # -----------------------------
 # Git safety checks
@@ -178,32 +178,28 @@ git rebase -Xtheirs "$REMOTE/$BASE_BRANCH" --quiet || {
 }
 
 # -----------------------------
-# Validate CHANGELOG
+# Validate Conventional Commits
 # -----------------------------
-if [[ ! -f "CHANGELOG.md" ]]; then
-    echo "❌ CHANGELOG.md missing"
-    exit 1
+echo "🔍 Checking for Conventional Commits..."
+# Checks if at least one commit in the PR follows conventional formats (feat, fix, chore, docs, etc.)
+if ! git log --pretty=format:"%s" "$REMOTE/$BASE_BRANCH"..HEAD | grep -qE "^(feat|fix|chore|refactor|docs|ci|style|test|revert|perf|build|format|deps|sec)(\([a-zA-Z0-9_-]+\))?: "; then
+    echo "⚠️ Warning: No commits follow the Conventional Commit format."
+    echo "    (e.g., 'feat: add new feature' or 'fix: resolve bug')."
+    echo "    This may break automated CHANGELOG generation via tbump."
+    read -p "    Do you want to continue anyway? (y/N) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
 fi
-
-if ! grep -q "$VERSION" CHANGELOG.md; then
-    echo "❌ CHANGELOG.md does not contain version v$VERSION"
-    exit 1
-fi
-echo "✅ CHANGELOG contains version v$VERSION"
+echo "✅ Commit history looks good."
 
 # -----------------------------
-# Validate RPM spec template
+# Validate Packaging Files (Structure only)
 # -----------------------------
-# NOTE: We now check for the .spec.in template and the @@VERSION@@ placeholder
 SPEC_TEMPLATE=$(find rpm -name "*.spec.in" | head -n 1 || true)
-
 if [[ -z "$SPEC_TEMPLATE" ]]; then
     echo "❌ RPM spec template (*.spec.in) not found"
-    exit 1
-fi
-
-if ! grep -q "@@VERSION@@" "$SPEC_TEMPLATE"; then
-    echo "❌ RPM spec template does not contain '@@VERSION@@' placeholder"
     exit 1
 fi
 echo "✅ RPM spec template is valid"
@@ -214,29 +210,11 @@ if [ ! -f "debian/control" ]; then
 fi
 echo "✅ Debian packaging skeleton is present"
 
-# -----------------------------
-# Validate Python Script Presence
-# -----------------------------
 if [[ ! -f "scripts/build/update-package-metadata.py" ]]; then
     echo "❌ scripts/build/update-package-metadata.py is missing. PR blocked."
     exit 1
 fi
 echo "✅ Metadata generator script found"
-
-# -----------------------------
-# Validate Makefile version
-# -----------------------------
-if [[ ! -f "Makefile" ]]; then
-    echo "❌ Makefile missing"
-    exit 1
-fi
-
-# Regex updated to tolerate spaces: VERSION := 1.1.0 or VERSION:=1.1.0
-if ! grep -qE "^VERSION[[:space:]]*:=[[:space:]]*$VERSION" Makefile; then
-    echo "❌ Makefile does not contain VERSION := $VERSION"
-    exit 1
-fi
-echo "✅ Makefile version matches"
 
 # -----------------------------
 # Commit analysis for PR body
@@ -251,7 +229,7 @@ if [[ -z "$PR_BODY" ]]; then
     PR_BODY=$(git log --pretty=format:"- %s" "$REMOTE/$BASE_BRANCH"..HEAD)
 fi
 
-PR_BODY_FULL="## Version
+PR_BODY_FULL="## Target Milestone
 v$VERSION
 
 ## Changes
@@ -272,7 +250,7 @@ git push -u "$REMOTE" "$TARGET_BRANCH" --quiet || {
 CMD=(gh pr create
     --base "$BASE_BRANCH"
     --head "$TARGET_BRANCH"
-    --title "${PR_TITLE:-"Release v$VERSION"}"
+    --title "${PR_TITLE}"
     --body "$PR_BODY_FULL"
 )
 
@@ -286,5 +264,5 @@ echo "📬 Creating Pull Request..."
     exit 1
 }
 
-echo "✅ GitOps PR created successfully (v$VERSION)"
+echo "✅ GitOps PR created successfully."
 exit 0

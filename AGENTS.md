@@ -50,7 +50,7 @@ components:
   snapshot and followed by a `post` snapshot only if changes occurred.
 - **Configuration Persistence**: The `/etc/sysconfig/flatpak-automatic` file is
   marked as `noreplace` to preserve user overrides during package updates.
-- **Automated Changelog**: The RPM changelog is generated from `CHANGELOG.md`
+- **Automated RPM Spec**: The RPM changelog is generated from `CHANGELOG.md`
   using `scripts/build/update-package-metadata.py` and included in the spec file
   via `%include %{_topdir}/changelog`.
 - **Markdown Linting**: All changes to Markdown files (`.md`) must adhere to the
@@ -91,9 +91,15 @@ To deploy changes locally for testing:
   `test` | `revert` | `perf` | `build` | `format` | `deps` | `sec` _Where
   `<version>`:_ target release version
 
-- **Pull Request Workflow (Mandatory):** Each branch must open a descriptive
-  Pull Request (PR). PR creation MUST be performed using the GitOps PR CLI tool
-  provided in this repository (`scripts/maintainer/gitops-pr-cli-tool.sh`).
+- **Conventional Commits (Mandatory):** Because `CHANGELOG.md` is automatically
+  generated from commit history, you **MUST** use Conventional Commits (e.g.,
+  `feat: Add webhook support`, `fix: Resolve DBus timeout`). Commit messages
+  must be professional, descriptive, and "customer-ready."
+
+- **Pull Request Workflow:**
+  - Standard feature/fix PRs MUST be created using the GitOps PR CLI tool
+    provided in this repository (`scripts/maintainer/gitops-pr-cli-tool.sh`).
+  - These standard PRs target existing versions and do not bump version numbers.
 
 - **CI & Quality Requirements:** All Pull Requests must pass CI checks before
   merging. This includes:
@@ -103,8 +109,6 @@ To deploy changes locally for testing:
   - `lint-python` (Ruff, Mypy, Bandit for security)
   - Pytest suite (`tests/`)
   - RPM/DEB build and smoke tests
-
-- **Atomic Commits:** Commit frequently with small, logical, atomic changes.
 
 - **Testing (`tests/`):** Thoroughly test all changes before committing:
   - Write or update unit/integration tests in the `tests/` directory (e.g.,
@@ -122,15 +126,14 @@ To deploy changes locally for testing:
   - Update `README.md` and man pages (`docs/flatpak-automatic.1`) for
     user-facing changes.
 
-- **Changelog (Mandatory):** For every feature, fix, or release, update
-  `CHANGELOG.md` using the "Keep a Changelog" format. It is the **single source
-  of truth** for release notes.
-
-- **Versioning Discipline (`tbump`):** Versioning is managed via `tbump`
-  (`tbump.toml`). Any version bump must seamlessly synchronize across:
-  - `Makefile` (`VERSION` variable)
-  - `rpm/flatpak-automatic.spec.in`
-  - `CHANGELOG.md`
+- **Versioning & Release Process (`tbump`):** Do **NOT** manually edit
+  `CHANGELOG.md` during feature development.
+  1. For a new release, use `tbump` (`tbump.toml`).
+  2. `tbump` will automatically sync/generate the `CHANGELOG.md` based on commit
+     history, bump the version in `Makefile` and
+     `rpm/flatpak-automatic.spec.in`, and bundle it into a single commit.
+  3. This commit is then pushed as the **final "Release PR"**. Once merged, the
+     version tag is cut.
 
 - **Script Requirements:** All scripts (`scripts/maintainer/`, `scripts/build/`)
   must be idempotent, failure-tolerant (using `set -euo pipefail` for bash), and
@@ -141,7 +144,8 @@ To deploy changes locally for testing:
 - [README.md](README.md): Installation and usage guide.
 - [CONTRIBUTING.md](.github/CONTRIBUTING.md): Guidelines for contributors.
 - [DEVELOPMENT.md](docs/development.md): Build instructions and technical notes.
-- [CHANGELOG.md](CHANGELOG.md): Record of notable changes and versions.
+- [CHANGELOG.md](CHANGELOG.md): Record of notable changes and versions
+  (Auto-generated on release).
 - [MAINTAINERS.md](MAINTAINERS.md): Project maintenance guide.
 - [LICENSE](LICENSE): GPL-3.0-or-later.
 

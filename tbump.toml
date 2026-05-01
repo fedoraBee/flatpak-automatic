@@ -12,6 +12,19 @@ regex = '''
 message_template = "chore(release): bump version to {new_version}"
 tag_template = "v{new_version}"
 
+# ---------------------------------------------------------
+# Hooks: Run scripts automatically during the bump process
+# ---------------------------------------------------------
+# This runs after files are patched, but BEFORE the git commit is made.
+# It uses git-cliff to write the Markdown changelog, then formats that
+# into the RPM and Debian spec files automatically.
+[[before_commit]]
+name = "Generate Changelogs and Package Metadata"
+cmd = "python3 scripts/build/update-package-metadata.py --version {new_version} --generate-changelog"
+
+# ---------------------------------------------------------
+# Files to patch with the new version
+# ---------------------------------------------------------
 [[file]]
 src = "Makefile"
 search = "VERSION := {current_version}"
