@@ -17,6 +17,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Docs**: Synchronized `README.md` with updated feature list, notification
+  types, and non-root systemd mode.
+
 - Initialize patch run for 1.5.12 documentation sync.
 
 ## [1.5.11] - 2026-05-01
