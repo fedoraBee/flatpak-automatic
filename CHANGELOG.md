@@ -15,19 +15,23 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.5.13] - 2026-05-01
 
-### Changed
-
-- **Docs**: Removed SVG banners from GitHub Issue and Pull Request templates for
-  cleaner rendering and better accessibility.
-- **Maintenance**: Bumped version to v1.5.13.
-
 ### 🚀 Features
 
 - Integrate git-cliff for automated changelogs and update release workflow
 
+### 🐛 Bug Fixes
+
+- Resolve invisible icons in desktop notifications
+
+### 📚 Documentation
+
+- Update technical manifest and improve desktop launcher UX
+
 ### ⚙️ Miscellaneous Tasks
 
 - Bump version to v1.5.13 and cleanup templates
+- Manual reversioning after tbump git-cliff changelog switch
+- Refine release documentation and metadata script logic
 
 ## [1.5.12] - 2026-05-01
 

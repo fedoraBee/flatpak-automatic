@@ -69,6 +69,14 @@ def update_changelog_file(version: str, changelog_file: str) -> None:
         )
 
         if injection_marker in content:
+            # Check if this version's header is already present to avoid duplicates
+            version_header = f"## [{version}]"
+            if version_header in content:
+                print(
+                    f"ℹ️ {version_header} already exists in CHANGELOG.md. Skipping injection."
+                )
+                return
+
             # Split the file exactly at the marker and sandwich the new block in between
             parts = content.split(injection_marker)
             updated_content = (
