@@ -16,7 +16,10 @@ from typing import Optional, Dict, Any, List
 
 # Brand Asset Paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ICON_PATH = os.path.join(BASE_DIR, "assets", "icon.svg")
+# Try system path first, then fallback to relative dev path
+SYSTEM_ICON_PATH = "/usr/share/icons/hicolor/scalable/apps/flatpak-automatic.svg"
+DEV_ICON_PATH = os.path.join(BASE_DIR, "assets", "icon.svg")
+ICON_PATH = SYSTEM_ICON_PATH if os.path.exists(SYSTEM_ICON_PATH) else DEV_ICON_PATH
 
 
 def _resolve_active_dbus_sessions() -> dict:
@@ -213,70 +216,111 @@ class DesktopNotifier:
         if not self.enabled:
             logging.info("Desktop notifications disabled by global policy. Skipping.")
             return
+
+        is_root = os.geteuid() == 0
+
         try:
-            users_out = subprocess.run(
-                ["loginctl", "list-users", "--no-legend"],
-                capture_output=True,
-                text=True,
-            ).stdout
-            for line in users_out.strip().split("\n"):
-                if not line:
-                    continue
-                parts = line.split()
-                if len(parts) >= 2:
-                    uid, user = parts[0], parts[1]
-                    env_out = subprocess.run(
-                        ["sudo", "-u", user, "systemctl", "--user", "show-environment"],
-                        capture_output=True,
-                        text=True,
-                    ).stdout
-                    env_dict = {}
-                    for el in env_out.splitlines():
-                        if "=" in el:
-                            k, v = el.split("=", 1)
-                            env_dict[k] = v
-
-                    bus_path = f"/run/user/{uid}/bus"
-                    if (
-                        "WAYLAND_DISPLAY" not in env_dict
-                        and "DISPLAY" not in env_dict
-                        and not os.path.exists(bus_path)
-                    ):
-                        logging.info(
-                            f"Skipping desktop notification for {user}: Headless session detected (No active display or D-Bus session)."
-                        )
+            sessions = []
+            if is_root:
+                # Resolve all active GUI sessions
+                users_out = subprocess.run(
+                    ["loginctl", "list-users", "--no-legend"],
+                    capture_output=True,
+                    text=True,
+                ).stdout
+                for line in users_out.strip().split("\n"):
+                    if not line:
                         continue
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        uid, user = parts[0], parts[1]
+                        env_out = subprocess.run(
+                            [
+                                "sudo",
+                                "-u",
+                                user,
+                                "systemctl",
+                                "--user",
+                                "show-environment",
+                            ],
+                            capture_output=True,
+                            text=True,
+                        ).stdout
+                        env_dict = {}
+                        for el in env_out.splitlines():
+                            if "=" in el:
+                                k, v = el.split("=", 1)
+                                env_dict[k] = v
 
-                    bus_address = f"unix:path=/run/user/{uid}/bus"
-                    runtime_dir = env_dict.get("XDG_RUNTIME_DIR", f"/run/user/{uid}")
+                        bus_path = f"/run/user/{uid}/bus"
+                        if (
+                            "WAYLAND_DISPLAY" not in env_dict
+                            and "DISPLAY" not in env_dict
+                            and not os.path.exists(bus_path)
+                        ):
+                            continue
 
-                    # Use file:// URI for absolute paths to ensure compatibility with all notification daemons
-                    icon_param = icon
-                    hints = []
-                    if os.path.isabs(icon):
-                        icon_param = f"file://{icon}"
-                        hints = ["-h", f"string:image-path:{icon_param}"]
+                        sessions.append(
+                            {
+                                "user": user,
+                                "uid": uid,
+                                "bus": f"unix:path={bus_path}",
+                                "runtime": env_dict.get(
+                                    "XDG_RUNTIME_DIR", f"/run/user/{uid}"
+                                ),
+                            }
+                        )
+            else:
+                # Rootless: Only notify the current user session
+                uid = str(os.getuid())
+                user = os.environ.get("USER", "current-user")
+                bus_address = os.environ.get(
+                    "DBUS_SESSION_BUS_ADDRESS", f"unix:path=/run/user/{uid}/bus"
+                )
+                runtime_dir = os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{uid}")
+                sessions.append(
+                    {
+                        "user": user,
+                        "uid": uid,
+                        "bus": bus_address,
+                        "runtime": runtime_dir,
+                    }
+                )
 
-                    subprocess.run(
-                        [
-                            "sudo",
-                            "-u",
-                            user,
-                            "env",
-                            f"DBUS_SESSION_BUS_ADDRESS={bus_address}",
-                            f"XDG_RUNTIME_DIR={runtime_dir}",
-                            "notify-send",
-                            "-a",
-                            "Flatpak Automatic",
-                            "-i",
-                            icon_param,
-                            "-n",
-                            icon_param,
-                        ]
-                        + hints
-                        + [title, body],
-                        check=False,
-                    )
+            for session in sessions:
+                # Use raw path for -i and -n, but file:// for hints
+                icon_param = icon
+                hints = []
+                if os.path.isabs(icon):
+                    hints = ["-h", f"string:image-path:file://{icon}"]
+
+                cmd = (
+                    [
+                        "notify-send",
+                        "-a",
+                        "Flatpak Automatic",
+                        "-i",
+                        icon_param,
+                        "-n",
+                        icon_param,
+                    ]
+                    + hints
+                    + [title, body]
+                )
+
+                if is_root:
+                    # Wrap with sudo and env for system-wide execution
+                    cmd = [
+                        "sudo",
+                        "-u",
+                        session["user"],
+                        "env",
+                        f"DBUS_SESSION_BUS_ADDRESS={session['bus']}",
+                        f"XDG_RUNTIME_DIR={session['runtime']}",
+                    ] + cmd
+
+                subprocess.run(cmd, check=False)
+
             logging.info("Desktop UI notification dispatched to active sessions.")
         except Exception as e:
             logging.error(f"Failed to dispatch desktop UI notification: {e}")
@@ -739,7 +783,9 @@ def main() -> None:
         desktop = DesktopNotifier()
 
         desktop.send_notification(
-            "Test Notification", "This is a test notification from flatpak-automatic."
+            "Test Notification",
+            "This is a test notification from flatpak-automatic.",
+            ICON_PATH,
         )
         exit_clean(0)
 
