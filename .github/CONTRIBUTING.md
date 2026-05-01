@@ -84,8 +84,7 @@ provided `make` targets:
 ### 6. Version Management & Changelog
 
 - **Do NOT Manually Edit Versions or Changelogs**: Version numbers in the
-  `Makefile`, RPM specs, and `CHANGELOG.md` are exclusively managed by
-  automation (`tbump`).
+  `Makefile` and `CHANGELOG.md` are exclusively managed by automation (`tbump`).
 - **Conventional Commits**: Because the changelog is generated automatically
   during a release, you **must** use
   [Conventional Commits](https://www.conventionalcommits.org/) (e.g.,

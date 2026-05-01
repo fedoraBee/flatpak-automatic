@@ -91,8 +91,8 @@ When you are ready to cut a new release, follow these steps to generate the
    ```
 
    _Note: `tbump` will automatically trigger the `before_commit` hook, run
-   `update-package-metadata.py`, generate the changelog, inject it into the RPM
-   spec, and bundle everything into a single release commit and local tag._
+   `update-package-metadata.py`, generate the changelog and bundle everything
+   into a single release commit and local tag._
 
 3. **Push the branch and open a PR:**
 
