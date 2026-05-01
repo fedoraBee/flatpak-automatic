@@ -8,6 +8,8 @@ GEMINI.md
 SUGGESTIONS.md
 .ruff_cache/
 node_modules/
+package.json
+package-lock.json
 .debbuild/
 
 # Debian build artifacts
