@@ -8,6 +8,16 @@ flatpak-automatic \- Enterprise update automation for Flatpak
 .SH DESCRIPTION
 .B flatpak-automatic
 is a strictly typed, enterprise-grade Python daemon designed to autonomously manage Flatpak updates. It features systemd integration, Snapper filesystem rollback support, and comprehensive alerting via Apprise, Mail, and native Webhooks.
+
+.SH NON-ROOT MODE
+To execute the updater without elevated privileges, utilize the user-level systemd units:
+.PP
+\fBsystemctl --user enable flatpak-automatic-user.timer\fR
+.br
+\fBsystemctl --user start flatpak-automatic-user.timer\fR
+.PP
+This isolates update operations within the user session for enhanced security.
+
 .SH OPTIONS
 .TP
 .BR \-u ", " \-\-setup
