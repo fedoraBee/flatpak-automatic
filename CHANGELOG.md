@@ -25,6 +25,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Feature:** Added `--user` CLI flag to support non-root user-level Flatpak
   updates.
 
+### Fixed
+
+- **CI/Build:** Replaced the Snap-dependent `chromium-browser` package with the
+  official Google Chrome `.deb` binary in the CI pipeline to permanently resolve
+  `snapd` execution hangs within containerized runners.
+
 ## [1.5.9] - 2026-04-30
 
 ### Added
