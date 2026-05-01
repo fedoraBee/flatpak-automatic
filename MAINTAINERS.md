@@ -69,59 +69,65 @@ To host this as a repository on GitHub:
 4. Users can then add the repository by creating a `.repo` or `.list` file
    pointing to the raw GitHub Pages URL.
 
-## Releasing a New Version
+## Versioning & Release Workflow
 
-The deployment to the public DNF repository is automated via GitHub Actions.
+This project uses `tbump` as the single source of truth for versioning and
+automated changelog generation. **Do not manually edit version strings or
+`CHANGELOG.md`.**
 
-1. **Tag the release:** When you are ready to publish, create a new semantic
-   version tag:
+When you are ready to cut a new release, follow these steps to generate the
+"Release PR":
 
-   ```bash
-       git tag -a v0.1.0 -m "Release version 0.1.0"
-   ```
-
-2. **Push the tag:**
+1. **Check out a release branch:**
 
    ```bash
-   git push origin v0.1.0
+   git checkout -b release/vX.Y.Z
    ```
 
-### Workflow Behavior
+2. **Run tbump in no-push mode:**
+
+   ```bash
+   tbump X.Y.Z --no-push
+   ```
+
+   _Note: `tbump` will automatically trigger the `before_commit` hook, run
+   `update-package-metadata.py`, generate the changelog, inject it into the RPM
+   spec, and bundle everything into a single release commit and local tag._
+
+3. **Push the branch and open a PR:**
+
+   ```bash
+   git push -u origin release/vX.Y.Z
+   gh pr create --title "chore(release): vX.Y.Z" --body "Automated release PR."
+   ```
+
+4. **Merge and Push Tag:** Once the PR is merged into `main`, manually push the
+   generated tag to trigger the GitHub Actions deployment:
+
+   ```bash
+   git push origin vX.Y.Z
+   ```
+
+### CI Deployment Behavior
 
 - **Push to `main`**: Does **not** trigger a deployment. Use this for ongoing
   development.
 - **Push a `v*` tag**: Triggers the `release.yml` workflow.
-  - Builds and signs the RPMs.
-  - Organizes the DNF repository structure.
+  - Builds and signs the RPMs/DEBs.
+  - Organizes the DNF/APT repository structure.
   - Deploys the result to the `gh-pages` branch.
-  - Creates a GitHub Release with the RPMs as assets.
+  - Creates a GitHub Release with the packages as assets.
 
 > ℹ️ **Note on Channels:** Tags containing `rc`, `beta`, `alpha`, or `test`
 > (e.g., `v0.1.0-rc1`) are automatically deployed to the **testing** channel.
 > All other tags are deployed to **stable**.
 
-## Versioning Workflow
-
-This project uses `tbump` as the single source of truth for versioning.
-
-To bump the version across the `Makefile`, scripts, sysconfig, and RPM
-templates:
-
-```bash
-tbump <new_version> --only-patch
-```
-
-**Do not** manually edit version strings.
-
 ## Release Checklist
 
-Before cutting a new release, ensure the following:
+Before running `tbump` and cutting a new release, ensure the following:
 
-- [ ] All PRs targeted for this release are merged into `main`.
-- [ ] `CHANGELOG.md` is updated with the new version and release notes.
-- [ ] CI pipeline (`lint`, `smoke-test`) passes on `main`.
-- [ ] `tbump <version> --only-patch` has been run and committed in a PR.
-- [ ] Ensure local `main` branch is synced with `origin/main`.
-- [ ] Tag the release candidate (e.g.,
-      `git tag -a v1.5.0-rc-1 -m "Release Candidate 1"`).
-- [ ] Push the tag to trigger the automated GitHub Actions release workflow.
+- [ ] All feature and fix PRs targeted for this release are merged into `main`.
+- [ ] All merged commits adhere to Conventional Commits standards (vital for the
+      changelog).
+- [ ] CI pipeline (`lint`, `smoke-test`) is currently passing on `main`.
+- [ ] Ensure your local `main` branch is fully synced with `origin/main`.

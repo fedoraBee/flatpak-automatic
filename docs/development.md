@@ -1,6 +1,6 @@
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line MD033 MD041-->
-<div align="center"><img src="../assets/banner.svg" alt="Flatpak Automatic CLI
+<div align="center"><img src="assets/banner.svg" alt="Flatpak Automatic CLI
 Banner" width="450"></div>
 <!-- prettier-ignore-end -->
 
@@ -27,18 +27,18 @@ rpmbuild -ba rpm/flatpak-automatic.spec --define "OPEN_WEBUI_PORT 8080"
 
 ## GitOps PR CLI Tool
 
-The project includes a `scripts/gitops-pr-cli-tool.sh` to automate and enforce
-the Pull Request workflow. It performs the following checks:
+The project includes a `scripts/maintainer/gitops-pr-cli-tool.sh` to automate
+and enforce the Pull Request workflow. It performs the following checks:
 
-- Branch naming validation.
-- Version extraction from branch name.
-- Verification that `CHANGELOG.md` contains the version.
-- Verification that the RPM spec file's `Version` field is automatically updated
-  by `scripts/update-package-metadata.py` from the `Makefile`'s `VERSION`
-  variable, and this value is validated.
-- Ensure the `Makefile` version is synchronized with the RPM spec and
-  `CHANGELOG.md`.
-- Automatic PR body generation from commit messages.
+- **Branch Naming Validation**: Ensures conformity to the
+  `<type>/v<version>-<description>` standard.
+- **Conventional Commits Check**: Verifies that the branch commit history uses
+  valid Conventional Commit prefixes so that `tbump` can generate an accurate
+  changelog upon release.
+- **Packaging Skeleton Verification**: Ensures required RPM and Debian template
+  files exist.
+- **Automatic PR Formatting**: Generates the PR title and body dynamically from
+  the commit history.
 
 ### Prerequisites
 
@@ -48,7 +48,7 @@ the Pull Request workflow. It performs the following checks:
 Usage:
 
 ```bash
-./scripts/gitops-pr-cli-tool.sh --target <branch-name> \
+./scripts/maintainer/gitops-pr-cli-tool.sh --target <branch-name> \
   [--base main] \
   [--title "PR Title"] \
   [--message "PR Body"] \
@@ -59,15 +59,15 @@ Usage:
 
 ## Git Clean & Switch Tool
 
-A `scripts/git-clean-switch-tool.sh` is provided to safely reset the current Git
-branch to a remote source, clean the worktree, and prepare a development branch.
-This is useful for quickly synchronizing a development environment to a known
-good state.
+A `scripts/maintainer/git-clean-switch-tool.sh` is provided to safely reset the
+current Git branch to a remote source, clean the worktree, and prepare a
+development branch. This is useful for quickly synchronizing a development
+environment to a known good state.
 
 Usage:
 
 ```bash
-./scripts/git-clean-switch-tool.sh \
+./scripts/maintainer/git-clean-switch-tool.sh \
   [--base main] \
   [--target dev] \
   [--backup backup-main-timestamp] \
@@ -75,7 +75,7 @@ Usage:
   [--dry-run]
 ```
 
-### Testing Matrix
+## Testing Matrix
 
 This project enforces a Shift-Left testing approach.
 

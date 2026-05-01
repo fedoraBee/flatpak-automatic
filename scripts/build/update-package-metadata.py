@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 import subprocess
 import argparse
-from typing import Optional
+from typing import Optional, Tuple, List
 
 
 def get_git_info() -> str:
@@ -39,25 +39,50 @@ def get_version_from_makefile(makefile: str = "Makefile") -> Optional[str]:
     return None
 
 
-def generate_rpm_changelog(
+def run_git_cliff(version: str, changelog_file: str) -> None:
+    """Runs git-cliff to prepend the latest conventional commits to the changelog."""
+    print(f"🔄 Running git-cliff to generate changelog for version {version}...")
+    try:
+        subprocess.run(
+            [
+                "git-cliff",
+                "--unreleased",
+                "--tag",
+                version,
+                "--prepend",
+                changelog_file,
+            ],
+            check=True,
+        )
+        print("✅ git-cliff successfully updated CHANGELOG.md")
+    except FileNotFoundError:
+        print("❌ Error: 'git-cliff' is not installed or not in PATH.", file=sys.stderr)
+        sys.exit(1)
+    except subprocess.CalledProcessError as e:
+        print(
+            f"❌ Error: git-cliff failed with exit code {e.returncode}", file=sys.stderr
+        )
+        sys.exit(1)
+
+
+def parse_and_format_changelogs(
     changelog_in: str, current_epoch: str, current_version: str, current_rel: str
-) -> str:
-    """Parses CHANGELOG.md and formats it for RPM."""
+) -> Tuple[str, List[str]]:
+    """Parses CHANGELOG.md, formats it for RPM, and extracts the latest entries for Debian."""
     try:
         with open(changelog_in, "r") as f:
             content = f.read()
     except FileNotFoundError:
-        print(
-            f"Warning: Changelog {changelog_in} not found. Skipping changelog generation."
-        )
-        return ""
+        print(f"Warning: Changelog {changelog_in} not found. Skipping parsing.")
+        return "", []
 
-    # Matches headers like: ## [1.1.0] - 2026-04-22
-    version_pattern = re.compile(r"## \[([\w\.\-]+)\] - (\d{4}-\d{2}-\d{2})")
+    # Matches headers like: ## [1.1.0] - 2026-04-22 OR ## [v1.1.0] - 2026-04-22
+    version_pattern = re.compile(r"## \[v?([\w\.\-]+)\] - (\d{4}-\d{2}-\d{2})")
     author = get_git_info()
     sections = version_pattern.split(content)
 
     rpm_changelog = []
+    latest_entries = []
 
     for i in range(1, len(sections), 3):
         md_version = sections[i]
@@ -65,9 +90,9 @@ def generate_rpm_changelog(
         text = sections[i + 2].strip()
 
         rpm_date = format_date(date_str)
-
         lines = text.split("\n")
         entries = []
+
         for line in lines:
             line = line.strip()
             if not line or line.startswith("###"):
@@ -77,7 +102,7 @@ def generate_rpm_changelog(
             elif entries:
                 entries[-1] += " " + line
 
-        # Format markdown links and codeblocks to plain text for RPM
+        # Format markdown links and codeblocks to plain text for RPM/Debian
         formatted_entries = []
         for entry in entries:
             entry = re.sub(r"\[([^\]]+)\]\([^\)]+\)", r"\1", entry)
@@ -85,7 +110,12 @@ def generate_rpm_changelog(
             formatted_entries.append(entry)
 
         # Ensure the current build version gets the full Epoch:Version-Release tuple
-        if md_version == current_version:
+        is_current_version = md_version == current_version
+
+        if is_current_version:
+            latest_entries = (
+                formatted_entries  # Save these specifically for the Debian changelog
+            )
             rpm_changelog.append(
                 f"* {rpm_date} {author} {current_epoch}:{md_version}-{current_rel}"
             )
@@ -96,7 +126,7 @@ def generate_rpm_changelog(
             rpm_changelog.append(entry)
         rpm_changelog.append("")
 
-    return "\n".join(rpm_changelog)
+    return "\n".join(rpm_changelog), latest_entries
 
 
 def build_spec_file(
@@ -115,35 +145,27 @@ def build_spec_file(
         print(f"Error: Spec template {spec_in} not found.", file=sys.stderr)
         sys.exit(1)
 
-    # Replace the Makefile-injected placeholders
     spec_text = spec_text.replace("@@EPOCH@@", str(epoch))
     spec_text = spec_text.replace("@@VERSION@@", str(version))
     spec_text = spec_text.replace("@@REL_NUM@@", str(rel_num))
 
-    # Append the Changelog section
     if changelog_content:
         spec_text += "\n%changelog\n"
         spec_text += changelog_content
 
-    # Ensure the output directory exists
     os.makedirs(os.path.dirname(os.path.abspath(spec_out)), exist_ok=True)
-
     with open(spec_out, "w") as f:
         f.write(spec_text)
 
-    print(f"Successfully generated complete spec at: {spec_out}")
+    print(f"✅ Successfully generated complete RPM spec at: {spec_out}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Compile an RPM .spec file with EVR injection and Markdown changelog parsing."
+        description="Compile package metadata and parse Markdown changelogs."
     )
-
-    # Define arguments with sensible RPM defaults
     parser.add_argument("--epoch", default="0", help="RPM Epoch (Default: 0)")
-    parser.add_argument(
-        "--version", help="RPM Version (Fallback: extracted from Makefile)"
-    )
+    parser.add_argument("--version", help="Version (Fallback: extracted from Makefile)")
     parser.add_argument(
         "--rel-num", default="1", help="RPM Release Number (Default: 1)"
     )
@@ -165,34 +187,38 @@ def main() -> None:
     parser.add_argument(
         "--makefile",
         default="Makefile",
-        help="Path to Makefile for fallback version extraction",
+        help="Path to Makefile for fallback extraction",
     )
     parser.add_argument(
-        "--date", help="Current build date (used for changelog headers if needed)"
+        "--generate-changelog",
+        action="store_true",
+        help="Run git-cliff to auto-generate changelog before parsing",
     )
 
     args = parser.parse_args()
 
-    # Fallback to Makefile if version is missing
     version = args.version
     if not version:
         version = get_version_from_makefile(args.makefile)
         if not version:
             print(
-                "Error: Could not find VERSION in Makefile and --version was not passed.",
+                "❌ Error: Could not find VERSION in Makefile and --version was not passed.",
                 file=sys.stderr,
             )
             sys.exit(1)
 
-    # Standardize RPM version format (RPM doesn't like hyphens in the version string)
     version = version.replace("-", "~")
 
-    # 1. Generate the Changelog string
-    rpm_changelog_content = generate_rpm_changelog(
+    # 1. Automatically generate the markdown changelog via git-cliff if requested by tbump
+    if args.generate_changelog:
+        run_git_cliff(version, args.changelog_in)
+
+    # 2. Parse the (now updated) Changelog
+    rpm_changelog_content, latest_entries = parse_and_format_changelogs(
         args.changelog_in, args.epoch, version, args.rel_num
     )
 
-    # 2. Compile the final Spec file
+    # 3. Compile the final RPM Spec file
     build_spec_file(
         args.spec_in,
         args.spec_out,
@@ -202,19 +228,38 @@ def main() -> None:
         rpm_changelog_content,
     )
 
-    # 3. Generate Debian Changelog
+    # 4. Generate Debian Changelog natively
     os.makedirs("debian", exist_ok=True)
-    with open("debian/changelog", "w") as f:
-        date_str = (
-            __import__("datetime")
-            .datetime.now(__import__("datetime").timezone.utc)
-            .strftime("%a, %d %b %Y %H:%M:%S %z")
+    deb_changelog_path = "debian/changelog"
+
+    # Read existing debian changelog to prepend to it (standard Debian behavior)
+    existing_deb = ""
+    if os.path.exists(deb_changelog_path):
+        with open(deb_changelog_path, "r") as f:
+            existing_deb = f.read()
+
+    with open(deb_changelog_path, "w") as f:
+        date_str = datetime.now(__import__("datetime").timezone.utc).strftime(
+            "%a, %d %b %Y %H:%M:%S %z"
         )
+        author = get_git_info()
+
         f.write(
             f"flatpak-automatic ({version}-{args.rel_num}) unstable; urgency=medium\n\n"
         )
-        f.write(f"  * Sync with CHANGELOG.md release {version}\n\n")
-        f.write(f" -- GitOps DevSecOps Team <noreply@github.com>  {date_str}\n")
+
+        if latest_entries:
+            for entry in latest_entries:
+                # Remove the markdown hyphen and replace with Debian's asterisk
+                clean_entry = entry.lstrip("- ")
+                f.write(f"  * {clean_entry}\n")
+        else:
+            f.write(f"  * Sync with CHANGELOG.md release {version}\n")
+
+        f.write(f"\n -- {author}  {date_str}\n\n")
+        f.write(existing_deb)
+
+    print(f"✅ Successfully updated Debian changelog at: {deb_changelog_path}")
 
 
 if __name__ == "__main__":

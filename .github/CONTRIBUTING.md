@@ -31,7 +31,8 @@ Ensure you have the necessary development tools installed:
 sudo dnf install make rpm-build flatpak snapper systemd-devel \
   rpmlint shellcheck pre-commit
 # Install markdownlint-cli or markdownlint-cli2 globally via npm
-sudo npm install -g markdownlint-cli # or markdownlint-cli2
+npm install -g markdownlint-cli # or markdownlint-cli2
+npm install git-cliff
 ```
 
 ### 3. Initialize Pre-Commit Hooks
@@ -44,15 +45,16 @@ pre-commit install
 pre-commit run --all-files
 ```
 
-### 3. Project Structure & Standards
+### 4. Project Structure & Standards
 
-- **Scripts**: The main automation logic is in `scripts/flatpak-automatic.py`.
-- **Systemd**: Units are located in `systemd/`.
+- **Core Script**: The main automation logic is in `src/flatpak-automatic.py`.
+- **Systemd**: Units are located in `config/systemd/`.
 - **Configuration**: Default environment variables are in
-  `sysconfig/flatpak-automatic`.
-- **Packaging**: The RPM spec and linting configurations are in `rpm/`.
+  `config/sysconfig/flatpak-automatic`.
+- **Packaging**: The RPM spec template and linting configurations are in `rpm/`.
+  Debian configs are in `debian/`.
 
-### 4. Testing Your Changes
+### 5. Testing Your Changes
 
 Before submitting a pull request, you should verify your changes using the
 provided `make` targets:
@@ -63,35 +65,32 @@ provided `make` targets:
    make lint
    ```
 
-   This includes `shellcheck` for scripts, `rpmlint` for the spec file, and
-   `markdownlint` for documentation.
+   This includes `shellcheck` for scripts, `rpmlint` for the spec file,
+   `markdownlint` for documentation, and Python linting via pre-commit.
 
-1. **Build and Verify RPMs**:
+2. **Build and Verify RPMs**:
 
    ```bash
    make lint-rpm
    ```
 
-   This builds the RPMs and runs `rpmlint` against the resulting packages.
-
-1. **Local Install Test**:
+3. **Local Install Test**:
 
    ```bash
    # Test local installation to a temporary directory
    make install DESTDIR=./test-install
    ```
 
-### 5. Version Management & Changelog
+### 6. Version Management & Changelog
 
-- **Version Synchronization**: When bumping the version, ensure the new version
-  is updated in:
-  - `Makefile` (`VERSION` variable)
-  - `rpm/flatpak-automatic.spec` (`Version` field - automatically updated by
-    `scripts/update-package-metadata.py` from `Makefile`)
-  - `CHANGELOG.md` (New version heading)
-- **CHANGELOG.md**: Add a brief note under the current version. This file is the
-  single source of truth for release notes. The RPM changelog is automatically
-  generated from it.
+- **Do NOT Manually Edit Versions or Changelogs**: Version numbers in the
+  `Makefile`, RPM specs, and `CHANGELOG.md` are exclusively managed by
+  automation (`tbump`).
+- **Conventional Commits**: Because the changelog is generated automatically
+  during a release, you **must** use
+  [Conventional Commits](https://www.conventionalcommits.org/) (e.g.,
+  `feat: add email support`, `fix: resolve dbus timeout`). This ensures your
+  changes are properly categorized in the final release notes.
 
 ## 📬 Submitting a Pull Request
 
@@ -108,32 +107,30 @@ format:
 Where:
 
 - `<type>`: `feat` | `fix` | `chore` | `refactor` | `docs` | `ci` | `style` |
-  `test` | `revert` | `perf` | `build` | `format` | `deps` | `sec` `test` |
-  `revert` | `perf` | `build` | `format` | `deps` | `sec` `test` | `revert` |
-  `perf` | `build`
-- `<version>`: Target release version (e.g., `v2.0.0`)
+  `test` | `revert` | `perf` | `build` | `format` | `deps` | `sec`
+- `<version>`: Target release version milestone (e.g., `v2.0.0`)
 - `<short-description>`: Kebab-case description (e.g., `update-docs`)
 
 Example: `docs/v2.0.0-update-contributing-guide`
 
 ### 2. Commit Guidelines
 
-- Use descriptive commit messages following
-  [Conventional Commits](https://www.conventionalcommits.org/).
+- Use descriptive commit messages following **Conventional Commits**.
 - Ensure commits are atomic and address a single concern.
 - Commits must not mix refactoring with functional changes.
 
 ### 3. Creating a Pull Request (Mandatory GitOps Tool)
 
 Contributors **MUST** use the provided GitOps PR CLI tool for PR creation. This
-tool validates branch names, versions, and changelog entries.
+tool validates branch names, enforces Conventional Commits history, and formats
+the PR body.
 
 ```bash
 # Basic usage
-./scripts/gitops-pr-cli-tool.sh -b main -h <your-branch-name>
+./scripts/maintainer/gitops-pr-cli-tool.sh -b main -t <your-branch-name>
 
 # Example
-./scripts/gitops-pr-cli-tool.sh -b main -h docs/v2.0.0-update-contributing-guide
+./scripts/maintainer/gitops-pr-cli-tool.sh -b main -t docs/v2.0.0-update-contributing-guide
 ```
 
 Manual PR creation via the GitHub UI or `gh pr create` is discouraged as it
