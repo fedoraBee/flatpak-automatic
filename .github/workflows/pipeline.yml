@@ -6,6 +6,11 @@ on:
     tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   actions: read
@@ -274,16 +279,26 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v5
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
       - name: Install Web Dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y python3 python3-pip make createrepo-c git rsync nodejs npm gnupg2 dpkg-dev apt-utils rpm python3-yaml
+          sudo apt-get install -y make createrepo-c git rsync gnupg2 dpkg-dev apt-utils rpm python3-yaml
           # Download the official Chrome binary directly, bypassing Snap entirely
           wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
           rm google-chrome-stable_current_amd64.deb
           python3 -m pip install jinja2 --break-system-packages
-          sudo npm install -g htmlhint pa11y
+          npm install -g htmlhint pa11y
 
       - name: Retrieve RPM Artifacts
         uses: actions/download-artifact@v4
@@ -370,14 +385,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: public-site
-          path: public-site
+          path: public/
 
       - name: Update gh-pages Content
         run: |
           # Synchronize the artifact content to the gh-pages checkout
           # We use --delete to match the artifact exactly but exclude .git
-          rsync -av --delete --exclude .git public-site/ .
-          rm -rf public-site
+          rsync -av --delete --exclude .git public/ .
+          rm -rf public
 
       - name: Create Pull Request to gh-pages
         uses: peter-evans/create-pull-request@v7
