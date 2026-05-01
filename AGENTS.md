@@ -6,9 +6,11 @@ Banner" width="450"></div>
 
 # Technical Manifest
 
-**Flatpak Automatic** is a secure, configurable, and systemd-native automation
-wrapper for Flatpak updates. It integrates Snapper for atomic-like rollbacks and
-systemd for reliable scheduling on Fedora and other RPM-based distributions.
+**Flatpak Automatic** is a secure, systemd-native automation wrapper for Flatpak
+updates. It features Snapper-integrated atomic rollbacks, multi-channel alerting
+(Apprise, Mail, Webhooks, Desktop), and supports both system-wide and rootless
+user-level execution. Designed for reliability and ease of use, it ensures your
+Flatpak environment remains current and resilient.
 
 ## 🏗 Architectural Overview
 

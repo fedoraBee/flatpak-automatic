@@ -2,7 +2,7 @@ Name:           flatpak-automatic
 Epoch:          @@EPOCH@@
 Version:        @@VERSION@@
 Release:        @@REL_NUM@@%{?dist}
-Summary:        Automated Flatpak updates with optional snapshots and mail notifications
+Summary:        Secure, systemd-native automation for Flatpak updates
 
 License:        GPL-3.0-or-later
 URL:            https://github.com/fedoraBee/flatpak-automatic
@@ -22,11 +22,11 @@ Requires:       systemd
 Recommends:       python3-apprise
 
 %description
-Automates Flatpak updates with snapshots taken before and after the update
-process via Snapper, along with email alerts.
-Includes integrated logic to avoid unnecessary snapshots, calculates update
-counts for email subjects, and provides universal compatibility by
-automatically detecting Btrfs/Snapper support before execution.
+Flatpak Automatic is a secure, systemd-native automation wrapper for Flatpak
+updates. It features Snapper-integrated atomic rollbacks, multi-channel
+alerting (Apprise, Mail, Webhooks, Desktop), and supports both system-wide and
+rootless user-level execution. Designed for reliability and ease of use, it
+ensures your Flatpak environment remains current and resilient.
 
 %prep
 # Use -c to create the directory before extracting, since the Makefile tar command packages the directory contents directly

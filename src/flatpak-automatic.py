@@ -560,7 +560,7 @@ class BrandedArgumentParser(argparse.ArgumentParser):
 
 def main() -> None:
     parser = BrandedArgumentParser(
-        description="Flatpak Automatic - Enterprise Update Automation"
+        description="Flatpak Automatic - Advanced Update Automation"
     )
     parser.add_argument(
         "-d",

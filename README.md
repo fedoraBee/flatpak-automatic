@@ -6,24 +6,23 @@ Banner" width="450"></div>
 
 # [![Pipeline](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fedoraBee/flatpak-automatic/actions/workflows/pipeline.yml)
 
-**Flatpak Automatic** provides a secure, configurable, and systemd-native
-automation wrapper for Flatpak updates.
-
-It integrates with Snapper to provide atomic-like pre/post update snapshots and
-uses systemd timers for reliable, scheduled execution on Fedora and other
-Fedora/RHEL distributions.
+**Flatpak Automatic** is a secure, systemd-native automation wrapper for Flatpak
+updates. It features Snapper-integrated atomic rollbacks, multi-channel alerting
+(Apprise, Mail, Webhooks, Desktop), and supports both system-wide and rootless
+user-level execution. Designed for reliability and ease of use, it ensures your
+Flatpak environment remains current and resilient.
 
 ## ✨ Features
 
 - **Automated Flatpak Updates:** Keep your flatpak applications up-to-date
   seamlessly in the background.
-- **Atomic-like Rollbacks** – Integrates with Snapper/Btrfs for pre/post
+- **Atomic-like Rollbacks:** Integrates with Snapper/Btrfs for pre/post
   snapshots
 - **Flexible Notifications:** Multiple delivery methods and formats supported,
-  adapting to varying infrastructure needs.- **Systemd Integration** – Managed
-  via standard oneshot services and timers
-- **Smart Execution** – Dry-run checks prevent unnecessary snapshots and logs
-- **Configurable** – Easily tune email, snapshot, and scheduling behavior via
+  adapting to varying infrastructure needs.
+- **Systemd Integration:** Managed via standard oneshot services and timers
+- **Smart Execution:** Dry-run checks prevent unnecessary snapshots and logs
+- **Configurable:** Easily tune email, snapshot, and scheduling behavior via
   `/etc/flatpak-automatic/config.yaml`
 - **Non-Root Execution:** Secure, user-level systemd integration.
 - **Desktop Integration:** Native XDG `.desktop` entry included for seamless
@@ -119,7 +118,7 @@ Key options include:
 - `auto_notify`: Notification policy: `always`, `on-change`, `on-failure`, or
   `never`.
 - `timer.schedule`: The systemd timer execution schedule (e.g., `daily`,
-  `weekly`).
+  weekly`).
 - `timer.delay`: Maximum randomized delay for the timer.
 - `timer.minimum_delay`: Minimum randomized delay for the timer.
 - `snapshots.enabled`: Globally enable or disable Snapper snapshot creation.
@@ -139,10 +138,10 @@ Key options include:
 
 To trigger an update manually or use the advanced CLI:
 
-```bash
+```text
 usage: flatpak-automatic [-h] [-d] [-t] [-f] [-s] [-l] [-a] [-c] [-r]
 
-Flatpak Automatic - Enterprise Update Automation
+Flatpak Automatic - Advanced Update Automation
 
 options:
   -h, --help            show this help message and exit
