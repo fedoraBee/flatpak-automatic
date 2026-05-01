@@ -361,16 +361,16 @@ jobs:
     runs-on: ubuntu-latest
     environment: gh-pages
     steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+
       - name: Retrieve Public Assets
         uses: actions/download-artifact@v4
         with:
           name: public-site
           path: public-site
-
-      - name: Checkout gh-pages
-        uses: actions/checkout@v5
-        with:
-          ref: gh-pages
 
       - name: Update gh-pages Content
         run: |
