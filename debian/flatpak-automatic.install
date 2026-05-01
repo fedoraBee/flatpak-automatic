@@ -3,4 +3,4 @@ config/config.example.yaml /etc/flatpak-automatic/
 config/templates/* /etc/flatpak-automatic/templates/
 assets/flatpak-automatic.desktop usr/share/applications/
 assets/icon.svg usr/share/icons/hicolor/scalable/apps/
-config/systemd/flatpak-automatic-user.* usr/lib/systemd/user/
+config/systemd/flatpak-automatic-user.* usr/lib/systemd/user/flatpak-automatic.*

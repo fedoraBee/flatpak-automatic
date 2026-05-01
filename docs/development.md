@@ -89,9 +89,5 @@ This project enforces a Shift-Left testing approach.
 ## Architectural Standards & Feature Parity
 
 - **Non-Root Execution:** All new features MUST maintain strict compatibility
-  with user-level systemd units (`flatpak-automatic-user.service`). Privilege
-  escalation is explicitly forbidden unless structurally required by the
-  underlying Flatpak API.
-- **Notification Routing:** Outputs and alerts must utilize the defined Jinja2
-  templates (Desktop, HTML Mail, Markdown, Minimal) to maintain delivery
-  flexibility. Do not hardcode notification structures.
+  with user-level systemd units. Privilege escalation is explicitly forbidden
+  unless structurally required by the underlying Flatpak API.

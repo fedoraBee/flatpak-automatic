@@ -15,14 +15,20 @@ Fedora/RHEL distributions.
 
 ## ✨ Features
 
-- **Automated Updates** – Keeps your Flatpak applications up to date
+- **Automated Flatpak Updates:** Keep your flatpak applications up-to-date
+  seamlessly in the background.
 - **Atomic-like Rollbacks** – Integrates with Snapper/Btrfs for pre/post
   snapshots
+- **Flexible Notifications:** Multiple delivery methods and formats supported,
+  adapting to varying infrastructure needs.- **Systemd Integration** – Managed
+  via standard oneshot services and timers
 - **Smart Execution** – Dry-run checks prevent unnecessary snapshots and logs
-- **Notifications** – Sends update reports via local mail (`s-nail`/`mailx`)
-- **Systemd Integration** – Managed via standard oneshot services and timers
 - **Configurable** – Easily tune email, snapshot, and scheduling behavior via
   `/etc/flatpak-automatic/config.yaml`
+- **Non-Root Execution:** Secure, user-level systemd integration.
+- **Desktop Integration:** Native XDG `.desktop` entry included for seamless
+  launching from GUI application menus (GNOME, KDE, etc.) with automated
+  terminal routing.
 
 ## 🚀 Quick Start Guide
 
@@ -78,6 +84,16 @@ sudo apt update && sudo apt install -y flatpak-automatic
 sudo systemctl enable --now flatpak-automatic.timer
 ```
 
+To run `flatpak-automatic` securely without root privileges, utilize the
+provided user-level systemd units:
+
+```bash
+systemctl --user enable --now flatpak-automatic.timer
+```
+
+This ensures updates are handled within the user session, adhering to strict
+least-privilege security models.
+
 ## 🔐 GPG Key
 
 The GPG key is available at
@@ -99,49 +115,56 @@ The main configuration file is located at:
 
 Key options include:
 
-- `ENABLE_EMAIL`: Set to `yes` to enable mail notifications.
-- `EMAIL_TO`: Recipient for update reports.
-- `FLATPAK_APPRISE_URLS`: Comma-separated Apprise URLs for Slack, Discord,
-  Gotify, Matrix, etc.
-- `SNAPPER_CONFIG`: The Snapper configuration to use (default: `root`).
+- `auto_update`: Automatically install available updates.
+- `auto_notify`: Notification policy: `always`, `on-change`, `on-failure`, or
+  `never`.
+- `timer.schedule`: The systemd timer execution schedule (e.g., `daily`,
+  `weekly`).
+- `timer.delay`: Maximum randomized delay for the timer.
+- `timer.minimum_delay`: Minimum randomized delay for the timer.
+- `snapshots.enabled`: Globally enable or disable Snapper snapshot creation.
+- `snapshots.snapper_config`: The Snapper configuration to use (default:
+  `root`).
+- `snapshots.snapper_descriptions.pre`: Description for pre-update snapshots.
+- `snapshots.snapper_descriptions.post`: Description for post-update snapshots.
+- `notification_policy.desktop`: Enable/disable desktop notifications.
+- `notification_policy.mails`: Enable/disable mail notifications.
+- `notification_policy.webhooks`: Enable/disable webhook notifications.
+- `notification_policy.apprise`: Enable/disable Apprise notifications.
+- `notification_groups`: Defines multiple notification groups with various
+  methods (desktop, mail, webhooks, apprise) and their respective settings
+  (title, body_template, recipient, URLs, etc.).
 
 ## 💾 Manual Execution & CLI
 
 To trigger an update manually or use the advanced CLI:
 
 ```bash
-# Standard manual run
-sudo flatpak-automatic
+usage: flatpak-automatic [-h] [-d] [-t] [-f] [-s] [-l] [-a] [-c] [-r]
 
-# Simulate an update (Dry-run) without snapshots or changes
-sudo flatpak-automatic --dry-run
+Flatpak Automatic - Enterprise Update Automation
 
-# Display system health, configuration, and monitoring overview
-sudo flatpak-automatic --status
-
-# View recent execution history
-sudo flatpak-automatic --history
-
-# Apply timer schedule configuration to systemd
-sudo flatpak-automatic --apply-schedule
-* `-c`, `--check-config`: Validate and print the current configuration, then exit.
-* `-r`, `--reload`: Send SIGHUP to a running instance to reload its config.
-
-# Test notification endpoints (Email, Apprise, Desktop UI)
-sudo flatpak-automatic --test-notify
-
-# Force an update (ignoring FLATPAK_AUTO_UPDATE safeguards)
-sudo flatpak-automatic --force
-
-# View all commands
-flatpak-automatic --help
+options:
+  -h, --help            show this help message and exit
+  -d, --dry-run         Simulate the update process without applying changes.
+  -t, --test-notify     Send a test notification to configured endpoints and exit.
+  -f, --force           Force the update process, ignoring safeguards.
+  -s, --status          Display system monitoring overview and exit.
+  -l, --history         Display recent update history from journalctl and exit.
+  -a, --apply-schedule  Apply systemd timer overrides based on config settings.
+  -c, --check-config    Validate and print the current configuration, then exit.
+  -r, --reload          Send SIGHUP to a running instance to reload its config.
 ```
 
-To monitor the logs of the automated service:
+### Architecture & Deployment
 
-```bash
-sudo journalctl -u flatpak-automatic.service -f
-```
+`flatpak-automatic` is designed with a dual-architecture model, supporting
+simultaneous parallel execution for maximum security and flexibility:
+
+- **System-Wide (Root):** Updates global system flatpaks. Ideal for multi-user
+  or enterprise fleet deployments.
+- **User-Level (Rootless):** Updates user-specific flatpaks. Recommended as the
+  primary, secure default for single-user desktop environments.
 
 ## 📁 Repository Contents
 
@@ -163,7 +186,7 @@ Since the script integrates natively with systemd, the best place to check for
 failures or warnings is the system journal:
 
 ```bash
-journalctl -u flatpak-automatic.service -e
+flatpak-automatic --history
 ```
 
 ### 2. Snapper Config Errors
@@ -181,10 +204,10 @@ If you have `ENABLE_EMAIL=yes` but are not receiving notifications, check your
 `s-nail` configuration. The mail client relies on `/etc/mail.rc`. Ensure your
 SMTP server, port, and authentication credentials are set up correctly.
 
-## ⚠️ Disclaimer
+## Development & QA
 
-This is an independent project and not affiliated with Fedora or the Flatpak
-project. Use at your own discretion.
+See `docs/development.md` for our strict testing matrix (DBus & Notifications)
+and GitOps patcher workflows.
 
 ## 🔗 Resources
 
@@ -195,55 +218,7 @@ project. Use at your own discretion.
 - 📜 [Changelog](CHANGELOG.md)
 - 🧑‍💻 [Maintainers' Guide](MAINTAINERS.md)
 
-## Development & QA
+## ⚠️ Disclaimer
 
-See `docs/development.md` for our strict testing matrix (DBus & Notifications)
-and GitOps patcher workflows.
-
-### Brand Assets
-
-- **`banner.svg`**: The primary logotype/header used in documentation and CLIs.
-- **`icon.svg`**: The 1:1 scalable logomark used for desktop notifications and
-  compact contexts.
-
-## GUI / Desktop Integration
-
-**Desktop Integration:** Native XDG `.desktop` entry included for seamless
-launching from GUI application menus (GNOME, KDE, etc.) with automated terminal
-routing.
-
-## Features
-
-- **Automated Flatpak Updates:** Keep your flatpak applications up-to-date
-  seamlessly in the background.
-- **Flexible Notifications:** Multiple delivery methods and formats supported,
-  adapting to varying infrastructure needs.
-- **Non-Root Execution:** Secure, user-level systemd integration via
-  `flatpak-automatic-user`.
-- **Extensive Templating:** Jinja2 powered output formatting for logs and
-  notifications.
-
-## Notifications
-
-The system supports various notification types defined in `config/templates/`:
-
-- **Desktop Notifications:** Native desktop popups
-  (`default_desktop_success.txt`, `default_desktop_failure.txt`).
-- **Mail Delivery:** Rich HTML (`default_mail_success.html`) or standard
-  Markdown (`default_mail_failure.md`, `default_mail_success.md`) emails.
-- **Standard Logging:** Formatted Markdown logs (`default_success.md`,
-  `default_failure.md`).
-- **Minimal Text:** Simple, concise text output (`minimal.txt`).
-
-## Non-Root Mode (User-Level Systemd)
-
-To run `flatpak-automatic` securely without root privileges, utilize the
-provided user-level systemd units:
-
-```bash
-systemctl --user enable flatpak-automatic-user.timer
-systemctl --user start flatpak-automatic-user.timer
-```
-
-_This ensures updates are handled within the user session, adhering to strict
-least-privilege security models._
+This is an independent project and not affiliated with Fedora or the Flatpak
+project. Use at your own discretion.
