@@ -94,6 +94,11 @@ When you are ready to cut a new release, follow these steps to generate the
    `update-package-metadata.py`, generate the changelog and bundle everything
    into a single release commit and local tag._
 
+   💡 **Tip for Release Candidates:** You can safely use standard SemVer tags
+   like `1.6.0-rc1`. The build scripts will automatically translate the hyphen
+   to a tilde (`1.6.0~rc1`) for RPM/Debian metadata to ensure proper package
+   sorting.
+
 3. **Push the branch and open a PR:**
 
    ```bash

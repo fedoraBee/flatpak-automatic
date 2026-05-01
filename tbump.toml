@@ -1,11 +1,13 @@
 [version]
 current = "1.5.13"
+# Updated regex to support X.Y.Z and X.Y.Z-rc1 (or -beta, -alpha)
 regex = '''
   (?P<major>\d+)
   \.
   (?P<minor>\d+)
   \.
   (?P<patch>\d+)
+  (?:-(?P<prerelease>[a-zA-Z0-9\.]+))?
   '''
 
 [git]

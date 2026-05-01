@@ -32,7 +32,7 @@ sudo dnf install make rpm-build flatpak snapper systemd-devel \
   rpmlint shellcheck pre-commit
 # Install markdownlint-cli or markdownlint-cli2 globally via npm
 npm install -g markdownlint-cli # or markdownlint-cli2
-npm install git-cliff
+npm install -g git-cliff
 ```
 
 ### 3. Initialize Pre-Commit Hooks
