@@ -40,6 +40,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   requirements.
 - **UX**: Improved `.desktop` launcher with a persistent terminal window after
   execution.
+- **Fix**: Resolved invisible icons in desktop notifications by using `file://`
+  URIs and `image-path` hints for absolute icon paths.
 - **SecOps**: Implemented GitHub Private Vulnerability Reporting in
   `.github/SECURITY.md`.
 
