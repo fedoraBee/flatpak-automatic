@@ -13,6 +13,27 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.14-rc3] - 2026-05-01
+
+### 🐛 Bug Fixes
+
+- Ci gh-pages checkout and banner.svg
+
+### 📚 Documentation
+
+- Cleared changelog
+
+### 🎨 Styling
+
+- Prevent version string from shifting banner content
+- Fix banner centering by using separate text chunks
+- Fix banner.svg, save against auto format
+
+### ⚙️ Miscellaneous Tasks
+
+- _(release)_ Bump version to 1.5.14-rc3
+- Update gh-pages deployment to use Pull Requests for protected branch
+
 ## [1.5.14-rc2] - 2026-05-01
 
 ### 🎨 Styling
