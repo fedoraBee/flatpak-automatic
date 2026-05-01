@@ -108,7 +108,11 @@ def update_changelog_file(version: str, changelog_file: str) -> None:
 
 
 def generate_rpm_changelog(
-    changelog_in: str, current_epoch: str, current_version: str, current_rel: str
+    changelog_in: str,
+    current_epoch: str,
+    current_version: str,
+    current_rel: str,
+    raw_version: Optional[str] = None,
 ) -> Tuple[str, List[str]]:
     """Parses CHANGELOG.md, formats it for RPM, and extracts the latest entries for Debian."""
     try:
@@ -154,10 +158,11 @@ def generate_rpm_changelog(
             formatted_entries.append(entry)
 
         # Ensure the current build version gets the full Epoch:Version-Release tuple
-        if md_version == current_version:
+        # Match either the safe version or the raw version
+        if md_version == current_version or (raw_version and md_version == raw_version):
             latest_entries = formatted_entries
             rpm_changelog.append(
-                f"* {rpm_date} {author} {current_epoch}:{md_version}-{current_rel}"
+                f"* {rpm_date} {author} {current_epoch}:{current_version}-{current_rel}"
             )
         else:
             rpm_changelog.append(f"* {rpm_date} {author} {md_version}")
@@ -261,13 +266,15 @@ def main() -> None:
             sys.exit(1)
 
     # Standardize RPM version format (RPM doesn't like hyphens in the version string)
-    version = version.replace("-", "~")
+    # We keep the original for Markdown/Git-Cliff and the safe one for packaging
+    raw_version = version
+    safe_version = version.replace("-", "~")
 
     # ==========================================
     # MODE 1: Release Prep (Triggered by tbump)
     # ==========================================
     if args.generate_changelog:
-        update_changelog_file(version, args.changelog_in)
+        update_changelog_file(raw_version, args.changelog_in)
         # Exit immediately so we don't generate build artifacts during the git commit phase
         sys.exit(0)
 
@@ -277,7 +284,7 @@ def main() -> None:
 
     # 1. Generate the RPM Changelog string and extract latest entries for Debian
     rpm_changelog_content, latest_entries = generate_rpm_changelog(
-        args.changelog_in, args.epoch, version, args.rel_num
+        args.changelog_in, args.epoch, safe_version, args.rel_num, raw_version
     )
 
     # 2. Compile the final Spec file
@@ -285,7 +292,7 @@ def main() -> None:
         args.spec_in,
         args.spec_out,
         args.epoch,
-        version,
+        safe_version,
         args.rel_num,
         rpm_changelog_content,
     )
@@ -312,15 +319,15 @@ def main() -> None:
         with open(deb_changelog_path, "r") as f:
             existing_deb = f.read()
             # Avoid duplicate entries if the script is run multiple times for the same version
-            if f"flatpak-automatic ({version}-{args.rel_num})" in existing_deb:
+            if f"flatpak-automatic ({safe_version}-{args.rel_num})" in existing_deb:
                 print(
-                    f"ℹ️ Debian entry for {version}-{args.rel_num} already exists. Skipping."
+                    f"ℹ️ Debian entry for {safe_version}-{args.rel_num} already exists. Skipping."
                 )
                 return
 
     with open(deb_changelog_path, "w") as f:
         f.write(
-            f"flatpak-automatic ({version}-{args.rel_num}) unstable; urgency=medium\n\n"
+            f"flatpak-automatic ({safe_version}-{args.rel_num}) unstable; urgency=medium\n\n"
         )
 
         if latest_entries:
@@ -328,7 +335,7 @@ def main() -> None:
                 clean_entry = entry.lstrip("- ")
                 f.write(f"  * {clean_entry}\n")
         else:
-            f.write(f"  * Sync with CHANGELOG.md release {version}\n")
+            f.write(f"  * Sync with CHANGELOG.md release {raw_version}\n")
 
         f.write(f"\n -- {author}  {date_str}\n\n")
         f.write(existing_deb)
