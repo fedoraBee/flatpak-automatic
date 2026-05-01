@@ -248,30 +248,33 @@ class DesktopNotifier:
                         continue
 
                     bus_address = f"unix:path=/run/user/{uid}/bus"
-                    env = os.environ.copy()
-                    env["DBUS_SESSION_BUS_ADDRESS"] = bus_address
-                    if "WAYLAND_DISPLAY" in env_dict:
-                        env["WAYLAND_DISPLAY"] = env_dict["WAYLAND_DISPLAY"]
-                    if "DISPLAY" in env_dict:
-                        env["DISPLAY"] = env_dict["DISPLAY"]
-                    if "XDG_RUNTIME_DIR" in env_dict:
-                        env["XDG_RUNTIME_DIR"] = env_dict["XDG_RUNTIME_DIR"]
+                    runtime_dir = env_dict.get("XDG_RUNTIME_DIR", f"/run/user/{uid}")
+
+                    # Use file:// URI for absolute paths to ensure compatibility with all notification daemons
+                    icon_param = icon
+                    hints = []
+                    if os.path.isabs(icon):
+                        icon_param = f"file://{icon}"
+                        hints = ["-h", f"string:image-path:{icon_param}"]
 
                     subprocess.run(
                         [
                             "sudo",
                             "-u",
                             user,
-                            "DBUS_SESSION_BUS_ADDRESS=" + bus_address,
+                            "env",
+                            f"DBUS_SESSION_BUS_ADDRESS={bus_address}",
+                            f"XDG_RUNTIME_DIR={runtime_dir}",
                             "notify-send",
                             "-a",
                             "Flatpak Automatic",
                             "-i",
-                            icon,
-                            title,
-                            body,
-                        ],
-                        env=env,
+                            icon_param,
+                            "-n",
+                            icon_param,
+                        ]
+                        + hints
+                        + [title, body],
                         check=False,
                     )
             logging.info("Desktop UI notification dispatched to active sessions.")
@@ -521,7 +524,7 @@ class NotificationRouter:
                 dt_tpl = _resolve(group, desktop_cfg, "body_template", "")
                 dt_body = TemplateRenderer.render(dt_tpl, context) if dt_tpl else body
                 desktop = DesktopNotifier()
-                desktop.send_notification(dt_title, dt_body, "icon.svg")
+                desktop.send_notification(dt_title, dt_body, ICON_PATH)
 
 
 def load_config() -> Dict[str, Any]:
