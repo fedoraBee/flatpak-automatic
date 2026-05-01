@@ -391,5 +391,22 @@ sudo apt-get install flatpak-automatic</div>
         </p>
       </div>
     </div>
-  </body>
+
+<section id="features" class="feature-set">
+    <h2>Core Capabilities</h2>
+    <ul>
+        <li><strong>Automated Updates:</strong> Keep flatpak applications up-to-date seamlessly in the background.</li>
+        <li><strong>Flexible Notifications:</strong> Supports Desktop popups, rich HTML/Markdown Emails, and standard logs.</li>
+        <li><strong>Non-Root Execution:</strong> Secure, user-level systemd integration via <code>flatpak-automatic-user</code>.</li>
+    </ul>
+</section>
+
+<section id="quickstart-non-root" class="code-instructions">
+    <h2>Non-Root Mode Activation</h2>
+    <p>Run without privileges using user-level systemd units:</p>
+    <pre><code class="language-bash">systemctl --user enable flatpak-automatic-user.timer
+systemctl --user start flatpak-automatic-user.timer</code></pre>
+</section>
+
+</body>
 </html>

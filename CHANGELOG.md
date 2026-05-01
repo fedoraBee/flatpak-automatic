@@ -13,6 +13,22 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.12] - 2026-05-01
+
+### Changed
+
+- **Docs**: Synchronized `README.md` with updated feature list, notification
+  types, and non-root systemd mode.
+
+- Initialize patch run for 1.5.12 documentation sync.
+- **UX/Docs**: Actualized `docs/templates/index.html.j2` with updated features,
+  notification explanations, and standard bash formatting for non-root commands.
+- **Docs**: Synchronized manpage (`docs/flatpak-automatic.1`) and
+  `docs/development.md` with non-root mode constraints and template architecture
+  guidelines.
+- **SecOps/Docs**: Enforced `>= 1.5` security support policy in
+  `.github/SECURITY.md` and modernized internal role definitions in `AGENTS.md`.
+
 ## [1.5.11] - 2026-05-01
 
 ### Added

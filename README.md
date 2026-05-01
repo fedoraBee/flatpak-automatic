@@ -211,3 +211,39 @@ and GitOps patcher workflows.
 **Desktop Integration:** Native XDG `.desktop` entry included for seamless
 launching from GUI application menus (GNOME, KDE, etc.) with automated terminal
 routing.
+
+## Features
+
+- **Automated Flatpak Updates:** Keep your flatpak applications up-to-date
+  seamlessly in the background.
+- **Flexible Notifications:** Multiple delivery methods and formats supported,
+  adapting to varying infrastructure needs.
+- **Non-Root Execution:** Secure, user-level systemd integration via
+  `flatpak-automatic-user`.
+- **Extensive Templating:** Jinja2 powered output formatting for logs and
+  notifications.
+
+## Notifications
+
+The system supports various notification types defined in `config/templates/`:
+
+- **Desktop Notifications:** Native desktop popups
+  (`default_desktop_success.txt`, `default_desktop_failure.txt`).
+- **Mail Delivery:** Rich HTML (`default_mail_success.html`) or standard
+  Markdown (`default_mail_failure.md`, `default_mail_success.md`) emails.
+- **Standard Logging:** Formatted Markdown logs (`default_success.md`,
+  `default_failure.md`).
+- **Minimal Text:** Simple, concise text output (`minimal.txt`).
+
+## Non-Root Mode (User-Level Systemd)
+
+To run `flatpak-automatic` securely without root privileges, utilize the
+provided user-level systemd units:
+
+```bash
+systemctl --user enable flatpak-automatic-user.timer
+systemctl --user start flatpak-automatic-user.timer
+```
+
+_This ensures updates are handled within the user session, adhering to strict
+least-privilege security models._
