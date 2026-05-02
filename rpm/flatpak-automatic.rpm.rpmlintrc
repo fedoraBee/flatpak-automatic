@@ -2,4 +2,5 @@
 #addFilter(r"W: unversioned-explicit-provides (user|group)\(flatpak-automatic\)")
 #addFilter(r"W: only-non-binary-in-usr-lib")
 addFilter(r"W: no-manual-page-for-binary")
+addFilter(r"W: package-with-huge-docs")
 #addFilter(r"W: incoherent-version-in-changelog")
