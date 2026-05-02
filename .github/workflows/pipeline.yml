@@ -366,6 +366,13 @@ jobs:
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: python3 scripts/maintainer/generate-index.py
 
+      - name: Persist CD Workflow to gh-pages
+        run: |
+          # Copy the CD workflow to the staged site so it exists on the gh-pages branch
+          # and can trigger on pushes (merges) to that branch.
+          mkdir -p public/.github/workflows
+          cp .github/workflows/cd-release.yml public/.github/workflows/
+
       - name: Validate HTML Output
         run: htmlhint public/index.html
 
