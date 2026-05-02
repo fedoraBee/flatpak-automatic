@@ -12,8 +12,8 @@ package.json
 package-lock.json
 .debbuild/
 
-# Debian build artifacts
-debs/
+# Debian build artifacts (don't ignore for repository deployment)
+# debs/
 debian/.debhelper/
 debian/flatpak-automatic/
 debian/files

@@ -35,6 +35,7 @@ def main() -> None:
             key=version_sort_key,
             reverse=True,
         )
+    print(f"DEBUG: Found RPM MAJOR.MINOR versions: {major_minor_versions}")
 
     # 2. Collect all DEB packages from the pool
     pool_dir = os.path.join(repo_root, "debs", "pool", "main", "f", "flatpak-automatic")
@@ -45,6 +46,7 @@ def main() -> None:
             key=lambda x: version_sort_key(get_version_info(x) or "0"),
             reverse=True,
         )
+    print(f"DEBUG: Found DEB packages in pool: {deb_pkgs}")
 
     # Map DEBs to MAJOR.MINOR
     deb_by_major_minor: Dict[str, List[str]] = {}
