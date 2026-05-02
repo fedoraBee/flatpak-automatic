@@ -179,7 +179,7 @@ jobs:
         run: make lint-rpm
       - name: Archive RPM Artifacts
         id: upload_rpms
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: rpms
           path: .rpmbuild/RPMS/noarch/*.rpm
@@ -200,7 +200,7 @@ jobs:
       - name: Run Lintian
         run: lintian debs/*.deb
       - name: Archive DEB Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: debs
           path: "debs/*.deb"
@@ -331,12 +331,6 @@ jobs:
           echo "%_gpg_name ${{ vars.GPG_KEY_ID }}" >> ~/.rpmmacros
           echo "%__gpg $(which gpg)" >> ~/.rpmmacros
 
-      - name: Update Metadata and Repository
-        run: |
-          CHANNEL=stable
-          [[ "${{ github.ref_name }}" =~ (rc|beta|alpha|test) ]] && CHANNEL=testing
-          make rpm-repo GPG_KEY_ID=${{ vars.GPG_KEY_ID }} CHANNEL=$CHANNEL
-
       - name: Synchronize Legacy Assets
         uses: actions/checkout@v5
         continue-on-error: true
@@ -344,12 +338,20 @@ jobs:
           ref: gh-pages
           path: public
 
+      - name: Update Metadata and Repository
+        run: |
+          CHANNEL=stable
+          [[ "${{ github.ref_name }}" =~ (rc|beta|alpha|test) ]] && CHANNEL=testing
+          make rpm-repo GPG_KEY_ID=${{ vars.GPG_KEY_ID }} CHANNEL=$CHANNEL REPO_ROOT="$(pwd)/public"
+
       - name: Export Public GPG Key
         run: gpg --armor --export ${{ vars.GPG_KEY_ID }} > public/gpg.key
 
       - name: Stage Public Files
         run: |
-          cp -r repo/* public/
+          # repo/ might be created by update-repo.sh if REPO_ROOT is not respected everywhere
+          # but we want everything in public/
+          if [ -d repo ]; then cp -r repo/* public/; fi
 
       - name: Generate Index Page
         env:
@@ -366,7 +368,7 @@ jobs:
           pa11y --config pa11y-config.json public/index.html
 
       - name: Archive Public Site
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: public-site
           path: public/

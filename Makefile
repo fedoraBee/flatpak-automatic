@@ -72,9 +72,10 @@ rpm-sign:
 	@./scripts/build/sign-rpm.sh "$(TOPDIR)" "$(GPG_KEY_ID)"
 
 CHANNEL ?= $(or $(channel),stable)
+REPO_ROOT ?= $(CURDIR)/repo
 
 rpm-repo:
-	$(CURDIR)/scripts/maintainer/update-repo.sh $(TOPDIR)/RPMS/noarch $(CURDIR)/debs $(VERSION) $(CHANNEL) "$(GPG_KEY_ID)" $(CURDIR)/repo
+	$(CURDIR)/scripts/maintainer/update-repo.sh $(TOPDIR)/RPMS/noarch $(CURDIR)/debs $(VERSION) $(CHANNEL) "$(GPG_KEY_ID)" $(REPO_ROOT)
 
 clean:
 	rm -rf $(TOPDIR) .debbuild *.deb

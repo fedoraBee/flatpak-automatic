@@ -15,8 +15,11 @@ def get_version_info(filename: str) -> Optional[str]:
     """Extract full version string from RPM or DEB filename."""
     # RPM: flatpak-automatic-1.4.9-1.noarch.rpm -> 1.4.9
     # DEB: flatpak-automatic_1.4.9_all.deb -> 1.4.9
-    m = re.search(r"[-_](\d+\.\d+\.\d+)", filename)
-    return m.group(1) if m else None
+    # Support pre-release suffixes like ~rc1 or -rc1
+    m = re.search(r"[-_](\d+\.\d+\.\d+[^-_]*)", filename)
+    if m:
+        return m.group(1).replace("~", "-")
+    return None
 
 
 def main() -> None:
