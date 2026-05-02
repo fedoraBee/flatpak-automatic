@@ -42,7 +42,9 @@ jobs:
           globs: "**/*.md"
 
       - name: Install shfmt
-        run: sudo apt-get install -y shfmt
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shfmt
 
       - name: Check Shell Formatting
         run: shfmt -d -i 4 -ci scripts/
