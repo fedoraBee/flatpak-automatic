@@ -356,6 +356,11 @@ jobs:
           ref: gh-pages
           path: public
 
+      - name: Debug Legacy Assets
+        run: |
+          echo "Listing content of checked-out public folder:"
+          ls -R public/ || echo "Public folder empty or missing"
+
       - name: Update Metadata and Repository
         run: |
           CHANNEL=stable
@@ -418,15 +423,6 @@ jobs:
           name: public-site
           path: incoming-site
 
-      - name: Debug Retrieved Assets
-        run: |
-          echo "Listing top level of workspace:"
-          ls -la
-          echo "Listing top level of incoming-site folder:"
-          ls -la incoming-site/
-          echo "Listing RPMs in incoming-site/rpms (if they exist):"
-          find incoming-site/rpms -name "*.rpm" || echo "No RPMs found"
-
       - name: Update gh-pages Content
         run: |
           # Synchronize the artifact content to the gh-pages checkout
@@ -452,24 +448,12 @@ jobs:
             release
             documentation
 
-      - name: Retrieve RPM Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: rpms
-          path: rpms
-
-      - name: Retrieve DEB Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: debs
-          path: debs
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            rpms/*.rpm
-            debs/*.deb
+            rpms/**/*.rpm
+            debs/**/*.deb
 
   integration-tests:
     name: System Bus IPC Integration
