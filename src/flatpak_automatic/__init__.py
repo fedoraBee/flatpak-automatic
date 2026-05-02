@@ -1,4 +1,7 @@
 from .updater import FlatpakUpdater
+
+__version__ = "1.5.15"
+
 from .snapper import SnapperManager
 from .config import ConfigManager, StateManager
 from .logging_utils import JSONFormatter, ANSIFormatter, setup_logging
