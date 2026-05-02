@@ -5,6 +5,8 @@ on:
     branches: [ main ]
     tags: [ 'v*' ]
   pull_request:
+    # The branched workflow is useful but let's skip it for PRs that
+    # don't contain any source code changes in the target branch.
     branches: [ main ]
   workflow_dispatch:
 
@@ -197,8 +199,6 @@ jobs:
         run: apt-get update && apt-get install -y dpkg-dev debhelper make python3 tar build-essential lintian python3-yaml
       - name: Compile Packages
         run: make deb
-      - name: Debug DEB output
-        run: ls -la debs/
       - name: Run Lintian
         run: lintian debs/*.deb
       - name: Archive DEB Artifacts
@@ -318,22 +318,6 @@ jobs:
           name: debs
           path: debs
 
-      - name: Debug Artifact Retrieval
-        run: |
-          echo "Listing all files in workspace after downloads:"
-          find . -maxdepth 4 -not -path '*/.*'
-          echo "Verifying RPM source: .rpmbuild/RPMS/noarch"
-          ls -la .rpmbuild/RPMS/noarch || echo "RPM dir missing"
-          echo "Verifying DEB source: debs"
-          ls -la debs || echo "DEB dir missing"
-
-      - name: Debug Artifacts
-        run: |
-          echo "Listing RPMs in .rpmbuild/RPMS/noarch:"
-          ls -la .rpmbuild/RPMS/noarch || echo "Directory not found"
-          echo "Listing DEBs in debs:"
-          ls -la debs || echo "Directory not found"
-
       - name: Configure Repository Signing
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
@@ -356,23 +340,11 @@ jobs:
           ref: gh-pages
           path: public
 
-      - name: Debug Legacy Assets
-        run: |
-          echo "Listing content of checked-out public folder:"
-          ls -R public/ || echo "Public folder empty or missing"
-
       - name: Update Metadata and Repository
         run: |
           CHANNEL=stable
           [[ "${{ github.ref_name }}" =~ (rc|beta|alpha|test) ]] && CHANNEL=testing
           make rpm-repo GPG_KEY_ID=${{ vars.GPG_KEY_ID }} CHANNEL=$CHANNEL REPO_ROOT="$(pwd)/public"
-
-      - name: Debug Generated Repo
-        run: |
-          echo "Listing content of public/rpms/v1.5/testing (if it exists):"
-          ls -R public/rpms/v1.5/testing || echo "Not found"
-          echo "Listing content of public/debs/pool (if it exists):"
-          ls -R public/debs/pool || echo "Not found"
 
       - name: Export Public GPG Key
         run: gpg --armor --export ${{ vars.GPG_KEY_ID }} > public/gpg.key
@@ -429,6 +401,14 @@ jobs:
           # We use --delete to match the artifact exactly but exclude .git
           # We ignore exit code 24 (vanished files) which is often a false positive in CI
           rsync -av --delete --exclude .git incoming-site/ . || [ $? -eq 24 ]
+
+          # CRITICAL: Remove .gitignore to ensure build artifacts (like debs) are NOT ignored
+          # when creating the pull request.
+          rm -f .gitignore
+
+          # Force add all files just in case
+          git add --all --force
+
           rm -rf incoming-site
 
       - name: Create Pull Request to gh-pages
