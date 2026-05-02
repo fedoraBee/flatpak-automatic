@@ -1,0 +1,76 @@
+name: CD / Release & Deploy
+
+on:
+  push:
+    branches:
+      - gh-pages
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  # 1. Deploy the merged content directly to GitHub Pages
+  # This replaces the default 'pages-build-deployment' to avoid redundant builds
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v5
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # 2. Finalize the GitHub Release if this push was a repository update PR merge
+  create-release:
+    name: Finalize GitHub Release
+    runs-on: ubuntu-latest
+    # Only run if the commit message indicates a release site update
+    if: "contains(github.event.head_commit.message, 'chore(release): update repository site for')"
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v5
+
+      - name: Extract Version
+        id: get_version
+        env:
+          COMMIT_MSG: "${{ github.event.head_commit.message }}"
+        run: |
+          # Extract version from commit message (e.g., v1.5.14-rc3)
+          VERSION=$(echo "$COMMIT_MSG" | grep -oP 'v[0-9]+\.[0-9]+\.[0-9]+[^ ]*')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          # Calculate search version for packages (remove 'v' prefix)
+          PKG_VERSION="${VERSION#v}"
+          # Standardize for RPM (replace '-' with '~')
+          RPM_VERSION="${PKG_VERSION//-/'~'}"
+          echo "rpm_version=$RPM_VERSION" >> "$GITHUB_OUTPUT"
+          echo "deb_version=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Create / Update Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: Release ${{ steps.get_version.outputs.version }}
+          body: |
+            This release corresponds to the repository update for version ${{ steps.get_version.outputs.version }}.
+
+            The packages are available in the official repository site:
+            https://fedorabee.github.io/flatpak-automatic/
+          files: |
+            rpms/**/flatpak-automatic-${{ steps.get_version.outputs.rpm_version }}*.rpm
+            debs/**/flatpak-automatic_${{ steps.get_version.outputs.deb_version }}*.deb
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(steps.get_version.outputs.version, 'rc') || contains(steps.get_version.outputs.version, 'beta') || contains(steps.get_version.outputs.version, 'alpha') }}
