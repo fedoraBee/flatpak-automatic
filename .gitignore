@@ -23,6 +23,5 @@ debian/debhelper-build-stamp
 debian/changelog
 __pycache__/
 *.pyc
-**/__init__.py
 .pytest_cache/
 .mypy_cache/

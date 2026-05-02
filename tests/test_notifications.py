@@ -17,8 +17,8 @@ spec.loader.exec_module(fa)
 
 
 class TestNotificationRouter:
-    @patch.object(fa, "MailNotifier")
-    @patch.object(fa, "WebhookNotifier")
+    @patch("flatpak_automatic.notifiers.MailNotifier")
+    @patch("flatpak_automatic.notifiers.WebhookNotifier")
     def test_dispatch_all_state_dependent_resolution(
         self, mock_webhook: Any, mock_mail: Any
     ) -> None:
@@ -47,7 +47,7 @@ class TestNotificationRouter:
         }
 
         # Test 1: SUCCESS STATE
-        with patch.object(fa, "TemplateRenderer") as mock_template:
+        with patch("flatpak_automatic.notifiers.TemplateRenderer") as mock_template:
             mock_template.render.return_value = "Rendered Body"
             router = fa.NotificationRouter(config)
             router.dispatch_all("Fallback Title", "Test Body", success=True)
@@ -69,7 +69,7 @@ class TestNotificationRouter:
         mock_webhook.reset_mock()
 
         # Test 2: FAILURE STATE
-        with patch.object(fa, "TemplateRenderer") as mock_template:
+        with patch("flatpak_automatic.notifiers.TemplateRenderer") as mock_template:
             mock_template.render.return_value = "Rendered Error"
             router = fa.NotificationRouter(config)
             router.dispatch_all("Fallback Title", "Test Body", success=False)
