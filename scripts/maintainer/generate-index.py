@@ -26,9 +26,10 @@ def main() -> None:
     repo_root = os.environ.get("REPO_ROOT", "public")
     output_file = os.environ.get("OUTPUT_FILE", os.path.join(repo_root, "index.html"))
     template_dir = os.environ.get("TEMPLATE_DIR", "docs/templates")
+    assets_src_dir = os.environ.get("ASSETS_SRC_DIR", "assets")
 
     print(
-        f"DEBUG: Using repo_root={repo_root}, output_file={output_file}, template_dir={template_dir}"
+        f"DEBUG: Using repo_root={repo_root}, output_file={output_file}, template_dir={template_dir}, assets_src_dir={assets_src_dir}"
     )
     # 1. Collect all RPM versions and channels
     rpm_dir = os.path.join(repo_root, "rpms")
@@ -171,12 +172,13 @@ def main() -> None:
     # Copy assets
     assets_dest = os.path.join(repo_root, "assets")
     os.makedirs(assets_dest, exist_ok=True)
-    banner_src = "assets/banner.svg"
-    banner_dst = os.path.join(assets_dest, "banner.svg")
-    if os.path.exists(banner_src) and os.path.abspath(banner_src) != os.path.abspath(
-        banner_dst
-    ):
-        shutil.copy2(banner_src, banner_dst)
+    for asset in ["banner.svg", "logo.svg"]:
+        src = os.path.join(assets_src_dir, asset)
+        dst = os.path.join(assets_dest, asset)
+        if os.path.exists(src):
+            if not os.path.exists(dst) or os.path.abspath(src) != os.path.abspath(dst):
+                print(f"DEBUG: Copying {src} to {dst}")
+                shutil.copy2(src, dst)
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(html_out)
