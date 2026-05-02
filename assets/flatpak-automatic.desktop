@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Flatpak Automatic
 Comment=Automatic update service for Flatpak apps
-Exec=/usr/bin/flatpak-automatic
+Exec=bash -c "/usr/bin/flatpak-automatic; echo ''; read -p 'Press Enter to close...'"
 Icon=flatpak-automatic
 Terminal=true
 Type=Application
@@ -10,4 +10,4 @@ Actions=RunAsRoot;
 
 [Desktop Action RunAsRoot]
 Name=Run as Administrator (Root)
-Exec=pkexec /usr/bin/flatpak-automatic
+Exec=bash -c "pkexec /usr/bin/flatpak-automatic; echo ''; read -p 'Press Enter to close...'"
