@@ -30,23 +30,31 @@ def main() -> None:
     rpm_dir = os.path.join(repo_root, "rpms")
     major_minor_versions: List[str] = []
     if os.path.isdir(rpm_dir):
+        all_dirs = os.listdir(rpm_dir)
+        print(f"DEBUG: All entries in {rpm_dir}: {all_dirs}")
         major_minor_versions = sorted(
-            [d for d in os.listdir(rpm_dir) if d.startswith("v") and d != "latest"],
+            [d for d in all_dirs if d.startswith("v") and d != "latest"],
             key=version_sort_key,
             reverse=True,
         )
+    else:
+        print(f"DEBUG: RPM directory {rpm_dir} NOT FOUND")
     print(f"DEBUG: Found RPM MAJOR.MINOR versions: {major_minor_versions}")
 
     # 2. Collect all DEB packages from the pool
     pool_dir = os.path.join(repo_root, "debs", "pool", "main", "f", "flatpak-automatic")
     deb_pkgs: List[str] = []
     if os.path.isdir(pool_dir):
+        all_files = os.listdir(pool_dir)
+        print(f"DEBUG: All files in {pool_dir}: {all_files}")
         deb_pkgs = sorted(
-            [f for f in os.listdir(pool_dir) if f.endswith(".deb")],
+            [f for f in all_files if f.endswith(".deb")],
             key=lambda x: version_sort_key(get_version_info(x) or "0"),
             reverse=True,
         )
-    print(f"DEBUG: Found DEB packages in pool: {deb_pkgs}")
+    else:
+        print(f"DEBUG: DEB pool directory {pool_dir} NOT FOUND")
+    print(f"DEBUG: Found {len(deb_pkgs)} DEB packages in pool")
 
     # Map DEBs to MAJOR.MINOR
     deb_by_major_minor: Dict[str, List[str]] = {}
