@@ -630,6 +630,11 @@ def main() -> None:
         action="store_true",
         help="Send SIGHUP to a running instance to reload its config.",
     )
+    parser.add_argument(
+        "--desktop-mode",
+        action="store_true",
+        help="Run in interactive desktop mode (keeps terminal open after completion).",
+    )
     args = parser.parse_args()
 
     # Dynamic Flatpak Scope for non-root execution
@@ -816,6 +821,10 @@ def main() -> None:
 
         router = NotificationRouter(config)
         router.dispatch_all(title, updater.update_log, success, updater.update_count)
+
+    if args.desktop_mode:
+        print("\n" + Colors.BOLD + "Execution finished." + Colors.ENDC)
+        input("Press Enter to close this window...")
 
     exit_clean(0 if success else 1)
 
