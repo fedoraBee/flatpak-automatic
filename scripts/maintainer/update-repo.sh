@@ -43,7 +43,9 @@ if [ -z "$GPG_KEY_ID" ]; then
 fi
 
 # Calculate versioned directory name (vMAJOR.MINOR)
-MAJOR_MINOR=$(echo "$VERSION" | cut -d. -f1,2)
+# Strip 'v' prefix if it exists to avoid 'vv1.5'
+CLEAN_VERSION="${VERSION#v}"
+MAJOR_MINOR=$(echo "$CLEAN_VERSION" | cut -d. -f1,2)
 
 # --- RPM Repository Update ---
 RPM_VERSION_DIR="$REPO_ROOT/rpms/v$MAJOR_MINOR/$CHANNEL"

@@ -25,9 +25,11 @@ def get_version_info(filename: str) -> Optional[str]:
 def main() -> None:
     repo_root = os.environ.get("REPO_ROOT", "public")
     output_file = os.environ.get("OUTPUT_FILE", os.path.join(repo_root, "index.html"))
+    template_dir = os.environ.get("TEMPLATE_DIR", "docs/templates")
 
-    print(f"DEBUG: Using repo_root={repo_root}, output_file={output_file}")
-
+    print(
+        f"DEBUG: Using repo_root={repo_root}, output_file={output_file}, template_dir={template_dir}"
+    )
     # 1. Collect all RPM versions and channels
     rpm_dir = os.path.join(repo_root, "rpms")
     major_minor_versions: List[str] = []
@@ -145,7 +147,7 @@ def main() -> None:
         versions[0]["is_first"] = True
 
     env = Environment(
-        loader=FileSystemLoader("docs/templates"),
+        loader=FileSystemLoader(template_dir),
         autoescape=select_autoescape(["html", "htm", "xml"]),
     )
     template = env.get_template("index.html.j2")
