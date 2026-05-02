@@ -82,15 +82,29 @@ def main() -> None:
     for mm in all_mm:
         v_data: Dict[str, Any] = {"name": mm, "channels": [], "is_first": False}
 
-        # Check channels for this MM version in RPMs
-        mm_path = os.path.join(rpm_dir, mm)
-        channels_found: List[str] = []
-        if os.path.isdir(mm_path):
-            channels_found = sorted(os.listdir(mm_path))  # stable, testing
+        # Check channels for this MM version
+        channels_set: Set[str] = set()
 
-        # If no channels found in RPMs but we have DEBs, default to stable
-        if not channels_found and mm in deb_by_major_minor:
-            channels_found = ["stable"]
+        # 1. From RPM directories
+        mm_path = os.path.join(rpm_dir, mm)
+        if os.path.isdir(mm_path):
+            for d in os.listdir(mm_path):
+                if os.path.isdir(os.path.join(mm_path, d)) and d != "repodata":
+                    channels_set.add(d)
+
+        # 2. From DEBs (ensure we check stable/testing if we have DEBs for this version)
+        if mm in deb_by_major_minor:
+            channels_set.add("stable")
+            # Check if any DEB looks like a testing version
+            has_testing_debs = any(
+                any(pre in d.lower() for pre in ["rc", "beta", "alpha", "test"])
+                for d in deb_by_major_minor[mm]
+            )
+            if has_testing_debs:
+                channels_set.add("testing")
+
+        channels_found = sorted(list(channels_set))
+        print(f"DEBUG: Found channels for {mm}: {channels_found}")
 
         for channel in channels_found:
             c_path = os.path.join(mm_path, channel)
