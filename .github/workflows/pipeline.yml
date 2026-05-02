@@ -2,11 +2,9 @@ name: Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, gh-pages ]
     tags: [ 'v*' ]
   pull_request:
-    # The branched workflow is useful but let's skip it for PRs that
-    # don't contain any source code changes in the target branch.
     branches: [ main ]
   workflow_dispatch:
 
@@ -19,6 +17,8 @@ permissions:
   checks: write
   contents: write
   pull-requests: write
+  pages: write
+  id-token: write
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -27,6 +27,7 @@ jobs:
   # --- Static Analysis Stage ---
   lint-code:
     name: Lint Source Code
+    if: github.ref != 'refs/heads/gh-pages'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -49,10 +50,9 @@ jobs:
       - name: Check Shell Formatting
         run: shfmt -d -i 4 -ci scripts/
 
-
-
   lint-python:
     name: Lint Python Scripts
+    if: github.ref != 'refs/heads/gh-pages'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -86,6 +86,7 @@ jobs:
 
   lint-actions:
     name: Lint GitHub Workflows
+    if: github.ref != 'refs/heads/gh-pages'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -102,6 +103,7 @@ jobs:
 
   lint-spec:
     name: Lint RPM Specification
+    if: github.ref != 'refs/heads/gh-pages'
     runs-on: ubuntu-latest
     container: fedora:latest
     steps:
@@ -120,6 +122,7 @@ jobs:
   # --- Build and Validation Stage ---
   unit-tests:
     name: Run Unit Tests (${{ matrix.os }})
+    if: github.ref != 'refs/heads/gh-pages'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -140,9 +143,9 @@ jobs:
       - name: Run Tests
         run: make test
 
-
   build-rpm:
     name: Build & Verify RPMs
+    if: github.ref != 'refs/heads/gh-pages'
     needs: [lint-code, lint-actions, lint-spec]
     runs-on: ubuntu-latest
     container: fedora:latest
@@ -187,6 +190,7 @@ jobs:
 
   build-deb:
     name: Build & Verify DEBs
+    if: github.ref != 'refs/heads/gh-pages'
     needs: [lint-code, lint-actions, lint-spec]
     runs-on: ubuntu-latest
     container: debian:latest
@@ -206,9 +210,9 @@ jobs:
           path: debs/
           retention-days: 5
 
-  # --- Testing Stage ---
   smoke-test:
     name: Smoke Test (${{ matrix.os }})
+    if: github.ref != 'refs/heads/gh-pages'
     needs: [build-rpm, build-deb]
     runs-on: ubuntu-latest
     strategy:
@@ -269,55 +273,46 @@ jobs:
             systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.service
           fi
 
-  # --- Deployment Preparation Stage ---
   build-web-assets:
     name: Generate Repository Site
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: [build-rpm, build-deb]
     runs-on: ubuntu-latest
-    environment: ${{ startsWith(github.ref, 'refs/tags/v') && 'gh-pages' || '' }}
+    environment: gh-pages
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-
       - name: Fix APT Mirrors
         run: |
           sudo sed -i 's/azure\.archive\.ubuntu\.com/archive.ubuntu.com/g' /etc/apt/sources.list
           sudo apt-get update -y
-
       - name: Install Web Dependencies
         run: |
           sudo apt-get install -y make createrepo-c git rsync gnupg2 dpkg-dev apt-utils rpm python3-yaml
-          # Download the official Chrome binary directly, bypassing Snap entirely
           wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
           rm google-chrome-stable_current_amd64.deb
           python3 -m pip install jinja2 --break-system-packages
           npm install -g htmlhint pa11y
-
       - name: Retrieve RPM Artifacts
         uses: actions/download-artifact@v4
         with:
           name: rpms
           path: .rpmbuild/RPMS/noarch
-
       - name: Retrieve DEB Artifacts
         uses: actions/download-artifact@v4
         with:
           name: debs
           path: debs
-
       - name: Configure Repository Signing
-        if: startsWith(github.ref, 'refs/tags/v')
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
           mkdir -p ~/.gnupg && chmod 700 ~/.gnupg
@@ -330,57 +325,37 @@ jobs:
           echo "%_signature gpg" > ~/.rpmmacros
           echo "%_gpg_name ${{ vars.GPG_KEY_ID }}" >> ~/.rpmmacros
           echo "%__gpg $(which gpg)" >> ~/.rpmmacros
-
       - name: Synchronize Legacy Assets
         uses: actions/checkout@v5
         continue-on-error: true
         with:
           ref: gh-pages
           path: legacy-site
-
       - name: Prepare Workspace for Repo Update
         run: |
-          # Use a fresh directory for the new repository state
           mkdir -p public
-          # Copy existing repository content if it exists
           if [ -d legacy-site ] && [ "$(ls -A legacy-site)" ]; then
-            echo "Merging legacy repository content..."
             cp -r legacy-site/* public/
-            # Remove the .git directory to keep the artifact clean
             rm -rf public/.git
           fi
-
       - name: Update Metadata and Repository
         run: |
           CHANNEL=stable
           [[ "${{ github.ref_name }}" =~ (rc|beta|alpha|test) ]] && CHANNEL=testing
-          # Explicitly target the 'public' directory which now contains old + new space
           make rpm-repo GPG_KEY_ID=${{ vars.GPG_KEY_ID }} CHANNEL=$CHANNEL REPO_ROOT="$(pwd)/public"
-
       - name: Export Public GPG Key
         run: gpg --armor --export ${{ vars.GPG_KEY_ID }} > public/gpg.key
-
       - name: Generate Index Page
         env:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: python3 scripts/maintainer/generate-index.py
-
-      - name: Persist CD Workflow to gh-pages
-        run: |
-          # Copy the CD workflow to the staged site so it exists on the gh-pages branch
-          # and can trigger on pushes (merges) to that branch.
-          mkdir -p public/.github/workflows
-          cp .github/workflows/cd-release.yml public/.github/workflows/
-
       - name: Validate HTML Output
         run: htmlhint public/index.html
-
       - name: Run Accessibility Audit
         run: |
           echo "{\"chromeLaunchConfig\": {\"executablePath\": \"$(which google-chrome)\", \"args\": [\"--no-sandbox\", \"--disable-setuid-sandbox\", \"--disable-dev-shm-usage\"]}}" > pa11y-config.json
           pa11y --config pa11y-config.json public/index.html
-
       - name: Archive Public Site
         uses: actions/upload-artifact@v4
         with:
@@ -388,11 +363,10 @@ jobs:
           path: public/
           retention-days: 5
 
-  # --- Final Release Stage ---
-  publish-release:
-    name: Publish Release & Pages
+  prepare-gh-pages-pr:
+    name: Prepare gh-pages PR
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [smoke-test, build-web-assets]
+    needs: [build-web-assets, smoke-test]
     runs-on: ubuntu-latest
     environment: gh-pages
     steps:
@@ -400,31 +374,17 @@ jobs:
         uses: actions/checkout@v5
         with:
           ref: gh-pages
-
       - name: Retrieve Public Assets
         uses: actions/download-artifact@v4
         with:
           name: public-site
           path: incoming-site
-
-      - name: Update gh-pages Content
+      - name: Update Workspace
         run: |
-          # Synchronize the artifact content to the gh-pages checkout
-          # We use --delete to match the artifact exactly but exclude .git
-          # We ignore exit code 24 (vanished files) which is often a false positive in CI
           rsync -av --delete --exclude .git incoming-site/ . || [ $? -eq 24 ]
-
-          # CRITICAL: Remove .gitignore and force add to bypass any existing ignore rules
-          # on the gh-pages branch itself.
           rm -f .gitignore
           git add --all --force
-
-          # Debug: check if git sees any changes
-          echo "Checking for changes in staged area:"
-          git status
-
           rm -rf incoming-site
-
       - name: Create Pull Request to gh-pages
         uses: peter-evans/create-pull-request@v7
         with:
@@ -433,17 +393,57 @@ jobs:
           title: "chore(release): update repository site for ${{ github.ref_name }}"
           body: |
             Automated update of the repository website and package metadata for release ${{ github.ref_name }}.
-
-            This PR was automatically generated because the `gh-pages` branch is protected.
-            Please review and merge to update the live repository.
           commit-message: "chore(release): update repository site for ${{ github.ref_name }}"
           token: ${{ secrets.GITHUB_TOKEN }}
-          labels: |
-            release
-            documentation
+          labels: release, documentation
+
+  release-and-deploy:
+    name: Final Release & Pages Deploy
+    if: github.ref == 'refs/heads/gh-pages'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v5
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Extract Version from Merge Commit
+        id: get_version
+        env:
+          COMMIT_MSG: "${{ github.event.head_commit.message }}"
+        run: |
+          VERSION=$(echo "$COMMIT_MSG" | grep -oP 'v[0-9]+\.[0-9]+\.[0-9]+[^ ]*')
+          if [ -n "$VERSION" ]; then
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            PKG_VERSION="${VERSION#v}"
+            echo "rpm_version=${PKG_VERSION//-/'~'}" >> "$GITHUB_OUTPUT"
+            echo "deb_version=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Finalize GitHub Release
+        if: steps.get_version.outputs.version != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: Release ${{ steps.get_version.outputs.version }}
+          body: |
+            Automated repository update for ${{ steps.get_version.outputs.version }}.
+            Repository site: https://fedorabee.github.io/flatpak-automatic/
+          files: |
+            rpms/**/flatpak-automatic-${{ steps.get_version.outputs.rpm_version }}*.rpm
+            debs/**/flatpak-automatic_${{ steps.get_version.outputs.deb_version }}*.deb
+          generate_release_notes: true
+          prerelease: ${{ contains(steps.get_version.outputs.version, 'rc') || contains(steps.get_version.outputs.version, 'beta') }}
 
   integration-tests:
     name: System Bus IPC Integration
+    if: github.ref != 'refs/heads/gh-pages'
     runs-on: ubuntu-latest
     container: fedora:latest
     needs: lint-python
