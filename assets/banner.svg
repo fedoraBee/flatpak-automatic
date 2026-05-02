@@ -11,11 +11,12 @@
     }
     .c-text { font-weight: normal; }
   </style>
-  <text x="50%" y="10" class="ascii" text-anchor="middle" xml:space="preserve">
-    <tspan x="50%" dy="1.2em" class="c1">  ___ _       _               _    </tspan>
-    <tspan x="50%" dy="1.2em" class="c2"> | __| |__ _ | |_ _ __  __ _ | |__ </tspan>
-    <tspan x="50%" dy="1.2em" class="c3"> | _|| / _` || ._| '_ \/ _` || / / </tspan>
-    <tspan x="50%" dy="1.2em" class="c4"> |_| |_\__,_|\__|| .__/\__,_||_\_\ </tspan>
-    <tspan x="50%" dy="1.2em" class="c4">AUTOMATIC    |_|<tspan class="c1 c-text">       v1.5.13</tspan></tspan>
+  <text y="10" class="ascii" xml:space="preserve">
+    <tspan x="50%" dy="1.2em" text-anchor="middle" class="c1">  ___ _       _               _    </tspan>
+    <tspan x="50%" dy="1.2em" text-anchor="middle" class="c2"> | __| |__ _ | |_ _ __  __ _ | |__ </tspan>
+    <tspan x="50%" dy="1.2em" text-anchor="middle" class="c3"> | _|| / _` || ._| '_ \/ _` || / / </tspan>
+    <tspan x="50%" dy="1.2em" text-anchor="middle" class="c4"> |_| |_\__,_|\__|| .__/\__,_||_\_\ </tspan>
+    <tspan x="225" dy="1.2em" text-anchor="middle" class="c4">    AUTOMATIC    |_|               </tspan>
+    <tspan x="280" class="c1 c-text"> v1.5.14-rc3</tspan>
   </text>
 </svg>
