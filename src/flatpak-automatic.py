@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.5.14-rc3
+# Version: 1.5.15-rc1
 import os
 import sys
 import signal
@@ -14,9 +14,32 @@ from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 
 
-# Brand Asset Paths
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ICON_PATH = os.path.join(BASE_DIR, "assets", "icon.svg")
+# Brand Asset Discovery
+def _find_brand_icon() -> str:
+    """Locate the best available icon for notifications."""
+    # Preferred filenames
+    icon_names = ["logo.svg", "icon.svg", "flatpak-automatic.svg"]
+
+    # 1. Local Development Path (relative to script in src/)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    local_assets = os.path.join(os.path.dirname(script_dir), "assets")
+    if os.path.exists(local_assets):
+        for name in icon_names:
+            path = os.path.join(local_assets, name)
+            if os.path.exists(path):
+                return path
+
+    # 2. System-wide Installation Path (RPM/DEB)
+    # The spec file installs assets/logo.svg as flatpak-automatic.svg
+    sys_path = "/usr/share/icons/hicolor/scalable/apps/flatpak-automatic.svg"
+    if os.path.exists(sys_path):
+        return sys_path
+
+    # 3. Fallback to standard system icon name
+    return "software-update-available"
+
+
+ICON_PATH = _find_brand_icon()
 
 
 def _resolve_active_dbus_sessions() -> dict:
@@ -548,7 +571,7 @@ def banner() -> str:
         f"{Colors.OKBLUE} | __| |__ _ | |_ _ __  __ _ | |__ \n"
         f"{Colors.HEADER} | _|| / _` || ._| '_ \\/ _` || / / \n"
         f"{Colors.OKPINK} |_| |_\\__,_|\\__|| .__/\\__,_||_\\_\\\n"
-        f"    AUTOMATIC    |_| {Colors.ENDC}     {Colors.OKCYAN} v1.5.14-rc3{Colors.ENDC}\n"
+        f"    AUTOMATIC    |_| {Colors.ENDC}     {Colors.OKCYAN} v1.5.15-rc1{Colors.ENDC}\n"
     )
 
 
