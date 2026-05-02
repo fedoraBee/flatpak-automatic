@@ -42,9 +42,7 @@ jobs:
           globs: "**/*.md"
 
       - name: Install shfmt
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y shfmt
+        uses: mislav/setup-shfmt@v2
 
       - name: Check Shell Formatting
         run: shfmt -d -i 4 -ci scripts/
@@ -291,9 +289,13 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Fix APT Mirrors
+        run: |
+          sudo sed -i 's/azure\.archive\.ubuntu\.com/archive.ubuntu.com/g' /etc/apt/sources.list
+          sudo apt-get update -y
+
       - name: Install Web Dependencies
         run: |
-          sudo apt-get update -y
           sudo apt-get install -y make createrepo-c git rsync gnupg2 dpkg-dev apt-utils rpm python3-yaml
           # Download the official Chrome binary directly, bypassing Snap entirely
           wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
