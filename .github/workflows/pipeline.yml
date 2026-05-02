@@ -182,7 +182,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: rpms
-          path: .rpmbuild/RPMS/noarch/*.rpm
+          path: .rpmbuild/RPMS/noarch/
           retention-days: 5
 
   build-deb:
@@ -197,13 +197,15 @@ jobs:
         run: apt-get update && apt-get install -y dpkg-dev debhelper make python3 tar build-essential lintian python3-yaml
       - name: Compile Packages
         run: make deb
+      - name: Debug DEB output
+        run: ls -la debs/
       - name: Run Lintian
         run: lintian debs/*.deb
       - name: Archive DEB Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: debs
-          path: "debs/*.deb"
+          path: debs/
           retention-days: 5
 
   # --- Testing Stage ---
@@ -315,6 +317,15 @@ jobs:
         with:
           name: debs
           path: debs
+
+      - name: Debug Artifact Retrieval
+        run: |
+          echo "Listing all files in workspace after downloads:"
+          find . -maxdepth 4 -not -path '*/.*'
+          echo "Verifying RPM source: .rpmbuild/RPMS/noarch"
+          ls -la .rpmbuild/RPMS/noarch || echo "RPM dir missing"
+          echo "Verifying DEB source: debs"
+          ls -la debs || echo "DEB dir missing"
 
       - name: Debug Artifacts
         run: |
