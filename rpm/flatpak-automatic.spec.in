@@ -80,6 +80,7 @@ install -m 644 config/systemd/flatpak-automatic-user.timer %{buildroot}%{_prefix
 %{_unitdir}/flatpak-automatic.service
 %{_unitdir}/flatpak-automatic.timer
 
+%{_datadir}/flatpak-automatic/
 %{_prefix}/lib/systemd/user/flatpak-automatic.service
 %{_prefix}/lib/systemd/user/flatpak-automatic.timer
 %config(noreplace) %{_sysconfdir}/sysconfig/flatpak-automatic

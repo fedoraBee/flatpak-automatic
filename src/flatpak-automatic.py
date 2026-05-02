@@ -3,10 +3,15 @@
 import sys
 import os
 
-# Ensure the package is in the path when running from the source tree
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# 1. Local Development Path (relative to script in src/)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+if os.path.exists(os.path.join(script_dir, "flatpak_automatic")):
+    sys.path.insert(0, script_dir)
+# 2. System-wide Installation Path (RPM/DEB)
+else:
+    sys.path.insert(0, "/usr/share/flatpak-automatic")
 
-from flatpak_automatic import (  # noqa: F401
+from flatpak_automatic import (  # noqa: F401, E402
     AutomationEngine,
     ConfigManager,
     FlatpakUpdater,
@@ -26,7 +31,7 @@ from flatpak_automatic import (  # noqa: F401
     Colors,
     ICON_PATH,
 )
-from flatpak_automatic.__main__ import main
+from flatpak_automatic.__main__ import main  # noqa: E402
 
 if __name__ == "__main__":
     main()
