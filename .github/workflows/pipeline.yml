@@ -401,12 +401,13 @@ jobs:
           # We ignore exit code 24 (vanished files) which is often a false positive in CI
           rsync -av --delete --exclude .git incoming-site/ . || [ $? -eq 24 ]
 
-          # CRITICAL: Remove .gitignore to ensure build artifacts (like debs) are NOT ignored
-          # when creating the pull request.
+          # CRITICAL: Remove .gitignore and force add to bypass any existing ignore rules
+          # on the gh-pages branch itself.
           rm -f .gitignore
-
-          # Force add all files just in case
           git add --all --force
+
+          # Debug: check if git sees any changes
+          echo "Checking for changes in staged area:"
           git status
 
           rm -rf incoming-site
@@ -437,8 +438,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            release-artifacts/rpms/*.rpm
-            release-artifacts/debs/*.deb
+            release-artifacts/rpms/**/*.rpm
+            release-artifacts/debs/**/*.deb
 
   integration-tests:
     name: System Bus IPC Integration
