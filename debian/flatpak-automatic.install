@@ -2,5 +2,5 @@ config/config.default.yaml /etc/flatpak-automatic/config.yaml
 config/config.example.yaml /etc/flatpak-automatic/
 config/templates/* /etc/flatpak-automatic/templates/
 assets/flatpak-automatic.desktop usr/share/applications/
-assets/icon.svg usr/share/icons/hicolor/scalable/apps/
+assets/logo.svg usr/share/icons/hicolor/scalable/apps/
 config/systemd/flatpak-automatic-user.* usr/lib/systemd/user/flatpak-automatic.*

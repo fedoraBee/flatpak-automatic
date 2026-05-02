@@ -14,9 +14,32 @@ from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 
 
-# Brand Asset Paths
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ICON_PATH = os.path.join(BASE_DIR, "assets", "icon.svg")
+# Brand Asset Discovery
+def _find_brand_icon() -> str:
+    """Locate the best available icon for notifications."""
+    # Preferred filenames
+    icon_names = ["logo.svg", "icon.svg", "flatpak-automatic.svg"]
+
+    # 1. Local Development Path (relative to script in src/)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    local_assets = os.path.join(os.path.dirname(script_dir), "assets")
+    if os.path.exists(local_assets):
+        for name in icon_names:
+            path = os.path.join(local_assets, name)
+            if os.path.exists(path):
+                return path
+
+    # 2. System-wide Installation Path (RPM/DEB)
+    # The spec file installs assets/logo.svg as flatpak-automatic.svg
+    sys_path = "/usr/share/icons/hicolor/scalable/apps/flatpak-automatic.svg"
+    if os.path.exists(sys_path):
+        return sys_path
+
+    # 3. Fallback to standard system icon name
+    return "software-update-available"
+
+
+ICON_PATH = _find_brand_icon()
 
 
 def _resolve_active_dbus_sessions() -> dict:
