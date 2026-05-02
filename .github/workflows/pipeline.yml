@@ -341,7 +341,8 @@ jobs:
           REPO_ROOT="$(pwd)"
           OUTPUT_FILE="$(pwd)/index.html"
           TEMPLATE_DIR="$(pwd)/scripts-source/docs/templates"
-          export REPO_ROOT OUTPUT_FILE TEMPLATE_DIR
+          ASSETS_SRC_DIR="$(pwd)/scripts-source/assets"
+          export REPO_ROOT OUTPUT_FILE TEMPLATE_DIR ASSETS_SRC_DIR
           python3 scripts-source/scripts/maintainer/generate-index.py
 
           # CRITICAL: Persist the workflow file to the gh-pages branch
