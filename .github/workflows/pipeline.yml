@@ -167,8 +167,6 @@ jobs:
           preset_passphrase_bin="$(find /usr/lib* -name gpg-preset-passphrase 2>/dev/null | head -n 1)"
           keygrip="$(gpg --with-keygrip -K | awk '/Keygrip =/ {print $3; exit}')"
           "$preset_passphrase_bin" --passphrase "${{ secrets.GPG_PASSPHRASE }}" --preset "$keygrip"
-          gpg --export --armor ${{ vars.GPG_KEY_ID }} > /tmp/RPM-GPG-KEY
-          rpm --import /tmp/RPM-GPG-KEY
           echo "%_signature gpg" > ~/.rpmmacros
           echo "%_gpg_name ${{ vars.GPG_KEY_ID }}" >> ~/.rpmmacros
           echo "%__gpg $(which gpg)" >> ~/.rpmmacros
@@ -335,24 +333,32 @@ jobs:
 
       - name: Synchronize Legacy Assets
         uses: actions/checkout@v5
+        continue-on-error: true
         with:
           ref: gh-pages
-          path: public
+          path: legacy-site
+
+      - name: Prepare Workspace for Repo Update
+        run: |
+          # Use a fresh directory for the new repository state
+          mkdir -p public
+          # Copy existing repository content if it exists
+          if [ -d legacy-site ] && [ "$(ls -A legacy-site)" ]; then
+            echo "Merging legacy repository content..."
+            cp -r legacy-site/* public/
+            # Remove the .git directory to keep the artifact clean
+            rm -rf public/.git
+          fi
 
       - name: Update Metadata and Repository
         run: |
           CHANNEL=stable
           [[ "${{ github.ref_name }}" =~ (rc|beta|alpha|test) ]] && CHANNEL=testing
+          # Explicitly target the 'public' directory which now contains old + new space
           make rpm-repo GPG_KEY_ID=${{ vars.GPG_KEY_ID }} CHANNEL=$CHANNEL REPO_ROOT="$(pwd)/public"
 
       - name: Export Public GPG Key
         run: gpg --armor --export ${{ vars.GPG_KEY_ID }} > public/gpg.key
-
-      - name: Stage Public Files
-        run: |
-          # repo/ might be created by update-repo.sh if REPO_ROOT is not respected everywhere
-          # but we want everything in public/
-          if [ -d repo ]; then cp -r repo/* public/; fi
 
       - name: Generate Index Page
         env:
