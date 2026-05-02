@@ -405,26 +405,24 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: public-site
-          path: .
+          path: incoming-site
 
       - name: Debug Retrieved Assets
         run: |
           echo "Listing top level of workspace:"
           ls -la
-          echo "Listing top level of public folder:"
-          ls -la public/
-          echo "Listing RPMs in public/rpms (if they exist):"
-          find public/rpms -name "*.rpm" || echo "No RPMs found in public"
-          echo "Listing DEBs in public/debs (if they exist):"
-          find public/debs -name "*.deb" || echo "No DEBs found in public"
+          echo "Listing top level of incoming-site folder:"
+          ls -la incoming-site/
+          echo "Listing RPMs in incoming-site/rpms (if they exist):"
+          find incoming-site/rpms -name "*.rpm" || echo "No RPMs found"
 
       - name: Update gh-pages Content
         run: |
           # Synchronize the artifact content to the gh-pages checkout
           # We use --delete to match the artifact exactly but exclude .git
           # We ignore exit code 24 (vanished files) which is often a false positive in CI
-          rsync -av --delete --exclude .git public/ . || [ $? -eq 24 ]
-          rm -rf public
+          rsync -av --delete --exclude .git incoming-site/ . || [ $? -eq 24 ]
+          rm -rf incoming-site
 
       - name: Create Pull Request to gh-pages
         uses: peter-evans/create-pull-request@v7
