@@ -1,0 +1,435 @@
+name: Pipeline
+
+on:
+  push:
+    branches: [ main, gh-pages ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  checks: write
+  contents: write
+  pull-requests: write
+  pages: write
+  id-token: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  # --- Static Analysis Stage ---
+  lint-code:
+    name: Lint Source Code
+    if: github.ref != 'refs/heads/gh-pages'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Lint Shell Scripts
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: './scripts'
+
+      - name: Lint Documentation
+        uses: DavidAnson/markdownlint-cli2-action@v23
+        with:
+          config: rpm/.markdownlint.jsonc
+          globs: "**/*.md"
+
+      - name: Install shfmt
+        run: sudo apt-get update && sudo apt-get install -y shfmt
+
+      - name: Check Shell Formatting
+        run: shfmt -d -i 4 -ci scripts/
+
+  lint-python:
+    name: Lint Python Scripts
+    if: github.ref != 'refs/heads/gh-pages'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+      - name: Validate tbump versioning configuration
+        run: |
+          pipx install tbump
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI System"
+          git checkout -B main
+          git fetch origin main
+          git branch -u origin/main main
+          tbump --non-interactive --dry-run 1.4.7
+
+      - name: Run Ruff Lint
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: 'check scripts/ tests/'
+      - name: Run Ruff Format
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: 'format --check scripts/ tests/'
+      - name: Run Mypy Type Check
+        run: |
+          pipx install mypy
+          mypy --strict scripts/ tests/
+      - name: Run Bandit SAST
+        run: |
+          pipx install bandit
+          bandit -ll -i -r scripts/ tests/ -c .bandit.yml
+
+  lint-actions:
+    name: Lint GitHub Workflows
+    if: github.ref != 'refs/heads/gh-pages'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Install Actionlint
+        run: |
+          curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.8/actionlint_1.7.8_linux_amd64.tar.gz -o /tmp/actionlint.tar.gz
+          tar -xzf /tmp/actionlint.tar.gz -C /tmp actionlint
+          install -m 0755 /tmp/actionlint /usr/local/bin/actionlint
+
+      - name: Execute Actionlint
+        run: actionlint -color
+
+  lint-spec:
+    name: Lint RPM Specification
+    if: github.ref != 'refs/heads/gh-pages'
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Install Build Tools
+        run: dnf install -y rpmlint make python3 dpkg-dev debhelper python3-yaml glibc-langpack-en
+
+      - name: Initialize RPM Environment
+        run: echo "%_topdir ${{ github.workspace }}/.rpmbuild" > ~/.rpmmacros
+
+      - name: Validate Spec File
+        run: make lint-spec
+
+  # --- Build and Validation Stage ---
+  unit-tests:
+    name: Run Unit Tests (${{ matrix.os }})
+    if: github.ref != 'refs/heads/gh-pages'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [fedora:latest, debian:latest]
+    container:
+      image: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+      - name: Install Test Dependencies
+        run: |
+          if command -v dnf >/dev/null 2>&1; then
+            dnf install -y bats python3-pytest make hostname util-linux python3-yaml
+          else
+            apt-get update && apt-get install -y bats python3-pytest make hostname bsdutils python3-yaml
+          fi
+      - name: Run Tests
+        run: make test
+
+  build-rpm:
+    name: Build & Verify RPMs
+    if: github.ref != 'refs/heads/gh-pages'
+    needs: [lint-code, lint-actions, lint-spec]
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    environment: ${{ startsWith(github.ref, 'refs/tags/v') && 'gh-pages' || '' }}
+    outputs:
+      rpm_artifact_id: ${{ steps.upload_rpms.outputs.artifact-id }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+      - name: Install Build Dependencies
+        run: dnf install -y python3 rpm-build systemd-rpm-macros make tar gnupg2 rpm-sign which rpmlint dpkg fakeroot python3-yaml glibc-langpack-en
+      - name: Compile Packages
+        run: make rpm
+      - name: Audit Build Artifacts
+        run: make lint-rpm
+      - name: Configure GPG Signing Key
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          mkdir -p ~/.gnupg && chmod 700 ~/.gnupg
+          echo "use-agent" > ~/.gnupg/gpg.conf
+          echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
+          gpg-connect-agent reloadagent /bye
+          preset_passphrase_bin="$(find /usr/lib* -name gpg-preset-passphrase 2>/dev/null | head -n 1)"
+          keygrip="$(gpg --with-keygrip -K | awk '/Keygrip =/ {print $3; exit}')"
+          "$preset_passphrase_bin" --passphrase "${{ secrets.GPG_PASSPHRASE }}" --preset "$keygrip"
+          echo "%_signature gpg" > ~/.rpmmacros
+          echo "%_gpg_name ${{ vars.GPG_KEY_ID }}" >> ~/.rpmmacros
+          echo "%__gpg $(which gpg)" >> ~/.rpmmacros
+      - name: Sign RPM Packages
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          GPG_TTY="$(tty || echo /dev/null)" && export GPG_TTY
+          make rpm-sign GPG_KEY_ID=${{ vars.GPG_KEY_ID }}
+      - name: Archive RPM Artifacts
+        id: upload_rpms
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpms
+          path: .rpmbuild/RPMS/noarch/
+          retention-days: 5
+
+  build-deb:
+    name: Build & Verify DEBs
+    if: github.ref != 'refs/heads/gh-pages'
+    needs: [lint-code, lint-actions, lint-spec]
+    runs-on: ubuntu-latest
+    container: debian:latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+      - name: Install Build Dependencies
+        run: apt-get update && apt-get install -y dpkg-dev debhelper make python3 tar build-essential lintian python3-yaml
+      - name: Compile Packages
+        run: make deb
+      - name: Run Lintian
+        run: lintian debs/*.deb
+      - name: Archive DEB Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: debs
+          path: debs/
+          retention-days: 5
+
+  smoke-test:
+    name: Smoke Test (${{ matrix.os }})
+    if: github.ref != 'refs/heads/gh-pages'
+    needs: [build-rpm, build-deb]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [fedora:40, fedora:41, ubuntu:latest, debian:latest]
+    container:
+      image: ${{ matrix.os }}
+      options: --privileged
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+      - name: Install Runtime Dependencies
+        run: |
+          if [ -f /etc/debian_version ]; then
+            apt-get update && apt-get install -y curl unzip systemd
+          else
+            dnf install -y curl unzip systemd shadow-utils util-linux
+          fi
+      - name: Retrieve RPM Artifacts
+        if: contains(matrix.os, 'fedora')
+        uses: actions/download-artifact@v4
+        with:
+          name: rpms
+          path: rpms
+      - name: Retrieve DEB Artifacts
+        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'debian')
+        uses: actions/download-artifact@v4
+        with:
+          name: debs
+          path: debs
+      - name: Execute Package Installation
+        run: |
+          if [ -f /etc/debian_version ]; then
+            apt-get install -y ./debs/*.deb
+          else
+            dnf install -y rpms/flatpak-automatic-[0-9].*.noarch.rpm
+          fi
+      - name: Validate Filesystem Integrity
+        run: |
+          if [ -f /etc/debian_version ]; then
+            test -f /etc/default/flatpak-automatic
+            test -f /lib/systemd/system/flatpak-automatic.timer || test -f /usr/lib/systemd/system/flatpak-automatic.timer
+            test -f /lib/systemd/system/flatpak-automatic.service || test -f /usr/lib/systemd/system/flatpak-automatic.service
+          else
+            test -f /etc/sysconfig/flatpak-automatic
+            test -f /usr/lib/systemd/system/flatpak-automatic.timer
+            test -f /usr/lib/systemd/system/flatpak-automatic.service
+          fi
+          test -f /usr/bin/flatpak-automatic
+      - name: Verify Systemd Unit Syntax
+        run: |
+          if [ -f /etc/debian_version ]; then
+            systemd-analyze verify /lib/systemd/system/flatpak-automatic.timer || systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.timer
+            systemd-analyze verify /lib/systemd/system/flatpak-automatic.service || systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.service
+          else
+            systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.timer
+            systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.service
+          fi
+
+  prepare-release-pr:
+    name: Manage Repository & PR
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-rpm, build-deb, smoke-test]
+    runs-on: ubuntu-latest
+    environment: gh-pages
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+
+      - name: Pull Latest Scripts
+        uses: actions/checkout@v5
+        with:
+          # Use the exact commit/branch that triggered this run
+          # This ensures we use the FIXED scripts, not stale 'main'
+          ref: ${{ github.sha }}
+          path: scripts-source
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make createrepo-c git rsync gnupg2 dpkg-dev apt-utils rpm python3-yaml
+          python3 -m pip install jinja2 --break-system-packages
+
+      - name: Retrieve Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: incoming-artifacts
+
+      - name: Configure Repository Signing
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          mkdir -p ~/.gnupg && chmod 700 ~/.gnupg
+          echo "use-agent" > ~/.gnupg/gpg.conf
+          echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
+          gpg-connect-agent reloadagent /bye
+          preset_passphrase_bin="$(find /usr/lib* -name gpg-preset-passphrase 2>/dev/null | head -n 1)"
+          keygrip="$(gpg --with-keygrip -K | awk '/Keygrip =/ {print $3; exit}')"
+          "$preset_passphrase_bin" --passphrase "${{ secrets.GPG_PASSPHRASE }}" --preset "$keygrip"
+          echo "%_signature gpg" > ~/.rpmmacros
+          echo "%_gpg_name ${{ vars.GPG_KEY_ID }}" >> ~/.rpmmacros
+          echo "%__gpg $(which gpg)" >> ~/.rpmmacros
+
+      - name: Update Repository
+        run: |
+          CHANNEL=stable
+          [[ "${{ github.ref_name }}" =~ (rc|beta|alpha|test) ]] && CHANNEL=testing
+
+          # Prepare workspace structure
+          mkdir -p .rpmbuild/RPMS/noarch debs
+          cp incoming-artifacts/rpms/*.rpm .rpmbuild/RPMS/noarch/
+          cp incoming-artifacts/debs/*.deb debs/
+
+          # Run the update script from scripts-source (current branch fixes)
+          bash scripts-source/scripts/maintainer/update-repo.sh \
+            "$(pwd)/.rpmbuild/RPMS/noarch" \
+            "$(pwd)/debs" \
+            "${{ github.ref_name }}" \
+            "$CHANNEL" \
+            "${{ vars.GPG_KEY_ID }}" \
+            "$(pwd)"
+
+          # Generate the index landing page
+          REPO_ROOT="$(pwd)"
+          OUTPUT_FILE="$(pwd)/index.html"
+          TEMPLATE_DIR="$(pwd)/scripts-source/docs/templates"
+          export REPO_ROOT OUTPUT_FILE TEMPLATE_DIR
+          python3 scripts-source/scripts/maintainer/generate-index.py
+
+          # CRITICAL: Persist the workflow file to the gh-pages branch
+          # This ensures that pushing/merging to gh-pages triggers the next job
+          mkdir -p .github/workflows
+          cp scripts-source/.github/workflows/pipeline.yml .github/workflows/
+
+          # Save the release version to a file for the next job
+          echo "${{ github.ref_name }}" > VERSION
+
+          # Clean up temporary source and artifacts before PR creation
+          rm -rf scripts-source incoming-artifacts .rpmbuild debs/flatpak-automatic_*.buildinfo debs/flatpak-automatic_*.changes
+
+          # Ensure all packages and metadata are staged
+          rm -f .gitignore
+          git add --all --force
+          git status
+      - name: Create Pull Request to gh-pages
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: release/gh-pages-update-${{ github.ref_name }}
+          base: gh-pages
+          title: "chore(release): update repository site for ${{ github.ref_name }}"
+          body: |
+            Automated update of the repository website and package metadata for release ${{ github.ref_name }}.
+          commit-message: "chore(release): update repository site for ${{ github.ref_name }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: release, documentation
+
+  release-and-deploy:
+    name: Final Release & Pages Deploy
+    if: github.ref == 'refs/heads/gh-pages'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v5
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Extract Version
+        id: get_version
+        run: |
+          if [ -f VERSION ]; then
+            VERSION=$(cat VERSION)
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            PKG_VERSION="${VERSION#v}"
+            echo "rpm_version=${PKG_VERSION//-/'~'}" >> "$GITHUB_OUTPUT"
+            echo "deb_version=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::VERSION file not found. Release cannot be created."
+            exit 1
+          fi
+
+      - name: Finalize GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: Release ${{ steps.get_version.outputs.version }}
+          body: |
+            Automated repository update for ${{ steps.get_version.outputs.version }}.
+            Repository site: https://fedorabee.github.io/flatpak-automatic/
+          files: |
+            rpms/**/flatpak-automatic-${{ steps.get_version.outputs.rpm_version }}*.rpm
+            debs/**/flatpak-automatic_${{ steps.get_version.outputs.deb_version }}*.deb
+          generate_release_notes: true
+          prerelease: ${{ contains(steps.get_version.outputs.version, 'rc') || contains(steps.get_version.outputs.version, 'beta') }}
+
+  integration-tests:
+    name: System Bus IPC Integration
+    if: github.ref != 'refs/heads/gh-pages'
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    needs: lint-python
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install System Dependencies
+        run: |
+          dnf install -y python3 python3-pytest python3-dbus python3-dbusmock dbus-daemon flatpak python3-yaml
+      - name: Run DBus Integration Tests
+        run: |
+          python3 -m pytest tests/integration_test_dbus.py
