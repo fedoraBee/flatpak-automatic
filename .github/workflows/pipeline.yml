@@ -42,7 +42,7 @@ jobs:
           globs: "**/*.md"
 
       - name: Install shfmt
-        uses: mislav/setup-shfmt@v2
+        uses: mfinelli/setup-shfmt@v3
 
       - name: Check Shell Formatting
         run: shfmt -d -i 4 -ci scripts/
