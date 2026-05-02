@@ -94,14 +94,20 @@ def main() -> None:
                     # If only one channel, all DEBs for this MM go here
                     debs_in_channel = deb_by_major_minor[mm]
                 else:
-                    # Try to match by full version string found in RPMs
-                    rpm_full_versions: Set[Optional[str]] = set(
-                        [get_version_info(r) for r in rpms]
+                    # Try to match by base version string (ignoring debian release number like -1)
+                    rpm_base_versions: Set[str] = set(
+                        [
+                            (get_version_info(r) or "").rsplit("-", 1)[0]
+                            if "-" in (get_version_info(r) or "")
+                            else (get_version_info(r) or "")
+                            for r in rpms
+                        ]
                     )
                     debs_in_channel = [
                         d
                         for d in deb_by_major_minor[mm]
-                        if get_version_info(d) in rpm_full_versions
+                        if (get_version_info(d) or "").rsplit("-", 1)[0]
+                        in rpm_base_versions
                     ]
 
                     # Fallback for testing/stable distinction if no exact match (e.g. only one format exists)

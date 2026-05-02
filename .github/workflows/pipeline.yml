@@ -335,7 +335,6 @@ jobs:
 
       - name: Synchronize Legacy Assets
         uses: actions/checkout@v5
-        continue-on-error: true
         with:
           ref: gh-pages
           path: public
@@ -408,6 +407,7 @@ jobs:
 
           # Force add all files just in case
           git add --all --force
+          git status
 
           rm -rf incoming-site
 
@@ -428,12 +428,17 @@ jobs:
             release
             documentation
 
+      - name: Retrieve Current Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            rpms/**/*.rpm
-            debs/**/*.deb
+            release-artifacts/rpms/*.rpm
+            release-artifacts/debs/*.deb
 
   integration-tests:
     name: System Bus IPC Integration
