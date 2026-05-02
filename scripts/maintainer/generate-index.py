@@ -23,8 +23,10 @@ def get_version_info(filename: str) -> Optional[str]:
 
 
 def main() -> None:
-    output_file = "public/index.html"
-    repo_root = "public"
+    repo_root = os.environ.get("REPO_ROOT", "public")
+    output_file = os.environ.get("OUTPUT_FILE", os.path.join(repo_root, "index.html"))
+
+    print(f"DEBUG: Using repo_root={repo_root}, output_file={output_file}")
 
     # 1. Collect all RPM versions and channels
     rpm_dir = os.path.join(repo_root, "rpms")
