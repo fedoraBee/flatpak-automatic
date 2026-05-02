@@ -17,10 +17,14 @@ from typing import Optional, Dict, Any, List
 # Brand Asset Discovery
 def _find_brand_icon() -> str:
     """Locate the best available icon for notifications."""
-    # Preferred filenames
-    icon_names = ["logo.svg", "icon.svg", "flatpak-automatic.svg"]
+    icon_names = ["flatpak-automatic.svg", "logo.svg"]
 
-    # 1. Local Development Path (relative to script in src/)
+    # 1. System-wide Installation Path (RPM/DEB)
+    sys_path = "/usr/share/icons/hicolor/scalable/apps/flatpak-automatic.svg"
+    if os.path.exists(sys_path):
+        return sys_path
+
+    # 2. Local Development Path (relative to script in src/)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     local_assets = os.path.join(os.path.dirname(script_dir), "assets")
     if os.path.exists(local_assets):
@@ -28,12 +32,6 @@ def _find_brand_icon() -> str:
             path = os.path.join(local_assets, name)
             if os.path.exists(path):
                 return path
-
-    # 2. System-wide Installation Path (RPM/DEB)
-    # The spec file installs assets/logo.svg as flatpak-automatic.svg
-    sys_path = "/usr/share/icons/hicolor/scalable/apps/flatpak-automatic.svg"
-    if os.path.exists(sys_path):
-        return sys_path
 
     # 3. Fallback to standard system icon name
     return "software-update-available"
@@ -229,9 +227,7 @@ class DesktopNotifier:
     def __init__(self) -> None:
         self.enabled = verify_policy("desktop")
 
-    def send_notification(
-        self, title: str, body: str, icon: str = "software-update-available"
-    ) -> None:
+    def send_notification(self, title: str, body: str) -> None:
 
         if not self.enabled:
             logging.info("Desktop notifications disabled by global policy. Skipping.")
@@ -274,11 +270,11 @@ class DesktopNotifier:
                     runtime_dir = env_dict.get("XDG_RUNTIME_DIR", f"/run/user/{uid}")
 
                     # Use file:// URI for absolute paths to ensure compatibility with all notification daemons
-                    icon_param = icon
+                    icon_param = ICON_PATH
                     hints = []
-                    if os.path.isabs(icon):
-                        icon_param = f"file://{icon}"
-                        hints = ["-h", f"string:image-path:{icon_param}"]
+                    if os.path.isabs(ICON_PATH):
+                        icon_param = f"file://{ICON_PATH}"
+                        hints = ["-h", f"string:image-path:{ICON_PATH}"]
 
                     subprocess.run(
                         [
@@ -292,8 +288,6 @@ class DesktopNotifier:
                             "-a",
                             "Flatpak Automatic",
                             "-i",
-                            icon_param,
-                            "-n",
                             icon_param,
                         ]
                         + hints
@@ -547,7 +541,7 @@ class NotificationRouter:
                 dt_tpl = _resolve(group, desktop_cfg, "body_template", "")
                 dt_body = TemplateRenderer.render(dt_tpl, context) if dt_tpl else body
                 desktop = DesktopNotifier()
-                desktop.send_notification(dt_title, dt_body, ICON_PATH)
+                desktop.send_notification(dt_title, dt_body)
 
 
 def load_config() -> Dict[str, Any]:
@@ -744,7 +738,7 @@ def main() -> None:
 
     if args.history:
         print(
-            f"{Colors.HEADER}{Colors.BOLD}[ Recent flatpak-automatic Execution History ]{Colors.ENDC}"
+            f"{Colors.HEADER}{Colors.BOLD}[ Recent Flatpak Automatic Execution History ]{Colors.ENDC}"
         )
         subprocess.run(
             ["journalctl", "-u", "flatpak-automatic.service", "-n", "20", "--no-pager"]
@@ -756,13 +750,13 @@ def main() -> None:
         router = NotificationRouter(config)
         router.dispatch_all(
             "[TEST] Flatpak Automatic",
-            "This is a test notification from flatpak-automatic.",
+            "This is a test notification from Flatpak Automatic.",
             True,
         )
         desktop = DesktopNotifier()
 
         desktop.send_notification(
-            "Test Notification", "This is a test notification from flatpak-automatic."
+            "Test Notification", "This is a test notification from Flatpak Automatic."
         )
         exit_clean(0)
 

@@ -80,8 +80,8 @@ notification_groups:  # --------------------------------------------------------
 
     # Group-level state-aware defaults
     title:
-      success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT upgrades installed."
-      failure: "[$(hostname)] flatpak-automatic: Update failed"
+      success: "[$(hostname)] Flatpak Automatic: $UPDATE_COUNT upgrades installed."
+      failure: "[$(hostname)] Flatpak Automatic: Update failed!"
 
     # Generic body template for all plugins in this group
     body_template: default.md
