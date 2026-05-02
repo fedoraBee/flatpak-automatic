@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.5.15-rc1
+# Version: 1.5.15
 import os
 import sys
 import signal
@@ -565,7 +565,7 @@ def banner() -> str:
         f"{Colors.OKBLUE} | __| |__ _ | |_ _ __  __ _ | |__ \n"
         f"{Colors.HEADER} | _|| / _` || ._| '_ \\/ _` || / / \n"
         f"{Colors.OKPINK} |_| |_\\__,_|\\__|| .__/\\__,_||_\\_\\\n"
-        f"    AUTOMATIC    |_| {Colors.ENDC}     {Colors.OKCYAN} v1.5.15-rc1{Colors.ENDC}\n"
+        f"    AUTOMATIC    |_| {Colors.ENDC}     {Colors.OKCYAN} v1.5.15{Colors.ENDC}\n"
     )
 
 
@@ -629,6 +629,11 @@ def main() -> None:
         "--reload",
         action="store_true",
         help="Send SIGHUP to a running instance to reload its config.",
+    )
+    parser.add_argument(
+        "--desktop-mode",
+        action="store_true",
+        help="Run in interactive desktop mode (keeps terminal open after completion).",
     )
     args = parser.parse_args()
 
@@ -816,6 +821,10 @@ def main() -> None:
 
         router = NotificationRouter(config)
         router.dispatch_all(title, updater.update_log, success, updater.update_count)
+
+    if args.desktop_mode:
+        print("\n" + Colors.BOLD + "Execution finished." + Colors.ENDC)
+        input("Press Enter to close this window...")
 
     exit_clean(0 if success else 1)
 
