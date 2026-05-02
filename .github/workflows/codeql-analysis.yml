@@ -1,0 +1,56 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    # The branched workflow is useful but let's skip it for PRs that
+    # don't contain any source code changes in the target branch.
+    branches: [ main ]
+  schedule:
+    - cron: '15 13 * * 6'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'python' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # If this is a gh-pages PR, it only contains build artifacts,
+    # so we should skip analysis as it will fail with "no code found".
+    - name: Check if this is a gh-pages update PR
+      id: check_pr
+      env:
+        HEAD_REF: "${{ github.head_ref }}"
+      run: |
+        if [[ "$HEAD_REF" == release/gh-pages-update-* ]]; then
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Initialize CodeQL
+      if: steps.check_pr.outputs.skip == 'false'
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Autobuild
+      if: steps.check_pr.outputs.skip == 'false'
+      uses: github/codeql-action/autobuild@v3
+
+    - name: Perform CodeQL Analysis
+      if: steps.check_pr.outputs.skip == 'false'
+      uses: github/codeql-action/analyze@v3
