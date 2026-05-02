@@ -344,14 +344,21 @@ jobs:
           export REPO_ROOT OUTPUT_FILE TEMPLATE_DIR
           python3 scripts-source/scripts/maintainer/generate-index.py
 
+          # CRITICAL: Persist the workflow file to the gh-pages branch
+          # This ensures that pushing/merging to gh-pages triggers the next job
+          mkdir -p .github/workflows
+          cp scripts-source/.github/workflows/pipeline.yml .github/workflows/
+
+          # Save the release version to a file for the next job
+          echo "${{ github.ref_name }}" > VERSION
+
           # Clean up temporary source and artifacts before PR creation
           rm -rf scripts-source incoming-artifacts .rpmbuild debs/flatpak-automatic_*.buildinfo debs/flatpak-automatic_*.changes
 
-          # CRITICAL: Ensure all packages and metadata are staged
+          # Ensure all packages and metadata are staged
           rm -f .gitignore
           git add --all --force
           git status
-
       - name: Create Pull Request to gh-pages
         uses: peter-evans/create-pull-request@v7
         with:
@@ -374,27 +381,31 @@ jobs:
     steps:
       - name: Checkout gh-pages
         uses: actions/checkout@v5
+
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Extract Version from Merge Commit
+
+      - name: Extract Version
         id: get_version
-        env:
-          COMMIT_MSG: "${{ github.event.head_commit.message }}"
         run: |
-          VERSION=$(echo "$COMMIT_MSG" | grep -oP 'v[0-9]+\.[0-9]+\.[0-9]+[^ ]*')
-          if [ -n "$VERSION" ]; then
+          if [ -f VERSION ]; then
+            VERSION=$(cat VERSION)
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
             PKG_VERSION="${VERSION#v}"
             echo "rpm_version=${PKG_VERSION//-/'~'}" >> "$GITHUB_OUTPUT"
             echo "deb_version=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::VERSION file not found. Release cannot be created."
+            exit 1
           fi
+
       - name: Finalize GitHub Release
-        if: steps.get_version.outputs.version != ''
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.get_version.outputs.version }}
