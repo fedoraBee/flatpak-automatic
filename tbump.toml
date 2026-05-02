@@ -38,12 +38,16 @@ src = "Makefile"
 search = "VERSION := {current_version}"
 
 [[file]]
+src = "src/flatpak_automatic/__init__.py"
+search = "__version__ = \"{current_version}\""
+
+[[file]]
 src = "src/flatpak-automatic.py"
 search = "# Version: {current_version}"
 
 [[file]]
-src = "src/flatpak-automatic.py"
-search = "{{Colors.OKCYAN}} v{current_version}{{Colors.ENDC}}"
+src = "src/flatpak_automatic/cli.py"
+search = "v{current_version}"
 
 [[file]]
 src = "config/sysconfig/flatpak-automatic"

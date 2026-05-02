@@ -139,12 +139,12 @@ class TestJSONFormatter:
 class TestMainIntegration:
     @patch("sys.argv", ["flatpak-automatic"])
     @patch("os.geteuid", return_value=0)
-    @patch.object(fa, "load_config")
-    @patch.object(fa, "FlatpakUpdater")
-    @patch.object(fa, "SnapperManager")
-    @patch.object(fa, "NotificationRouter")
-    @patch.object(fa, "load_state")
-    @patch.object(fa, "save_state")
+    @patch("flatpak_automatic.config.ConfigManager.load")
+    @patch("flatpak_automatic.core.FlatpakUpdater")
+    @patch("flatpak_automatic.core.SnapperManager")
+    @patch("flatpak_automatic.core.NotificationRouter")
+    @patch("flatpak_automatic.config.StateManager.load")
+    @patch("flatpak_automatic.config.StateManager.save")
     def test_main_updates_found(
         self,
         mock_save_state: Any,
