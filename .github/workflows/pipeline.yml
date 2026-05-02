@@ -42,7 +42,7 @@ jobs:
           globs: "**/*.md"
 
       - name: Install shfmt
-        uses: mfinelli/setup-shfmt@v3
+        run: sudo apt-get update && sudo apt-get install -y shfmt
 
       - name: Check Shell Formatting
         run: shfmt -d -i 4 -ci scripts/
@@ -395,7 +395,8 @@ jobs:
         run: |
           # Synchronize the artifact content to the gh-pages checkout
           # We use --delete to match the artifact exactly but exclude .git
-          rsync -av --delete --exclude .git public/ .
+          # We ignore exit code 24 (vanished files) which is often a false positive in CI
+          rsync -av --delete --exclude .git public/ . || [ $? -eq 24 ]
           rm -rf public
 
       - name: Create Pull Request to gh-pages
