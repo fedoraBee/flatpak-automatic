@@ -273,45 +273,35 @@ jobs:
             systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.service
           fi
 
-  build-web-assets:
-    name: Generate Repository Site
+  prepare-release-pr:
+    name: Manage Repository & PR
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build-rpm, build-deb]
+    needs: [build-rpm, build-deb, smoke-test]
     runs-on: ubuntu-latest
     environment: gh-pages
     steps:
-      - name: Checkout Repository
+      - name: Checkout gh-pages
         uses: actions/checkout@v5
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      - name: Setup Python
-        uses: actions/setup-python@v5
+          ref: gh-pages
+
+      - name: Pull Scripts from main
+        uses: actions/checkout@v5
         with:
-          python-version: '3.x'
-      - name: Fix APT Mirrors
+          ref: main
+          path: source-main
+
+      - name: Install Dependencies
         run: |
-          sudo sed -i 's/azure\.archive\.ubuntu\.com/archive.ubuntu.com/g' /etc/apt/sources.list
-          sudo apt-get update -y
-      - name: Install Web Dependencies
-        run: |
+          sudo apt-get update
           sudo apt-get install -y make createrepo-c git rsync gnupg2 dpkg-dev apt-utils rpm python3-yaml
-          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
-          rm google-chrome-stable_current_amd64.deb
           python3 -m pip install jinja2 --break-system-packages
-          npm install -g htmlhint pa11y
-      - name: Retrieve RPM Artifacts
+
+      - name: Retrieve Build Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: rpms
-          path: .rpmbuild/RPMS/noarch
-      - name: Retrieve DEB Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: debs
-          path: debs
+          path: incoming-artifacts
+
       - name: Configure Repository Signing
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
@@ -325,66 +315,41 @@ jobs:
           echo "%_signature gpg" > ~/.rpmmacros
           echo "%_gpg_name ${{ vars.GPG_KEY_ID }}" >> ~/.rpmmacros
           echo "%__gpg $(which gpg)" >> ~/.rpmmacros
-      - name: Synchronize Legacy Assets
-        uses: actions/checkout@v5
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: legacy-site
-      - name: Prepare Workspace for Repo Update
-        run: |
-          mkdir -p public
-          if [ -d legacy-site ] && [ "$(ls -A legacy-site)" ]; then
-            cp -r legacy-site/* public/
-            rm -rf public/.git
-          fi
-      - name: Update Metadata and Repository
+
+      - name: Update Repository
         run: |
           CHANNEL=stable
           [[ "${{ github.ref_name }}" =~ (rc|beta|alpha|test) ]] && CHANNEL=testing
-          make rpm-repo GPG_KEY_ID=${{ vars.GPG_KEY_ID }} CHANNEL=$CHANNEL REPO_ROOT="$(pwd)/public"
-      - name: Export Public GPG Key
-        run: gpg --armor --export ${{ vars.GPG_KEY_ID }} > public/gpg.key
-      - name: Generate Index Page
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-          GITHUB_RUN_ID: ${{ github.run_id }}
-        run: python3 scripts/maintainer/generate-index.py
-      - name: Validate HTML Output
-        run: htmlhint public/index.html
-      - name: Run Accessibility Audit
-        run: |
-          echo "{\"chromeLaunchConfig\": {\"executablePath\": \"$(which google-chrome)\", \"args\": [\"--no-sandbox\", \"--disable-setuid-sandbox\", \"--disable-dev-shm-usage\"]}}" > pa11y-config.json
-          pa11y --config pa11y-config.json public/index.html
-      - name: Archive Public Site
-        uses: actions/upload-artifact@v4
-        with:
-          name: public-site
-          path: public/
-          retention-days: 5
 
-  prepare-gh-pages-pr:
-    name: Prepare gh-pages PR
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build-web-assets, smoke-test]
-    runs-on: ubuntu-latest
-    environment: gh-pages
-    steps:
-      - name: Checkout gh-pages
-        uses: actions/checkout@v5
-        with:
-          ref: gh-pages
-      - name: Retrieve Public Assets
-        uses: actions/download-artifact@v4
-        with:
-          name: public-site
-          path: incoming-site
-      - name: Update Workspace
-        run: |
-          rsync -av --delete --exclude .git incoming-site/ . || [ $? -eq 24 ]
+          # Move artifacts to expected locations for the update script
+          mkdir -p .rpmbuild/RPMS/noarch debs
+          cp incoming-artifacts/rpms/*.rpm .rpmbuild/RPMS/noarch/
+          cp incoming-artifacts/debs/*.deb debs/
+
+          # Run the update script from source-main targeting the current directory
+          bash source-main/scripts/maintainer/update-repo.sh \
+            "$(pwd)/.rpmbuild/RPMS/noarch" \
+            "$(pwd)/debs" \
+            "${{ github.ref_name }}" \
+            "$CHANNEL" \
+            "${{ vars.GPG_KEY_ID }}" \
+            "$(pwd)"
+
+          # Generate the index landing page
+          REPO_ROOT="$(pwd)"
+          export REPO_ROOT
+          OUTPUT_FILE="$(pwd)/index.html"
+          export OUTPUT_FILE
+          python3 source-main/scripts/maintainer/generate-index.py
+
+          # Clean up temporary source-main and artifacts before PR creation
+          rm -rf source-main incoming-artifacts .rpmbuild debs/flatpak-automatic_*.buildinfo debs/flatpak-automatic_*.changes
+
+          # CRITICAL: Ensure all packages and metadata are staged
           rm -f .gitignore
           git add --all --force
-          rm -rf incoming-site
+          git status
+
       - name: Create Pull Request to gh-pages
         uses: peter-evans/create-pull-request@v7
         with:
