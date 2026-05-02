@@ -3,5 +3,6 @@
 #addFilter(r"W: only-non-binary-in-usr-lib")
 addFilter(r"W: no-manual-page-for-binary")
 addFilter(r"W: package-with-huge-docs")
+addFilter(r"E: unknown-key")
 addFilter(r"W: desktopfile-without-binary /usr/share/applications/flatpak-automatic.desktop bash")
 #addFilter(r"W: incoherent-version-in-changelog")
