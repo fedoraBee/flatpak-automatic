@@ -86,8 +86,8 @@ notification_groups:
 
     # Notification title (supports $UPDATE_COUNT and $hostname).
     title:
-      success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT upgrades installed."
-      failure: "[$(hostname)] flatpak-automatic: Update failed"
+      success: "[$(hostname)] Flatpak Automatic: $UPDATE_COUNT upgrades installed."
+      failure: "[$(hostname)] Flatpak Automatic: Update failed!"
 
     # Templates for the notification body (located in /etc/flatpak-automatic/templates/).
     body_template:
@@ -96,8 +96,8 @@ notification_groups:
 
     desktop:
       title:
-        success: "[$(hostname)] flatpak-automatic: $UPDATE_COUNT upgrades installed."
-        failure: "[$(hostname)] flatpak-automatic: Update failed"
+        success: "Flatpak Automatic: $UPDATE_COUNT upgrades installed."
+        failure: "Flatpak Automatic: Update failed!"
       body_template:
         success: default_desktop_success.md
         failure: default_desktop_failure.md

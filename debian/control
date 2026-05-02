@@ -16,3 +16,11 @@ Description: Secure, systemd-native automation for Flatpak updates
  (Apprise, Mail, Webhooks, Desktop), and supports both system-wide and
  rootless user-level execution. Designed for reliability and ease of
  use, it ensures your Flatpak environment remains current and resilient.
+
+Package: flatpak-automatic-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}
+Description: Documentation for flatpak-automatic
+ This package contains the detailed documentation and change logs for
+ flatpak-automatic.

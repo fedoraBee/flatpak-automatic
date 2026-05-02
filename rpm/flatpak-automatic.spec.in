@@ -20,7 +20,6 @@ Requires:       snapper
 Requires:       s-nail
 Requires:       systemd
 Recommends:     python3-apprise
-Recommends:     %{name}-doc
 
 %description
 Flatpak Automatic is a secure, systemd-native automation wrapper for Flatpak
