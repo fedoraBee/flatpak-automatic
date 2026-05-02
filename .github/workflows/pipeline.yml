@@ -405,11 +405,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: public-site
-          path: public/
+          path: .
 
       - name: Debug Retrieved Assets
         run: |
-          echo "Listing top level of retrieved public folder:"
+          echo "Listing top level of workspace:"
+          ls -la
+          echo "Listing top level of public folder:"
           ls -la public/
           echo "Listing RPMs in public/rpms (if they exist):"
           find public/rpms -name "*.rpm" || echo "No RPMs found in public"
