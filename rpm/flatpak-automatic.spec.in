@@ -19,7 +19,8 @@ Requires:       python3-dbus
 Requires:       snapper
 Requires:       s-nail
 Requires:       systemd
-Recommends:       python3-apprise
+Recommends:     python3-apprise
+Recommends:     %{name}-doc
 
 %description
 Flatpak Automatic is a secure, systemd-native automation wrapper for Flatpak
@@ -27,6 +28,14 @@ updates. It features Snapper-integrated atomic rollbacks, multi-channel
 alerting (Apprise, Mail, Webhooks, Desktop), and supports both system-wide and
 rootless user-level execution. Designed for reliability and ease of use, it
 ensures your Flatpak environment remains current and resilient.
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%description doc
+This package contains the detailed documentation and change logs for
+%{name}.
 
 %prep
 # Use -c to create the directory before extracting, since the Makefile tar command packages the directory contents directly
@@ -76,9 +85,11 @@ install -m 644 config/systemd/flatpak-automatic-user.timer %{buildroot}%{_prefix
 %{_prefix}/lib/systemd/user/flatpak-automatic.timer
 %config(noreplace) %{_sysconfdir}/sysconfig/flatpak-automatic
 %license LICENSE
-%doc README.md CHANGELOG.md docs/development.md .github/CONTRIBUTING.md AGENTS.md MAINTAINERS.md
 
 # NOTE: The %%changelog directive is automatically appended by the python script during the build process.
 
 %{_datadir}/applications/flatpak-automatic.desktop
 %{_datadir}/icons/hicolor/scalable/apps/flatpak-automatic.svg
+
+%files doc
+%doc README.md CHANGELOG.md docs/development.md .github/CONTRIBUTING.md AGENTS.md MAINTAINERS.md
