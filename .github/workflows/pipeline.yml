@@ -316,6 +316,13 @@ jobs:
           name: debs
           path: debs
 
+      - name: Debug Artifacts
+        run: |
+          echo "Listing RPMs in .rpmbuild/RPMS/noarch:"
+          ls -la .rpmbuild/RPMS/noarch || echo "Directory not found"
+          echo "Listing DEBs in debs:"
+          ls -la debs || echo "Directory not found"
+
       - name: Configure Repository Signing
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
@@ -343,6 +350,13 @@ jobs:
           CHANNEL=stable
           [[ "${{ github.ref_name }}" =~ (rc|beta|alpha|test) ]] && CHANNEL=testing
           make rpm-repo GPG_KEY_ID=${{ vars.GPG_KEY_ID }} CHANNEL=$CHANNEL REPO_ROOT="$(pwd)/public"
+
+      - name: Debug Generated Repo
+        run: |
+          echo "Listing content of public/rpms/v1.5/testing (if it exists):"
+          ls -R public/rpms/v1.5/testing || echo "Not found"
+          echo "Listing content of public/debs/pool (if it exists):"
+          ls -R public/debs/pool || echo "Not found"
 
       - name: Export Public GPG Key
         run: gpg --armor --export ${{ vars.GPG_KEY_ID }} > public/gpg.key
@@ -392,6 +406,15 @@ jobs:
         with:
           name: public-site
           path: public/
+
+      - name: Debug Retrieved Assets
+        run: |
+          echo "Listing top level of retrieved public folder:"
+          ls -la public/
+          echo "Listing RPMs in public/rpms (if they exist):"
+          find public/rpms -name "*.rpm" || echo "No RPMs found in public"
+          echo "Listing DEBs in public/debs (if they exist):"
+          find public/debs -name "*.deb" || echo "No DEBs found in public"
 
       - name: Update gh-pages Content
         run: |
