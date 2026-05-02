@@ -285,11 +285,13 @@ jobs:
         with:
           ref: gh-pages
 
-      - name: Pull Scripts from main
+      - name: Pull Latest Scripts
         uses: actions/checkout@v5
         with:
-          ref: main
-          path: source-main
+          # Use the exact commit/branch that triggered this run
+          # This ensures we use the FIXED scripts, not stale 'main'
+          ref: ${{ github.sha }}
+          path: scripts-source
 
       - name: Install Dependencies
         run: |
@@ -321,13 +323,13 @@ jobs:
           CHANNEL=stable
           [[ "${{ github.ref_name }}" =~ (rc|beta|alpha|test) ]] && CHANNEL=testing
 
-          # Move artifacts to expected locations for the update script
+          # Prepare workspace structure
           mkdir -p .rpmbuild/RPMS/noarch debs
           cp incoming-artifacts/rpms/*.rpm .rpmbuild/RPMS/noarch/
           cp incoming-artifacts/debs/*.deb debs/
 
-          # Run the update script from source-main targeting the current directory
-          bash source-main/scripts/maintainer/update-repo.sh \
+          # Run the update script from scripts-source (current branch fixes)
+          bash scripts-source/scripts/maintainer/update-repo.sh \
             "$(pwd)/.rpmbuild/RPMS/noarch" \
             "$(pwd)/debs" \
             "${{ github.ref_name }}" \
@@ -338,12 +340,12 @@ jobs:
           # Generate the index landing page
           REPO_ROOT="$(pwd)"
           OUTPUT_FILE="$(pwd)/index.html"
-          TEMPLATE_DIR="$(pwd)/source-main/docs/templates"
+          TEMPLATE_DIR="$(pwd)/scripts-source/docs/templates"
           export REPO_ROOT OUTPUT_FILE TEMPLATE_DIR
-          python3 source-main/scripts/maintainer/generate-index.py
+          python3 scripts-source/scripts/maintainer/generate-index.py
 
-          # Clean up temporary source-main and artifacts before PR creation
-          rm -rf source-main incoming-artifacts .rpmbuild debs/flatpak-automatic_*.buildinfo debs/flatpak-automatic_*.changes
+          # Clean up temporary source and artifacts before PR creation
+          rm -rf scripts-source incoming-artifacts .rpmbuild debs/flatpak-automatic_*.buildinfo debs/flatpak-automatic_*.changes
 
           # CRITICAL: Ensure all packages and metadata are staged
           rm -f .gitignore
