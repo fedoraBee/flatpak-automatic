@@ -171,7 +171,12 @@ def main() -> None:
     # Copy assets
     assets_dest = os.path.join(repo_root, "assets")
     os.makedirs(assets_dest, exist_ok=True)
-    shutil.copy2("assets/banner.svg", os.path.join(assets_dest, "banner.svg"))
+    banner_src = "assets/banner.svg"
+    banner_dst = os.path.join(assets_dest, "banner.svg")
+    if os.path.exists(banner_src) and os.path.abspath(banner_src) != os.path.abspath(
+        banner_dst
+    ):
+        shutil.copy2(banner_src, banner_dst)
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(html_out)
