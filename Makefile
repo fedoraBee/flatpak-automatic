@@ -44,7 +44,7 @@ lint-rpm:
 install:
 	install -d $(DESTDIR)/etc/flatpak-automatic/templates
 	install -m 0644 config/config.example.yaml $(DESTDIR)/etc/flatpak-automatic/config.example.yaml
-	install -m 0644 config/config.user.yaml $(DESTDIR)/etc/flatpak-automatic/config.user.yaml
+	install -m 0644 config/config.user.default.yaml $(DESTDIR)/etc/flatpak-automatic/config.user.yaml
 	install -m 0644 config/config.default.yaml $(DESTDIR)/etc/flatpak-automatic/config.yaml
 	install -m 0644 config/templates/default.md $(DESTDIR)/etc/flatpak-automatic/templates/default.md
 	install -m 0644 config/templates/default_success.md $(DESTDIR)/etc/flatpak-automatic/templates/default_success.md
@@ -60,6 +60,7 @@ install:
 	mkdir -p $(DESTDIR)$(PREFIX)/share/flatpak-automatic
 	install -p -m 755 src/flatpak-automatic.py $(DESTDIR)$(PREFIX)/bin/flatpak-automatic
 	cp -r src/flatpak_automatic $(DESTDIR)$(PREFIX)/share/flatpak-automatic/
+	find $(DESTDIR)$(PREFIX)/share/flatpak-automatic -name "__pycache__" -type d -exec rm -rf {} +
 	install -p -m 644 docs/flatpak-automatic.1 $(DESTDIR)$(PREFIX)/share/man/man1/flatpak-automatic.1
 	install -p -m 644 config/sysconfig/flatpak-automatic $(DESTDIR)$(SYSCONFDIR)/sysconfig/flatpak-automatic
 	install -p -m 644 config/systemd/flatpak-automatic.service $(DESTDIR)$(PREFIX)/lib/systemd/system/flatpak-automatic.service
@@ -82,6 +83,8 @@ rpm-repo:
 
 clean:
 	rm -rf $(TOPDIR) .debbuild *.deb
+	find . -name "__pycache__" -type d -exec rm -rf {} +
+	find . -name "*.pyc" -delete
 
 test:
 	@echo "Running BATS tests..."
