@@ -13,6 +13,28 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.16-rc1] - 2026-05-03
+
+### 🚀 Features
+
+- Add --desktop-mode and update desktop file to avoid bash wrapper
+- Add CLI parameters for systemd timer management and update documentation
+
+### 🐛 Bug Fixes
+
+- Resolve import errors in tests and satisfy linter
+- Restore version tracking and update tbump.toml for modular structure
+- Resolve tbump version tracking and linter issues in wrapper
+- _(desktop)_ Fix icon flag in notify-send
+
+### 🚜 Refactor
+
+- Split monolithic script into structured Python package
+
+### ⚙️ Miscellaneous Tasks
+
+- _(release)_ Bump version to 1.5.15
+
 ## [1.5.15] - 2026-05-02
 
 ### 🚀 Features

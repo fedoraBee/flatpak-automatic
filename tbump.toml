@@ -1,5 +1,5 @@
 [version]
-current = "1.5.15"
+current = "1.5.16-rc1"
 # Updated regex to support X.Y.Z and X.Y.Z-rc1 (or -beta, -alpha)
 regex = '''
   (?P<major>\d+)
