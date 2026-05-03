@@ -1,0 +1,102 @@
+# 🗂️ Package Repository
+
+Welcome to the official repository of **Flatpak Automatic**. This project provides a secure, configurable, and systemd-native automation wrapper for Flatpak updates with Snapper snapshot integration.
+
+---
+
+## 📦 Installation (Fedora/RHEL)
+
+Add the repository and install the package on Fedora or compatible Fedora/RHEL systems:
+
+```bash
+# Add the repository configuration
+sudo tee /etc/yum.repos.d/flatpak-automatic.repo <<'EOF'
+[flatpak-automatic]
+name=Flatpak Automatic - Stable
+baseurl=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/rpms/latest/stable/
+enabled=1
+gpgcheck=1
+gpgkey=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpg.key
+
+[flatpak-automatic-testing]
+name=Flatpak Automatic - Testing
+baseurl=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/rpms/latest/testing/
+enabled=0
+gpgcheck=1
+gpgkey=https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpg.key
+EOF
+
+# Update the package metadata cache
+sudo dnf makecache
+
+# Install the flatpak-automatic package
+sudo dnf install flatpak-automatic
+```
+
+---
+
+## 📦 Installation (Ubuntu/Debian)
+
+Add the repository and install the package on Ubuntu, Debian, or compatible systems:
+
+```bash
+# Download the GPG key and convert it to a format APT understands
+curl -fsSL https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
+
+# Add the repository to your system's sources list
+echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/debs stable main" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
+
+# Update your local package index
+sudo apt-get update
+
+# Install the flatpak-automatic package
+sudo apt-get install flatpak-automatic
+```
+
+---
+
+## 🗂️ Available Versions & Channels
+
+{% if versions %}
+{% for version in versions %}
+### {{ version.name }}{% if version.is_first %} { .badge .badge-success } (LATEST){% endif %}
+
+{% for channel in version.channels %}
+???+ info "Channel: {{ channel.name | capitalize }}"
+
+    #### RPM Packages
+    {% if channel.rpms %}
+    {% for pkg in channel.rpms %}
+    - [{{ pkg }}](rpms/{{ version.name }}/{{ channel.name }}/{{ pkg }}){% if version.is_first and loop.first %} { .badge .badge-info } (latest patch){% endif %}
+    {% endfor %}
+    {% else %}
+    *No RPMs available.*
+    {% endif %}
+
+    #### Debian Packages
+    {% if channel.debs %}
+    {% for pkg in channel.debs %}
+    - [{{ pkg }}](debs/pool/main/f/flatpak-automatic/{{ pkg }}){% if version.is_first and loop.first %} { .badge .badge-info } (latest patch){% endif %}
+    {% endfor %}
+    {% else %}
+    *No DEBs available.*
+    {% endif %}
+
+{% endfor %}
+{% endfor %}
+{% else %}
+No versions found.
+{% endif %}
+
+---
+
+## 🔗 Resources
+
+- [Download Repository GPG Key (gpg.key)](gpg.key)
+- **GPG Fingerprint:** `8D12 D614 9E1E 5E83 29DD E6FD 9B99 A03F 6577 BF59`
+- [GitHub Source Code & Documentation](https://github.com/{{ github_repo }})
+- [Report an Issue](https://github.com/{{ github_repo }}/issues)
+
+<div class="footer" style="text-align: center; font-size: 0.8em; color: gray; margin-top: 40px;">
+Generated on {{ build_date }} | Commit: [{{ build_sha[:7] }}](https://github.com/{{ github_repo }}/commit/{{ build_sha }}) | Run ID: {{ build_run_id }}
+</div>
