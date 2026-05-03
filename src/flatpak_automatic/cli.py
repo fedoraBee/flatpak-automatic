@@ -1,5 +1,6 @@
 import sys
 import argparse
+from typing import Any
 from .constants import Colors
 
 
@@ -14,7 +15,7 @@ def banner() -> str:
 
 
 class BrandedArgumentParser(argparse.ArgumentParser):
-    def print_help(self, file=None):
+    def print_help(self, file: Any = None) -> None:
         if file is None:
             file = sys.stdout
         file.write(banner() + "\n")

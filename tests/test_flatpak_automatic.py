@@ -1,23 +1,15 @@
-import pytest  # type: ignore
+import pytest
 import sys
-import importlib.util
 import logging
 import json
 from unittest.mock import MagicMock, patch, mock_open
 from typing import Any
 from pathlib import Path
 
-mock_dbus = MagicMock()
-sys.modules["dbus"] = mock_dbus
-sys.modules["dbus.exceptions"] = MagicMock()
-
-spec = importlib.util.spec_from_file_location(
-    "flatpak_automatic", "src/flatpak-automatic.py"
-)
-assert spec is not None
-assert spec.loader is not None
-fa = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(fa)
+# Import from the package
+import dbus
+import flatpak_automatic as fa
+from flatpak_automatic.__main__ import main as fa_main
 
 
 class TestFlatpakUpdater:
@@ -69,7 +61,7 @@ class TestSnapperManager:
             "root",
             "timeline",
             "Test Description",
-            mock_dbus.Dictionary({}, signature="ss"),
+            dbus.Dictionary({}, signature="ss"),
         )
 
     def test_create_timeline_snapshot_no_interface(self) -> None:
@@ -79,7 +71,7 @@ class TestSnapperManager:
 
 
 class TestLoadConfig:
-    @patch("src.flatpak_automatic.config.ConfigManager._find_resource")
+    @patch("flatpak_automatic.config.ConfigManager._find_resource")
     @patch(
         "pathlib.Path.open", new_callable=mock_open, read_data="auto_update: false\n"
     )
@@ -183,7 +175,7 @@ class TestMainIntegration:
         snapper_instance = mock_snapper.return_value
 
         with pytest.raises(SystemExit) as e:
-            fa.main()
+            fa_main()
 
         assert e.value.code == 0
         assert snapper_instance.create_timeline_snapshot.call_count == 2
