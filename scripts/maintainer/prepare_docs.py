@@ -5,6 +5,13 @@ import sys
 import re
 
 
+def safe_copy(src: str, dst: str):
+    """Copy file only if source and destination are different."""
+    if os.path.exists(dst) and os.path.samefile(src, dst):
+        return
+    shutil.copy2(src, dst)
+
+
 def prepare_docs(src_dir: str, docs_dir: str):
     print(f"Preparing documentation in {docs_dir} using sources from {src_dir}...")
 
@@ -22,7 +29,7 @@ def prepare_docs(src_dir: str, docs_dir: str):
     for src_name, dest_name in root_files.items():
         src_path = os.path.join(src_dir, src_name)
         if os.path.exists(src_path):
-            shutil.copy2(src_path, os.path.join(docs_dir, dest_name))
+            safe_copy(src_path, os.path.join(docs_dir, dest_name))
 
     # 2. Handle LICENSE
     license_src = os.path.join(src_dir, "LICENSE")
@@ -43,14 +50,16 @@ def prepare_docs(src_dir: str, docs_dir: str):
     for f_name in github_files:
         src_path = os.path.join(src_dir, ".github", f_name)
         if os.path.exists(src_path):
-            shutil.copy2(src_path, os.path.join(about_dir, f_name.lower()))
+            safe_copy(src_path, os.path.join(about_dir, f_name.lower()))
 
     # 4. Copy files already in docs/ to root of docs_dir
     src_docs_dir = os.path.join(src_dir, "docs")
     if os.path.isdir(src_docs_dir):
         for item in os.listdir(src_docs_dir):
             if item.endswith((".md", ".css", ".js")):
-                shutil.copy2(os.path.join(src_docs_dir, item), docs_dir)
+                safe_copy(
+                    os.path.join(src_docs_dir, item), os.path.join(docs_dir, item)
+                )
 
     # 5. Ensure assets are available
     assets_dest = os.path.join(docs_dir, "assets")
@@ -61,7 +70,9 @@ def prepare_docs(src_dir: str, docs_dir: str):
     if os.path.isdir(src_assets_dir):
         for item in os.listdir(src_assets_dir):
             if item.endswith(".svg"):
-                shutil.copy2(os.path.join(src_assets_dir, item), assets_dest)
+                safe_copy(
+                    os.path.join(src_assets_dir, item), os.path.join(assets_dest, item)
+                )
 
     # 6. Transform content
     # Fix banner paths and translate internal links
