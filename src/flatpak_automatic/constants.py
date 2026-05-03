@@ -36,6 +36,26 @@ def find_brand_icon() -> str:
     return "software-update-available"
 
 
+def find_brand_banner() -> str:
+    """Locate the best available banner for notifications."""
+    # 1. System-wide Installation Path (RPM/DEB)
+    sys_path = "/usr/share/icons/hicolor/scalable/apps/flatpak-automatic-banner.svg"
+    if os.path.exists(sys_path):
+        return sys_path
+
+    # 2. Local Development Path (relative to script in src/)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    local_assets = os.path.join(os.path.dirname(os.path.dirname(script_dir)), "assets")
+    if os.path.exists(local_assets):
+        path = os.path.join(local_assets, "banner.svg")
+        if os.path.exists(path):
+            return path
+
+    # 3. Fallback to icon path
+    return ICON_PATH
+
+
 ICON_PATH = find_brand_icon()
+BANNER_PATH = find_brand_banner()
 TEMPLATE_DIR = "/etc/flatpak-automatic/templates"
 CONFIG_FILE = "/etc/flatpak-automatic/config.yaml"

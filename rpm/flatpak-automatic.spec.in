@@ -49,6 +49,7 @@ install -d %{buildroot}%{_datadir}/applications
 install -m 644 assets/flatpak-automatic.desktop %{buildroot}%{_datadir}/applications/
 install -d %{buildroot}%{_datadir}/icons/hicolor/scalable/apps
 install -m 644 assets/logo.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/flatpak-automatic.svg
+install -m 644 assets/banner.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/flatpak-automatic-banner.svg
 install -d %{buildroot}%{_prefix}/lib/systemd/user
 install -m 644 config/systemd/flatpak-automatic-user.service %{buildroot}%{_prefix}/lib/systemd/user/flatpak-automatic.service
 install -m 644 config/systemd/flatpak-automatic-user.timer %{buildroot}%{_prefix}/lib/systemd/user/flatpak-automatic.timer
@@ -90,6 +91,7 @@ install -m 644 config/systemd/flatpak-automatic-user.timer %{buildroot}%{_prefix
 
 %{_datadir}/applications/flatpak-automatic.desktop
 %{_datadir}/icons/hicolor/scalable/apps/flatpak-automatic.svg
+%{_datadir}/icons/hicolor/scalable/apps/flatpak-automatic-banner.svg
 
 %files doc
 %doc README.md CHANGELOG.md docs/development.md .github/CONTRIBUTING.md AGENTS.md MAINTAINERS.md

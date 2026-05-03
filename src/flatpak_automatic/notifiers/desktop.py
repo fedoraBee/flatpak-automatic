@@ -2,7 +2,7 @@ import os
 import logging
 import subprocess
 from ..config import ConfigManager
-from ..constants import ICON_PATH
+from ..constants import ICON_PATH, BANNER_PATH
 
 
 class DesktopNotifier:
@@ -52,10 +52,13 @@ class DesktopNotifier:
 
                     # Use file:// URI for absolute paths to ensure compatibility with all notification daemons
                     icon_param = ICON_PATH
+                    if os.path.isabs(icon_param):
+                        icon_param = f"file://{icon_param}"
+
+                    # Use the high-resolution banner for the notification body image (hints)
                     hints = []
-                    if os.path.isabs(ICON_PATH):
-                        icon_param = f"file://{ICON_PATH}"
-                        hints = ["-h", f"string:image-path:{ICON_PATH}"]
+                    if os.path.isabs(BANNER_PATH):
+                        hints = ["-h", f"string:image-path:{BANNER_PATH}"]
 
                     subprocess.run(
                         [
@@ -68,7 +71,7 @@ class DesktopNotifier:
                             "notify-send",
                             "-a",
                             "Flatpak Automatic",
-                            "-i",
+                            "-n",
                             icon_param,
                         ]
                         + hints
