@@ -28,3 +28,4 @@ __pycache__/
 .venv/
 build_docs/
 site/
+src/flatpak_automatic.egg-info/
