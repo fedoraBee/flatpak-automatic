@@ -3,6 +3,7 @@ import sys
 import logging
 import signal
 import subprocess
+from typing import Any
 from .cli import get_parser, banner
 from .config import ConfigManager, StateManager
 from .core import AutomationEngine
@@ -10,7 +11,7 @@ from .logging_utils import setup_logging
 from .constants import Colors
 
 
-def main():
+def main() -> None:
     # 1. Initialize Parser & Logging
     parser = get_parser()
     args = parser.parse_args()
@@ -26,7 +27,7 @@ def main():
     # 2. Load Configuration & State
     config = ConfigManager.load()
 
-    def sighup_handler(signum, frame):
+    def sighup_handler(signum: int, frame: Any) -> None:
         logging.info("SIGHUP received. Hot-reloading configuration...")
         nonlocal config
         config = ConfigManager.load()

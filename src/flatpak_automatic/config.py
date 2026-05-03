@@ -4,7 +4,7 @@ import shutil
 import logging
 import yaml
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, cast
 
 # Import file path constants from sibling modules
 from .logging_utils import STATE_FILE, USER_STATE_FILE
@@ -27,7 +27,7 @@ class StateManager:
         try:
             if path.exists():
                 with path.open("r", encoding="utf-8") as f:
-                    return json.load(f)
+                    return cast(Dict[str, Any], json.load(f))
         except (json.JSONDecodeError, PermissionError) as e:
             logging.warning(f"Could not load state from {path}: {e}")
 
@@ -90,9 +90,6 @@ class ConfigManager:
         system_default_path = ConfigManager._find_resource(
             default_filename, default_fallback
         )
-        example_config_path = ConfigManager._find_resource(
-            "config.example.yaml", "/etc/flatpak-automatic/config.example.yaml"
-        )
 
         # Layer 1: Base Defaults
         config: Dict[str, Any] = {}
@@ -117,9 +114,9 @@ class ConfigManager:
         # Layer 2: User-specific Override (Non-root)
         user_config_path = ConfigManager.get_user_config_path()
 
-        # Skeleton Mechanism: Create config from example if it doesn't exist for the user
+        # Skeleton Mechanism: Create config from user defaults if it doesn't exist
         if not user_config_path.exists():
-            ConfigManager._generate_skeleton(user_config_path, example_config_path)
+            ConfigManager._generate_skeleton(user_config_path, system_default_path)
 
         # Merge user override on top of system defaults
         if user_config_path.exists():

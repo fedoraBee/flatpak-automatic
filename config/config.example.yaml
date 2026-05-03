@@ -1,5 +1,5 @@
 # ==============================================================================
-# ENTERPRISE CONFIGURATION SCHEMA
+# CONFIGURATION SCHEMA
 # ==============================================================================
 # ENFORCEMENT: Every configuration key below MUST define:
 # - Description: Operational purpose of the key.
@@ -21,7 +21,7 @@
 # ------------------------------------------------------------------------------
 
 # Automatically install available updates.
-# TODO(Doc Lead): Enforce Type/Default comments
+
 auto_update: true
 
 # List of Flatpak App IDs to exclude from the automatic update process.
@@ -33,14 +33,14 @@ exclusions:
 
 
 # Notification policy: 'always', 'on-change', 'on-failure', or 'never'.
-# TODO(Doc Lead): Enforce Type/Default comments
+
 auto_notify: always
 
 # ------------------------------------------------------------------------------
 # Systemd Timer Settings
 # ------------------------------------------------------------------------------
 
-# TODO(Doc Lead): Enforce Type/Default comments
+
 timer:  # Schedule format as defined in systemd.time(7).
   schedule: daily
   # Randomized delay to avoid thundering herd on mirror servers.
@@ -51,7 +51,7 @@ timer:  # Schedule format as defined in systemd.time(7).
 # Snapper Snapshot Settings
 # ------------------------------------------------------------------------------
 
-# TODO(Doc Lead): Enforce Type/Default comments
+
 snapshots:
   enabled: true
   snapper_config: root
@@ -71,14 +71,14 @@ snapshots:
 #   $hostname     : System hostname.
 # ------------------------------------------------------------------------------
 
-# TODO(Doc Lead): Enforce Type/Default comments
+
 notification_policy:
   desktop: true
   mails: true
   webhooks: true
   apprise: true
 
-# TODO(Doc Lead): Enforce Type/Default comments
+
 notification_groups:  # ----------------------------------------------------------------------------
   # Example 1: Full extended group with multiple plugins
   # ----------------------------------------------------------------------------

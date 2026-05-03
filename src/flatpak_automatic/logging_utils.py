@@ -29,7 +29,7 @@ class ANSIFormatter(logging.Formatter):
         return f"{color}[{record.levelname}]{reset} {record.getMessage()}"
 
 
-def setup_logging():
+def setup_logging() -> None:
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()

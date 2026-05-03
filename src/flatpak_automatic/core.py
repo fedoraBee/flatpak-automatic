@@ -14,13 +14,13 @@ from .constants import Colors
 
 
 class AutomationEngine:
-    def __init__(self, config: Dict[str, Any], state: Dict[str, Any]):
+    def __init__(self, config: Dict[str, Any], state: Dict[str, Any]) -> None:
         self.config = config
         self.state = state
         self.user_scope = os.geteuid() != 0
         self.flatpak_scope = ["--user"] if self.user_scope else ["--system"]
 
-    def validate_config(self):
+    def validate_config(self) -> None:
         print(
             f"{Colors.BOLD}{Colors.OKCYAN}⚙️  Validating Configuration...{Colors.ENDC}"
         )
@@ -32,7 +32,7 @@ class AutomationEngine:
         else:
             print(f"{Colors.WARNING}⚠️ Configuration is empty or invalid.{Colors.ENDC}")
 
-    def dispatch_test_notifications(self):
+    def dispatch_test_notifications(self) -> None:
         logging.info("Executing Test Notification dispatch...")
         router = NotificationRouter(self.config)
         router.dispatch_all(
@@ -45,7 +45,7 @@ class AutomationEngine:
         #     "Test Notification", "This is a test notification from Flatpak Automatic."
         # )
 
-    def print_status_overview(self):
+    def print_status_overview(self) -> None:
         print(
             f"{Colors.HEADER}{Colors.BOLD}[ System Status & Monitoring Overview ]{Colors.ENDC}"
         )

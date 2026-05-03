@@ -1,7 +1,7 @@
 import unittest
 import subprocess
-import dbus  # type: ignore
-import dbusmock  # type: ignore
+import dbus
+import dbusmock
 
 import importlib.util
 
@@ -14,7 +14,7 @@ fa = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(fa)
 
 
-class TestSnapperDBusIntegration(dbusmock.DBusTestCase):  # type: ignore
+class TestSnapperDBusIntegration(dbusmock.DBusTestCase):  # type: ignore[misc]
     @classmethod
     def setUpClass(cls) -> None:
         # Start the local CI system bus

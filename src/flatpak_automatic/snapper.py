@@ -1,11 +1,12 @@
 import logging
-from typing import Optional
+from typing import Optional, Any
 
 try:
-    import dbus  # type: ignore
+    import dbus
 
     DBUS_AVAILABLE = True
 except ImportError:
+    dbus = None
     DBUS_AVAILABLE = False
     logging.warning(
         "python3-dbus is not installed. Snapper snapshots will be bypassed."
@@ -15,11 +16,11 @@ except ImportError:
 class SnapperManager:
     def __init__(self, config: str = "root") -> None:
         self.config: str = config
-        self.interface: Optional[dbus.Interface] = None
-        if DBUS_AVAILABLE:
+        self.interface: Optional[Any] = None
+        if DBUS_AVAILABLE and dbus:
             try:
                 self.bus: dbus.SystemBus = dbus.SystemBus()
-                self.proxy: dbus.proxies.ProxyObject = self.bus.get_object(
+                self.proxy: Any = self.bus.get_object(
                     "org.opensuse.Snapper", "/org/opensuse/Snapper"
                 )
                 self.interface = dbus.Interface(self.proxy, "org.opensuse.Snapper")
@@ -32,7 +33,7 @@ class SnapperManager:
     def create_timeline_snapshot(
         self, description: str = "Pre-Flatpak Update Automation"
     ) -> int:
-        if not self.interface:
+        if not self.interface or not dbus:
             return -1
         try:
             empty_dict: dbus.Dictionary = dbus.Dictionary({}, signature="ss")

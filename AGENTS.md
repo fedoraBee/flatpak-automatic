@@ -52,8 +52,8 @@ components:
   switches between system (`config.default.yaml`) and user
   (`config.user.default.yaml`) default profiles based on process UID.
 - **XDG Scaffolding**: Automatically initializes a user's local configuration at
-  `~/.config/flatpak-automatic/config.yaml` using the provided example skeleton
-  upon first rootless execution.
+  `~/.config/flatpak-automatic/config.yaml` using the user default profile
+  (`config.user.default.yaml`) upon first rootless execution.
 - **Idempotency**: The update script handles "No updates available" gracefully
   by cleaning up its own pre-update snapshots.
 - **Atomic Operations**: Every update attempt is preceded by a Snapper `pre`
