@@ -13,6 +13,12 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.17-rc3] - 2026-05-03
+
+### 📚 Documentation
+
+- Fix banner image paths for sub-pages and refine repo link
+
 ## [1.5.17-rc2] - 2026-05-03
 
 ### 📚 Documentation
