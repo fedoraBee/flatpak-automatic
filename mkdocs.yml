@@ -59,8 +59,10 @@ nav:
   - Project Info:
     - Agents: agents.md
     - Changelog: changelog.md
-    - Security: security.md
     - License: license.md
+  - About:
+    - Contributing: about/contributing.md
+    - Security: about/security.md
 
 plugins:
   - search
