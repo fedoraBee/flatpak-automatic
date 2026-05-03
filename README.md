@@ -246,6 +246,7 @@ SMTP server, port, and authentication credentials are set up correctly.
 - 🤝 [Contribution Guidelines](.github/CONTRIBUTING.md)
 - 📜 [Changelog](CHANGELOG.md)
 - 🧑‍💻 [Maintainer's Guide](MAINTAINERS.md)
+- 🔒 [Security Policy](.github/SECURITY.md)
 
 ## ⚠️ Disclaimer
 

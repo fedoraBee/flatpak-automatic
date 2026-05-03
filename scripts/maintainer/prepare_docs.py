@@ -112,7 +112,7 @@ def transform_files(docs_dir: str) -> None:
         )
         content = content.replace("(CHANGELOG.md)", "(changelog.md)")
         content = content.replace("(MAINTAINERS.md)", "(maintainers.md)")
-
+        content = content.replace("(.github/SECURITY.md)", "(about/security.md)")
         # Specific resource link transformations
         content = content.replace(
             "- 📝 [Project Documentation](https://fedorabee.github.io/flatpak-automatic/)",
@@ -124,6 +124,25 @@ def transform_files(docs_dir: str) -> None:
         )
 
         with open(index_path, "w") as f:
+            f.write(content)
+
+    # Link translations for agents.md
+    agents_path = os.path.join(docs_dir, "agents.md")
+    if os.path.exists(agents_path):
+        with open(agents_path, "r") as f:
+            content = f.read()
+
+        # Translate internal links
+        content = content.replace("(README.md)", "(index.md)")
+        content = content.replace("(docs/development.md)", "(development.md)")
+        content = content.replace(
+            "(.github/CONTRIBUTING.md)", "(about/contributing.md)"
+        )
+        content = content.replace("(CHANGELOG.md)", "(changelog.md)")
+        content = content.replace("(MAINTAINERS.md)", "(maintainers.md)")
+        content = content.replace("(LICENSE)", "(license.md)")
+
+        with open(agents_path, "w") as f:
             f.write(content)
 
     # Walk through docs and apply replacements
