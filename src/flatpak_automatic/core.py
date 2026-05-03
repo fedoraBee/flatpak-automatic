@@ -9,7 +9,7 @@ from typing import Dict, Any
 from .config import StateManager
 from .updater import FlatpakUpdater
 from .snapper import SnapperManager
-from .notifiers import NotificationRouter, DesktopNotifier
+from .notifiers import NotificationRouter
 from .constants import Colors
 
 
@@ -40,10 +40,10 @@ class AutomationEngine:
             "This is a test notification from Flatpak Automatic.",
             True,
         )
-        desktop = DesktopNotifier()
-        desktop.send_notification(
-            "Test Notification", "This is a test notification from Flatpak Automatic."
-        )
+        # desktop = DesktopNotifier()
+        # desktop.send_notification(
+        #     "Test Notification", "This is a test notification from Flatpak Automatic."
+        # )
 
     def print_status_overview(self):
         print(
