@@ -138,4 +138,4 @@ bypasses critical project validations.
 ## ⚖️ License
 
 By contributing, you agree that your contributions will be licensed under the
-**GPL-3.0-or-later** license, as specified in the `LICENSE` file.
+**GPL-3.0-or-later** license, as specified in the [LICENSE](../LICENSE) file.
