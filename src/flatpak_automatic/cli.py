@@ -79,4 +79,16 @@ def get_parser() -> BrandedArgumentParser:
         action="store_true",
         help="Run in interactive desktop mode (keeps terminal open after completion).",
     )
+    parser.add_argument(
+        "-e",
+        "--enable-timer",
+        action="store_true",
+        help="Enable and start the systemd timer (auto-scope).",
+    )
+    parser.add_argument(
+        "-x",
+        "--disable-timer",
+        action="store_true",
+        help="Disable and stop the systemd timer (auto-scope).",
+    )
     return parser

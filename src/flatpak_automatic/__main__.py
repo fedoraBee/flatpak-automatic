@@ -97,6 +97,42 @@ def main():
                 )
             sys.exit(0)
 
+        if args.enable_timer:
+            print(
+                f"{Colors.BOLD}{Colors.OKCYAN}🚀 Enabling and starting Flatpak Automatic Timer...{Colors.ENDC}"
+            )
+            try:
+                subprocess.run(
+                    ["systemctl", "enable", "--now", "flatpak-automatic.timer"]
+                    + flatpak_scope,
+                    check=True,
+                )
+                scope_str = "User" if user_scope else "System"
+                print(
+                    f"{Colors.OKGREEN}✅ {scope_str} timer enabled and started successfully.{Colors.ENDC}"
+                )
+            except Exception as e:
+                print(f"{Colors.FAIL}❌ Failed to enable/start timer: {e}{Colors.ENDC}")
+            sys.exit(0)
+
+        if args.disable_timer:
+            print(
+                f"{Colors.BOLD}{Colors.OKCYAN}🛑 Disabling and stopping Flatpak Automatic Timer...{Colors.ENDC}"
+            )
+            try:
+                subprocess.run(
+                    ["systemctl", "disable", "--now", "flatpak-automatic.timer"]
+                    + flatpak_scope,
+                    check=True,
+                )
+                scope_str = "User" if user_scope else "System"
+                print(
+                    f"{Colors.OKGREEN}✅ {scope_str} timer disabled and stopped successfully.{Colors.ENDC}"
+                )
+            except Exception as e:
+                print(f"{Colors.FAIL}❌ Failed to disable/stop timer: {e}{Colors.ENDC}")
+            sys.exit(0)
+
         if args.status:
             engine.print_status_overview()
             sys.exit(0)

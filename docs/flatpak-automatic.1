@@ -4,7 +4,7 @@
 flatpak-automatic \- Secure, systemd-native automation for Flatpak updates
 .SH SYNOPSIS
 .B flatpak-automatic
-[\fB\-d\fR] [\fB\-t\fR] [\fB\-f\fR] [\fB\-s\fR] [\fB\-l\fR] [\fB\-a\fR] [\fB\-c\fR] [\fB\-r\fR] [\fB\-\-desktop\-mode\fR]
+[\fB\-d\fR] [\fB\-t\fR] [\fB\-f\fR] [\fB\-s\fR] [\fB\-l\fR] [\fB\-a\fR] [\fB\-c\fR] [\fB\-r\fR] [\fB\-e\fR] [\fB\-x\fR] [\fB\-\-desktop\-mode\fR]
 .SH DESCRIPTION
 .B flatpak-automatic
 is a secure, systemd-native automation wrapper for Flatpak updates. It features Snapper-integrated atomic rollbacks, multi-channel alerting (Apprise, Mail, Webhooks, Desktop), and supports both system-wide and rootless user-level execution. Designed for reliability and ease of use, it ensures your Flatpak environment remains current and resilient.
@@ -43,6 +43,12 @@ Validate and print the current YAML configuration, then exit.
 .TP
 .BR \-r ", " \-\-reload
 Send SIGHUP to the running flatpak-automatic.service to reload its configuration.
+.TP
+.BR \-e ", " \-\-enable\-timer
+Enable and start the systemd timer. This command automatically detects whether it should operate on the system-wide or user-level timer based on the user's privileges. It replaces the manual 'systemctl enable --now' commands.
+.TP
+.BR \-x ", " \-\-disable\-timer
+Disable and stop the systemd timer. Like the enable command, this automatically detects the correct system or user scope. It replaces manual 'systemctl disable --now' commands.
 .TP
 .BR \-\-desktop\-mode
 Run in interactive desktop mode. This keeps the terminal window open after the update process finishes by prompting the user to press Enter. This is primarily used by the application's desktop entry.
