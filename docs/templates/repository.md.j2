@@ -65,7 +65,7 @@ sudo apt-get install flatpak-automatic
 
 {% if versions %}
 {% for version in versions %}
-### {{ version.name }}{% if version.is_first %} { .badge .badge-success } (LATEST){% endif %}
+### {{ version.name }}{% if version.is_first %} <span class="badge badge-success">LATEST</span>{% endif %}
 
 {% for channel in version.channels %}
 ???+ info "Channel: {{ channel.name | capitalize }}"
@@ -73,7 +73,7 @@ sudo apt-get install flatpak-automatic
     #### RPM Packages
     {% if channel.rpms %}
     {% for pkg in channel.rpms %}
-    - [{{ pkg }}](rpms/{{ version.name }}/{{ channel.name }}/{{ pkg }}){% if version.is_first and loop.first %} { .badge .badge-info } (latest patch){% endif %}
+    - [{{ pkg }}](../rpms/{{ version.name }}/{{ channel.name }}/{{ pkg }}){% if version.is_first and loop.first %} <span class="badge badge-info">latest {{ channel.name }} patch</span>{% endif %}
     {% endfor %}
     {% else %}
     *No RPMs available.*
@@ -82,7 +82,7 @@ sudo apt-get install flatpak-automatic
     #### Debian Packages
     {% if channel.debs %}
     {% for pkg in channel.debs %}
-    - [{{ pkg }}](debs/pool/main/f/flatpak-automatic/{{ pkg }}){% if version.is_first and loop.first %} { .badge .badge-info } (latest patch){% endif %}
+    - [{{ pkg }}](../debs/pool/main/f/flatpak-automatic/{{ pkg }}){% if version.is_first and loop.first %} <span class="badge badge-info">latest {{ channel.name }} patch</span>{% endif %}
     {% endfor %}
     {% else %}
     *No DEBs available.*
@@ -98,11 +98,11 @@ No versions found.
 
 ## 🔗 Resources
 
-- [Download Repository GPG Key (gpg.key)](gpg.key)
+- [Download Repository GPG Key (gpg.key)](../gpg.key)
 - **GPG Fingerprint:** `8D12 D614 9E1E 5E83 29DD E6FD 9B99 A03F 6577 BF59`
 - [GitHub Source Code & Documentation](https://github.com/{{ github_repo }})
 - [Report an Issue](https://github.com/{{ github_repo }}/issues)
 
-<div class="footer" style="text-align: center; font-size: 0.8em; color: gray; margin-top: 40px;">
+<div class="footer" markdown="1" style="text-align: center; font-size: 0.8em; color: gray; margin-top: 40px;">
 Generated on {{ build_date }} | Commit: [{{ build_sha[:7] }}](https://github.com/{{ github_repo }}/commit/{{ build_sha }}) | Run ID: {{ build_run_id }}
 </div>
