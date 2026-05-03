@@ -17,11 +17,23 @@
          <lastmod>2026-05-03</lastmod>
     </url>
     <url>
+         <loc>https://fedorabee.github.io/flatpak-automatic/license/</loc>
+         <lastmod>2026-05-03</lastmod>
+    </url>
+    <url>
          <loc>https://fedorabee.github.io/flatpak-automatic/maintainers/</loc>
          <lastmod>2026-05-03</lastmod>
     </url>
     <url>
          <loc>https://fedorabee.github.io/flatpak-automatic/repository/</loc>
+         <lastmod>2026-05-03</lastmod>
+    </url>
+    <url>
+         <loc>https://fedorabee.github.io/flatpak-automatic/about/contributing/</loc>
+         <lastmod>2026-05-03</lastmod>
+    </url>
+    <url>
+         <loc>https://fedorabee.github.io/flatpak-automatic/about/security/</loc>
          <lastmod>2026-05-03</lastmod>
     </url>
 </urlset>
