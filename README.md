@@ -80,6 +80,15 @@ sudo dnf makecache && sudo dnf install -y flatpak-automatic
 sudo apt update && sudo apt install -y flatpak-automatic
 ```
 
+**Local Development (pip):**
+
+For local development or testing without RPM/DEB packaging, you can install the
+package in editable mode:
+
+```bash
+pip install -e ".[test,apprise]"
+```
+
 ### 3. Enable the Timer
 
 To enable and start the automatic update timer:

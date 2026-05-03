@@ -41,6 +41,8 @@ components:
   configuration for snapshot behavior and Snapper settings.
 - **YAML Configs**: Stores structured settings (e.g., `config.default.yaml`,
   `config.user.default.yaml`, `config.example.yaml`).
+- **Python Packaging (`pyproject.toml`)**: Defines the project metadata,
+  dependencies, and entry points following PEP 621.
 
 ## 🛠 Project Standards
 

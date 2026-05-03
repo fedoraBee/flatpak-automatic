@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flatpak-automatic"
+version = "1.5.16-rc2"
+authors = [
+  { name = "fedoraBee", email = "9395414+fedoraBee@users.noreply.github.com" },
+]
+description = "Secure, systemd-native automation for Flatpak updates"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "GPL-3.0-or-later" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: System :: Archiving :: Packaging",
+]
+dependencies = [
+    "PyYAML",
+    "dbus-python",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+apprise = [
+    "apprise",
+]
+
+[project.urls]
+Homepage = "https://github.com/fedoraBee/flatpak-automatic"
+
+[project.scripts]
+flatpak-automatic = "flatpak_automatic.__main__:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

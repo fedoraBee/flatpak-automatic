@@ -26,10 +26,9 @@ class AutomationEngine:
         )
         if self.config:
             print(f"{Colors.OKGREEN}✅ Configuration is valid.{Colors.ENDC}")
-            print(
-                f"   {yaml.dump(self.config, default_flow_style=False, sort_keys=False).replace('\n', '\n   ')}",
-                end="",
-            )
+            dump = yaml.dump(self.config, default_flow_style=False, sort_keys=False)
+            indented_dump = dump.replace("\n", "\n   ")
+            print(f"   {indented_dump}", end="")
         else:
             print(f"{Colors.WARNING}⚠️ Configuration is empty or invalid.{Colors.ENDC}")
 
