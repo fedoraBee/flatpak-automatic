@@ -73,7 +73,7 @@ class AutomationEngine:
         self.state["last_try"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         StateManager.save(self.state, self.user_scope)
 
-        updater = FlatpakUpdater(excludes=self.config.get("excludes", []))
+        updater = FlatpakUpdater(excludes=self.config.get("exclusions", []))
         if not updater.check_updates():
             logging.info("No Flatpak updates available.")
             return True

@@ -13,6 +13,17 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.16-rc2] - 2026-05-03
+
+### 🚀 Features
+
+- _(update)_ Add exclusion list and dual-default configuration for non-root
+  users
+
+### 🚜 Refactor
+
+- _(config)_ Implement dual-default loading and XDG skeleton mechanism
+
 ## [1.5.16-rc1] - 2026-05-03
 
 ### 🚀 Features

@@ -24,6 +24,13 @@
 # TODO(Doc Lead): Enforce Type/Default comments
 auto_update: true
 
+# List of Flatpak App IDs to exclude from the automatic update process.
+# Example: ["org.mozilla.firefox", "com.discordapp.Discord"]
+# Type: list of strings, Default: []
+exclusions:
+  - "org.mozilla.firefox"
+  - "com.discordapp.Discord"
+
 
 # Notification policy: 'always', 'on-change', 'on-failure', or 'never'.
 # TODO(Doc Lead): Enforce Type/Default comments

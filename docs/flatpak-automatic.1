@@ -55,7 +55,17 @@ Run in interactive desktop mode. This keeps the terminal window open after the u
 .SH FILES
 .I /etc/flatpak-automatic/config.yaml
 .RS
-Primary YAML configuration file.
+Primary system-wide YAML configuration file.
+.RE
+.I /etc/flatpak-automatic/config.user.yaml
+.RS
+Default configuration template for non-root users.
+.RE
+.I ~/.config/flatpak-automatic/config.yaml
+.RS
+User-specific configuration override. Automatically generated from
+.I config.example.yaml
+on first run if missing.
 .RE
 .I /etc/flatpak-automatic/templates/
 .RS

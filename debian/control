@@ -3,7 +3,6 @@ Section: admin
 Priority: optional
 Maintainer: GitOps DevSecOps Team <noreply@github.com>
 Build-Depends: debhelper (>= 11)
-Recommends: python3-apprise
 Standards-Version: 4.5.0
 
 Package: flatpak-automatic

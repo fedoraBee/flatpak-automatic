@@ -5,6 +5,7 @@ import logging
 import json
 from unittest.mock import MagicMock, patch, mock_open
 from typing import Any
+from pathlib import Path
 
 mock_dbus = MagicMock()
 sys.modules["dbus"] = mock_dbus
@@ -78,13 +79,20 @@ class TestSnapperManager:
 
 
 class TestLoadConfig:
-    @patch("os.path.exists")
-    def test_load_config_parsing(self, mock_exists: Any) -> None:
-        mock_exists.side_effect = lambda path: (
-            path == "/etc/flatpak-automatic/config.yaml"
-        )
-        mock_file_content = "auto_update: false\n"
-        with patch("builtins.open", mock_open(read_data=mock_file_content)):
+    @patch("src.flatpak_automatic.config.ConfigManager._find_resource")
+    @patch(
+        "pathlib.Path.open", new_callable=mock_open, read_data="auto_update: false\n"
+    )
+    def test_load_config_parsing(
+        self, mock_path_open: Any, mock_find_resource: Any
+    ) -> None:
+        # Mock find_resource to return a Path object that "exists"
+        mock_find_resource.return_value = MagicMock(spec=Path)
+        mock_find_resource.return_value.exists.return_value = True
+        mock_find_resource.return_value.open = mock_path_open
+
+        # We need to bypass geteuid to simulate root for this specific test
+        with patch("os.geteuid", return_value=0):
             config = fa.load_config()
             assert config.get("auto_update") is False
 

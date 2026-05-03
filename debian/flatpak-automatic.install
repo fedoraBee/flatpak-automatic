@@ -1,6 +1,7 @@
-config/config.default.yaml /etc/flatpak-automatic/config.yaml
-config/config.example.yaml /etc/flatpak-automatic/
-config/templates/* /etc/flatpak-automatic/templates/
+config/config.default.yaml etc/flatpak-automatic/
+config/config.example.yaml etc/flatpak-automatic/
+config/config.user.default.yaml etc/flatpak-automatic/
+config/templates/* etc/flatpak-automatic/templates/
 assets/flatpak-automatic.desktop usr/share/applications/
-assets/logo.svg usr/share/icons/hicolor/scalable/apps/flatpak-automatic.svg
-config/systemd/flatpak-automatic-user.* usr/lib/systemd/user/flatpak-automatic.*
+assets/logo.svg usr/share/icons/hicolor/scalable/apps/
+config/systemd/flatpak-automatic-user.* usr/lib/systemd/user/
