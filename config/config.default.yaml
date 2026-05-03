@@ -22,7 +22,7 @@
 
 # Automatically install available updates.
 # If set to false, the script will only perform dry-runs and send notifications.
-# TODO(Doc Lead): Enforce Type/Default comments
+
 auto_update: true
 
 # List of Flatpak App IDs to exclude from the automatic update process.
@@ -36,7 +36,7 @@ exclusions: []
 # 'on-change': Send a notification only when updates were installed.
 # 'on-failure': Send a notification only when an error occurred.
 # 'never': Disable all notifications.
-# TODO(Doc Lead): Enforce Type/Default comments
+
 auto_notify: always
 
 # ------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ auto_notify: always
 # These settings control the systemd timer execution schedule.
 # Changes require running 'flatpak-automatic --apply-timer' or restarting the timer.
 
-# TODO(Doc Lead): Enforce Type/Default comments
+
 timer:  # The execution schedule (e.g., 'daily', 'weekly', '*-*-* 04:00:00').
   schedule: daily
 
@@ -60,7 +60,7 @@ timer:  # The execution schedule (e.g., 'daily', 'weekly', '*-*-* 04:00:00').
 # Snapper Snapshot Settings
 # ------------------------------------------------------------------------------
 
-# TODO(Doc Lead): Enforce Type/Default comments
+
 snapshots:  # Globally enable or disable snapshot creation.
   enabled: true
 
@@ -78,14 +78,14 @@ snapshots:  # Globally enable or disable snapshot creation.
 # Define where and how to send update reports and alerts.
 # Each group can have multiple notification methods (desktop, mail, webhooks, apprise).
 
-# TODO(Doc Lead): Enforce Type/Default comments
+
 notification_policy:
   desktop: true
   mails: false
   webhooks: false
   apprise: false
 
-# TODO(Doc Lead): Enforce Type/Default comments
+
 notification_groups:
   - name: "Default Local Notifications"
 

@@ -1,4 +1,13 @@
 # ==============================================================================
+# CONFIGURATION SCHEMA
+# ==============================================================================
+# ENFORCEMENT: Every configuration key below MUST define:
+# - Description: Operational purpose of the key.
+# - Type: Valid data type (e.g., string, boolean, integer).
+# - Default: Fallback value if omitted.
+# ==============================================================================
+
+# ==============================================================================
 # Flatpak Automatic - User-Level Default Configuration
 # ==============================================================================
 # This file contains the default configuration for rootless user-level execution.
@@ -47,6 +56,9 @@ snapshots:
 # ------------------------------------------------------------------------------
 # Notification Groups
 # ------------------------------------------------------------------------------
+# Define where and how to send update reports and alerts.
+# Each group can have multiple notification methods (desktop, mail, webhooks, apprise).
+
 
 notification_policy:
   desktop: true
@@ -54,21 +66,48 @@ notification_policy:
   webhooks: false
   apprise: false
 
-notification_groups:
-  - name: "Default User Notifications"
 
+notification_groups:
+  - name: "Default Local Notifications"
+
+    # Notification title (supports $UPDATE_COUNT and $hostname).
     title:
       success: "[$(hostname)] Flatpak Automatic (User): $UPDATE_COUNT upgrades installed."
       failure: "[$(hostname)] Flatpak Automatic (User): Update failed!"
 
+    # Templates for the notification body (located in /etc/flatpak-automatic/templates/).
     body_template:
       success: default_success.md
       failure: default_failure.md
 
     desktop:
       title:
-        success: "Flatpak Automatic (User): $UPDATE_COUNT upgrades installed."
-        failure: "Flatpak Automatic (User): Update failed!"
+        success: "Flatpak Automatic: $UPDATE_COUNT upgrades installed."
+        failure: "Flatpak Automatic: Update failed!"
       body_template:
         success: default_desktop_success.md
         failure: default_desktop_failure.md
+
+    # Example: Email Notifications (requires s-nail or mailx)
+    mails:
+      enabled: false
+      to:
+        - admin@example.com
+      from: "Flatpak Automatic <noreply@$(hostname)>"
+      body_template:
+        success: default_mail_success.html
+        failure: default_mail_failure.html
+
+    # Example: Webhook Notifications
+    webhooks:
+      enabled: false
+      urls:
+        - https://webhook.site/your-unique-id
+      secret: "your-hmac-secret"
+
+    # Example: Apprise Notifications (supports Discord, Telegram, Slack, etc.)
+    apprise:
+      enabled: false
+      urls:
+        - discord://webhook_id/webhook_token
+        - telegram://bot_token/chat_id
