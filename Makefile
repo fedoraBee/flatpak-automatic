@@ -44,6 +44,7 @@ lint-rpm:
 install:
 	install -d $(DESTDIR)/etc/flatpak-automatic/templates
 	install -m 0644 config/config.example.yaml $(DESTDIR)/etc/flatpak-automatic/config.example.yaml
+	install -m 0644 config/config.user.yaml $(DESTDIR)/etc/flatpak-automatic/config.user.yaml
 	install -m 0644 config/config.default.yaml $(DESTDIR)/etc/flatpak-automatic/config.yaml
 	install -m 0644 config/templates/default.md $(DESTDIR)/etc/flatpak-automatic/templates/default.md
 	install -m 0644 config/templates/default_success.md $(DESTDIR)/etc/flatpak-automatic/templates/default_success.md

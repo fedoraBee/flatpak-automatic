@@ -28,6 +28,9 @@ class FlatpakUpdater:
 
     def apply_updates(self) -> bool:
         cmd = ["flatpak", "update", "-y", "--noninteractive"]
+        for exclude in self.excludes:
+            cmd.extend(["--exclude", exclude])
+
         result = subprocess.run(cmd, capture_output=True, text=True)
         self.update_log += (
             f"\n\n--- Flatpak Execution Log ---\n{result.stdout}\n{result.stderr}"

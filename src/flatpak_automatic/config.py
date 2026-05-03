@@ -73,22 +73,30 @@ class ConfigManager:
     def load() -> Dict[str, Any]:
         """
         Load configuration using a Dual Default strategy.
-        1. Load packaged system defaults.
+        1. Load packaged system defaults (default for root, user for standard user).
         2. If root: Return defaults.
         3. If non-root: Auto-generate skeleton (if missing) and merge user overrides.
         """
         is_root = os.geteuid() == 0
 
         # Identify source paths for defaults and examples
+        if is_root:
+            default_filename = "config.default.yaml"
+            default_fallback = CONFIG_FILE
+        else:
+            default_filename = "config.user.yaml"
+            default_fallback = "/etc/flatpak-automatic/config.user.yaml"
+
         system_default_path = ConfigManager._find_resource(
-            "config.default.yaml", CONFIG_FILE
+            default_filename, default_fallback
         )
         example_config_path = ConfigManager._find_resource(
             "config.example.yaml", "/etc/flatpak-automatic/config.example.yaml"
         )
 
-        # Layer 1: System-wide Defaults
+        # Layer 1: Base Defaults
         config: Dict[str, Any] = {}
+
         if system_default_path.exists():
             try:
                 with system_default_path.open("r", encoding="utf-8") as f:

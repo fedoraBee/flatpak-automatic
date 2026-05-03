@@ -20,10 +20,13 @@ Flatpak environment remains current and resilient.
   snapshots
 - **Flexible Notifications:** Multiple delivery methods and formats supported,
   adapting to varying infrastructure needs.
+- **Exclusion List:** Prevent specific Flatpaks from updating automatically.
 - **Systemd Integration:** Managed via standard oneshot services and timers
 - **Smart Execution:** Dry-run checks prevent unnecessary snapshots and logs
-- **Configurable:** Easily tune email, snapshot, and scheduling behavior via
-  `/etc/flatpak-automatic/config.yaml`
+- **Dual-Default Configuration:** Separate system and user-level default
+  profiles with XDG-compliant overrides and auto-scaffolding.
+- **Atomic-like Rollbacks:** Integrates with Snapper/Btrfs for pre/post
+  snapshots.
 - **Non-Root Execution:** Secure, user-level systemd integration.
 - **Desktop Integration:** Native XDG `.desktop` entry included for seamless
   launching from GUI application menus (GNOME, KDE, etc.) with automated
