@@ -53,9 +53,24 @@ if [ -f "${DOCS_DIR}/index.md" ]; then
     sed -i 's|src="assets/banner.svg"|src="assets/banner.svg"|g' "${DOCS_DIR}/index.md"
 fi
 
-# Fix banner paths in AGENTS.md
+# Fix banner paths
 if [ -f "${DOCS_DIR}/agents.md" ]; then
-    sed -i 's|src="assets/banner.svg"|src="assets/banner.svg"|g' "${DOCS_DIR}/agents.md"
+    sed -i 's|src="assets/banner.svg"|src="../assets/banner.svg"|g' "${DOCS_DIR}/agents.md"
+fi
+if [ -f "${DOCS_DIR}/changelog.md" ]; then
+    sed -i 's|src="assets/banner.svg"|src="../assets/banner.svg"|g' "${DOCS_DIR}/changelog.md"
+fi
+
+if [ -f "${DOCS_DIR}/maintainers.md" ]; then
+    sed -i 's|src="assets/banner.svg"|src="../assets/banner.svg"|g' "${DOCS_DIR}/maintainers.md"
+fi
+
+if [ -f "${DOCS_DIR}/about/contributing.md" ]; then
+    sed -i 's|src="../assets/banner.svg"|src="../../assets/banner.svg"|g' "${DOCS_DIR}/about/contributing.md"
+fi
+
+if [ -f "${DOCS_DIR}/about/security.md" ]; then
+    sed -i 's|src="../assets/banner.svg"|src="../../assets/banner.svg"|g' "${DOCS_DIR}/about/security.md"
 fi
 
 echo "Documentation files prepared in ${DOCS_DIR}/"

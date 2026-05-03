@@ -4,7 +4,7 @@
 Banner" width="450"></div>
 <!-- prettier-ignore-end -->
 
-# Technical Manifest (`AGENT.md` / `AGENTS.md`)
+# Technical Manifest
 
 **Flatpak Automatic** is a secure, systemd-native automation wrapper for Flatpak
 updates. It features Snapper-integrated atomic rollbacks, multi-channel alerting

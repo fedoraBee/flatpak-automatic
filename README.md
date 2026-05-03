@@ -37,7 +37,7 @@ Flatpak environment remains current and resilient.
 Flatpak Automatic is distributed via a dedicated repository hosted on GitHub
 Pages for both RPM (Fedora/RHEL) and DEB (Ubuntu/Debian) distributions:
 
-👉 <https://fedorabee.github.io/flatpak-automatic/>
+👉 <https://fedorabee.github.io/flatpak-automatic/repository/>
 
 ### 1. Add the Repository
 
