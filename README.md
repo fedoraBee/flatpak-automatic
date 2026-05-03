@@ -237,14 +237,10 @@ If you have `ENABLE_EMAIL=yes` but are not receiving notifications, check your
 `s-nail` configuration. The mail client relies on `/etc/mail.rc`. Ensure your
 SMTP server, port, and authentication credentials are set up correctly.
 
-## Development & QA
-
-See `docs/development.md` for our strict testing matrix (DBus & Notifications)
-and GitOps patcher workflows.
-
 ## 🔗 Resources
 
-- 🌐 Project Repo: <https://fedorabee.github.io/flatpak-automatic/>
+- 📝 [Project Documentation](https://github.com/fedoraBee/flatpak-automatic)
+- 🌐 [Repository](https://fedorabee.github.io/flatpak-automatic/repository/)
 - 📖 [Technical Manifest](AGENTS.md)
 - 🛠 [Development Guide](docs/development.md)
 - 🤝 [Contribution Guidelines](.github/CONTRIBUTING.md)
