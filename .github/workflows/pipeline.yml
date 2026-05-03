@@ -337,12 +337,12 @@ jobs:
 
           # Generate the documentation site
           # 1. Prepare docs directory
-          bash scripts-source/scripts/maintainer/prepare-docs.sh scripts-source
+          python3 scripts-source/scripts/maintainer/prepare_docs.py scripts-source
 
           # 2. Generate the repository markdown page
           REPO_ROOT="$(pwd)"
           export REPO_ROOT
-          OUTPUT_FILE="$(pwd)/docs/repository.md"
+          OUTPUT_FILE="$(pwd)/build_docs/repository.md"
           export OUTPUT_FILE
           export OUTPUT_FORMAT="markdown"
           TEMPLATE_DIR="$(pwd)/scripts-source/docs/templates"
@@ -367,7 +367,7 @@ jobs:
           echo "${{ github.ref_name }}" > VERSION
 
           # Clean up temporary source and artifacts
-          rm -rf scripts-source incoming-artifacts .rpmbuild debs/flatpak-automatic_*.buildinfo debs/flatpak-automatic_*.changes site/ docs/ mkdocs.yml
+          rm -rf scripts-source incoming-artifacts .rpmbuild debs/flatpak-automatic_*.buildinfo debs/flatpak-automatic_*.changes site/ build_docs/ mkdocs.yml
 
           # Ensure all packages and metadata are staged
           rm -f .gitignore
