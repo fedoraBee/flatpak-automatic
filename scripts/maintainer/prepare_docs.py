@@ -5,14 +5,14 @@ import sys
 import re
 
 
-def safe_copy(src: str, dst: str):
+def safe_copy(src: str, dst: str) -> None:
     """Copy file only if source and destination are different."""
     if os.path.exists(dst) and os.path.samefile(src, dst):
         return
     shutil.copy2(src, dst)
 
 
-def prepare_docs(src_dir: str, docs_dir: str):
+def prepare_docs(src_dir: str, docs_dir: str) -> None:
     print(f"Preparing documentation in {docs_dir} using sources from {src_dir}...")
 
     if not os.path.exists(docs_dir):
@@ -81,7 +81,7 @@ def prepare_docs(src_dir: str, docs_dir: str):
     print(f"Documentation files prepared in {docs_dir}/")
 
 
-def transform_files(docs_dir: str):
+def transform_files(docs_dir: str) -> None:
     # Banner path replacements based on directory depth
     replacements = [
         # (pattern, replacement, file_glob)
