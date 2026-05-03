@@ -50,6 +50,10 @@ src = "src/flatpak_automatic/cli.py"
 search = "v{current_version}"
 
 [[file]]
+src = "pyproject.toml"
+search = "version = \"{current_version}\""
+
+[[file]]
 src = "config/sysconfig/flatpak-automatic"
 search = "# Version: {current_version}"
 
