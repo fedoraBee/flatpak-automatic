@@ -1,0 +1,25 @@
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-weight: bold;
+    font-size: 0.7em;
+    border-radius: 4px;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+
+.badge-success {
+    background-color: #009688;
+    color: white;
+}
+
+.badge-info {
+    background-color: #03a9f4;
+    color: white;
+}
+
+.footer {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}

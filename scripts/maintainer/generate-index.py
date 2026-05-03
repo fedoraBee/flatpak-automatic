@@ -25,11 +25,17 @@ def get_version_info(filename: str) -> Optional[str]:
 def main() -> None:
     repo_root = os.environ.get("REPO_ROOT", "public")
     output_file = os.environ.get("OUTPUT_FILE", os.path.join(repo_root, "index.html"))
+    output_format = os.environ.get("OUTPUT_FORMAT", "html")
     template_dir = os.environ.get("TEMPLATE_DIR", "docs/templates")
     assets_src_dir = os.environ.get("ASSETS_SRC_DIR", "assets")
 
+    if output_format == "markdown":
+        template_name = "repository.md.j2"
+    else:
+        template_name = "index.html.j2"
+
     print(
-        f"DEBUG: Using repo_root={repo_root}, output_file={output_file}, template_dir={template_dir}, assets_src_dir={assets_src_dir}"
+        f"DEBUG: Using repo_root={repo_root}, output_file={output_file}, format={output_format}, template={template_name}"
     )
     # 1. Collect all RPM versions and channels
     rpm_dir = os.path.join(repo_root, "rpms")
@@ -165,7 +171,7 @@ def main() -> None:
         loader=FileSystemLoader(template_dir),
         autoescape=select_autoescape(["html", "htm", "xml"]),
     )
-    template = env.get_template("index.html.j2")
+    template = env.get_template(template_name)
     github_repo = os.environ.get("GITHUB_REPOSITORY", "fedoraBee/flatpak-automatic")
     build_sha = os.environ.get("GITHUB_SHA", "unknown")
     build_run_id = os.environ.get("GITHUB_RUN_ID", "unknown")

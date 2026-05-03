@@ -1,0 +1,68 @@
+site_name: Flatpak Automatic
+site_description: Secure, systemd-native automation wrapper for Flatpak updates.
+site_url: https://fedorabee.github.io/flatpak-automatic/
+repo_url: https://github.com/fedoraBee/flatpak-automatic
+repo_name: fedoraBee/flatpak-automatic
+edit_uri: edit/main/
+
+theme:
+  name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+extra_css:
+  - extra.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Repository: repository.md
+  - Guides:
+    - Development: development.md
+    - Maintainers: maintainers.md
+  - Project Info:
+    - Agents: agents.md
+    - Changelog: changelog.md
+    - Security: security.md
+    - License: license.md
+
+plugins:
+  - search
+  - minify:
+      minify_html: true

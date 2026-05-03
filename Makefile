@@ -11,10 +11,19 @@ TOPDIR := $(CURDIR)/.rpmbuild
 PREFIX ?= /usr
 SYSCONFDIR ?= /etc
 
-.PHONY: all install prep rpm rpm-build rpm-sign rpm-repo lint lint-shell lint-md lint-spec lint-rpm clean deb
+.PHONY: all install prep rpm rpm-build rpm-sign rpm-repo lint lint-shell lint-md lint-spec lint-rpm clean deb docs-prep docs-build docs-serve
 
 all:
 	@echo "Nothing to build. Use 'make install' or 'make rpm'."
+
+docs-prep:
+	bash scripts/maintainer/prepare-docs.sh
+
+docs-build: docs-prep
+	mkdocs build
+
+docs-serve: docs-prep
+	mkdocs serve
 
 prep:
 	@echo "Preparing build environments..."
