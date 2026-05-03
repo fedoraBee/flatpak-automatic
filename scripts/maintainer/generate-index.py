@@ -4,7 +4,7 @@ import datetime
 import re
 import shutil
 from typing import Optional, List, Dict, Any, Set
-from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
 def version_sort_key(ver_str: str) -> list[int]:
