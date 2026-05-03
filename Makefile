@@ -2,7 +2,7 @@
 
 NAME := flatpak-automatic
 EPOCH := 1
-VERSION := 1.5.17-rc4
+VERSION := 1.5.17
 REL_NUM := 1
 DATE := $(shell LC_ALL=C date +"%a %b %d %Y")
 AUTHOR := "fedoraBee <9395414+fedoraBee@users.noreply.github.com>"
@@ -17,7 +17,7 @@ all:
 	@echo "Nothing to build. Use 'make install' or 'make rpm'."
 
 docs-prep:
-	bash scripts/maintainer/prepare-docs.sh
+	python3 scripts/maintainer/prepare_docs.py
 
 docs-build: docs-prep
 	mkdocs build

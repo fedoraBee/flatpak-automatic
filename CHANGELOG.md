@@ -13,6 +13,22 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.17] - 2026-05-03
+
+### 📚 Documentation
+
+- Link to license in contributing guide
+- Simplify resources section in generated index.md via prepare-docs.sh
+- Replace prepare-docs.sh with Python script and translate index.md links
+- Fix SameFileError in prepare_docs.py and finalize link translations
+- Separate generated documentation from source docs folder using build_docs
+- Update resource link transformations in prepare_docs.py
+
+### ⚙️ Miscellaneous Tasks
+
+- Commit remaining manual refinements and script updates
+- _(release)_ Bump version to 1.5.17-rc4
+
 ## [1.5.17-rc4] - 2026-05-03
 
 ### 📚 Documentation
