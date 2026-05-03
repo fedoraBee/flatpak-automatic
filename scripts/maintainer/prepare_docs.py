@@ -113,8 +113,16 @@ def transform_files(docs_dir: str):
         content = content.replace("(CHANGELOG.md)", "(changelog.md)")
         content = content.replace("(MAINTAINERS.md)", "(maintainers.md)")
 
-        # Actually, let's just do what they asked: translate the paths.
-        # If they want it simplified, they can ask, but "translate paths" implies keeping them.
+        # Specific resource link transformations
+        content = content.replace(
+            "- 📝 [Project Documentation](https://fedorabee.github.io/flatpak-automatic/)",
+            "- 📝 [GitHub Source Code](https://github.com/fedoraBee/flatpak-automatic/)",
+        )
+        content = content.replace(
+            "- 🌐 [Repository](https://fedorabee.github.io/flatpak-automatic/repository/)",
+            "- 🌐 [Repository](repository.md)",
+        )
+
         with open(index_path, "w") as f:
             f.write(content)
 
