@@ -17,7 +17,7 @@ all:
 	@echo "Nothing to build. Use 'make install' or 'make rpm'."
 
 docs-prep:
-	bash scripts/maintainer/prepare-docs.sh
+	python3 scripts/maintainer/prepare_docs.py
 
 docs-build: docs-prep
 	mkdocs build

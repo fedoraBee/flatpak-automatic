@@ -337,7 +337,7 @@ jobs:
 
           # Generate the documentation site
           # 1. Prepare docs directory
-          bash scripts-source/scripts/maintainer/prepare-docs.sh scripts-source
+          python3 scripts-source/scripts/maintainer/prepare_docs.py scripts-source
 
           # 2. Generate the repository markdown page
           REPO_ROOT="$(pwd)"

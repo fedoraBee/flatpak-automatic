@@ -239,13 +239,13 @@ SMTP server, port, and authentication credentials are set up correctly.
 
 ## 🔗 Resources
 
-- 📝 [Project Documentation](https://github.com/fedoraBee/flatpak-automatic)
+- 📝 [Project Documentation](https://fedorabee.github.io/flatpak-automatic/)
 - 🌐 [Repository](https://fedorabee.github.io/flatpak-automatic/repository/)
 - 📖 [Technical Manifest](AGENTS.md)
 - 🛠 [Development Guide](docs/development.md)
 - 🤝 [Contribution Guidelines](.github/CONTRIBUTING.md)
 - 📜 [Changelog](CHANGELOG.md)
-- 🧑‍💻 [Maintainers' Guide](MAINTAINERS.md)
+- 🧑‍💻 [Maintainer's Guide](MAINTAINERS.md)
 
 ## ⚠️ Disclaimer
 
