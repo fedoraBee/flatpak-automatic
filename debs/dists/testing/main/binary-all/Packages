@@ -412,11 +412,11 @@ Installed-Size: 132
 Depends: flatpak, systemd, python3, python3-yaml, python3-dbus
 Recommends: python3-apprise
 Filename: pool/main/f/flatpak-automatic/flatpak-automatic_1.5.17~rc3-1_all.deb
-Size: 32768
-MD5sum: 9adca6be59d70cbed6a35f728918fbc9
-SHA1: a5eebd570a2eaa41553ed1b37db5433a3a560dee
-SHA256: db6b9b140b4aafd90ebb9ee1d281467f5216ca887513857afcc020d078d8471e
-SHA512: a238793892aacf419381e7b541b467e20beffff052643ef71dfabe5e845a3fbfc643d3c36cd13e9193bdaa025935737398951ce0262e326da881e44b77b1b938
+Size: 32764
+MD5sum: 0bff37ee2f8e187d77491fd448eeb74f
+SHA1: 9ddcd1fc4dff0cffc46a9e6c6ef8a6b5c65ed620
+SHA256: 368c3c92727e3114c5ff257324d103889539a215aefaafaa32ffe6382981a7d9
+SHA512: a0f57b124f59f047d9cd968ed65b338f1473b22ebd24f5f415d70f5d55db04d71f6853ddf02828e12872e4017e8688c7c175e24f1b2e5a94831f561cc233121d
 Description: Secure, systemd-native automation for Flatpak updates
  A secure, systemd-native automation wrapper for Flatpak updates. It
  features Snapper-integrated atomic rollbacks, multi-channel alerting
