@@ -1,6 +1,6 @@
 config/config.default.yaml /etc/flatpak-automatic/config.yaml
 config/config.example.yaml /etc/flatpak-automatic/config.example.yaml
-config/config.user.yaml /etc/flatpak-automatic/config.user.yaml
+config/config.user.default.yaml /etc/flatpak-automatic/config.user.yaml
 config/config.example.yaml /etc/flatpak-automatic/
 config/templates/* /etc/flatpak-automatic/templates/
 assets/flatpak-automatic.desktop usr/share/applications/

@@ -84,7 +84,7 @@ class ConfigManager:
             default_filename = "config.default.yaml"
             default_fallback = CONFIG_FILE
         else:
-            default_filename = "config.user.yaml"
+            default_filename = "config.user.default.yaml"
             default_fallback = "/etc/flatpak-automatic/config.user.yaml"
 
         system_default_path = ConfigManager._find_resource(
