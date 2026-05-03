@@ -68,7 +68,7 @@ class DesktopNotifier:
                             "notify-send",
                             "-a",
                             "Flatpak Automatic",
-                            "-i",
+                            "-n",
                             icon_param,
                         ]
                         + hints
