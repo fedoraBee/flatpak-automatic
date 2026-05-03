@@ -13,6 +13,17 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.17-rc1] - 2026-05-03
+
+### 🚀 Features
+
+- _(package)_ Add pyproject.toml following PEP 621 standards
+- Unify documentation with MkDocs Material theme and integrate DNF index
+
+### 🐛 Bug Fixes
+
+- _(core)_ Ensure f-string compatibility with Python < 3.12
+
 ## [1.5.16-rc2] - 2026-05-03
 
 ### 🚀 Features
