@@ -1,5 +1,5 @@
 # ==============================================================================
-# ENTERPRISE CONFIGURATION SCHEMA
+# CONFIGURATION SCHEMA
 # ==============================================================================
 # ENFORCEMENT: Every configuration key below MUST define:
 # - Description: Operational purpose of the key.

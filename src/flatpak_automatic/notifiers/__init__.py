@@ -18,9 +18,17 @@ except ImportError:
         "apprise is not installed. Universal notifications will be bypassed."
     )
 
+__all__ = [
+    "NotificationRouter",
+    "TemplateRenderer",
+    "DesktopNotifier",
+    "MailNotifier",
+    "WebhookNotifier",
+]
+
 
 class NotificationRouter:
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Dict[str, Any]) -> None:
         self.config = config
         self.groups = config.get("notification_groups", [])
 
@@ -36,7 +44,9 @@ class NotificationRouter:
                 }
             )
 
-    def dispatch_all(self, title: str, body: str, success: bool, update_count: int = 0):
+    def dispatch_all(
+        self, title: str, body: str, success: bool, update_count: int = 0
+    ) -> None:
         if not self.groups:
             return
 
@@ -49,7 +59,12 @@ class NotificationRouter:
             "UPDATE_COUNT": str(update_count),
         }
 
-        def _resolve(group_cfg, target_cfg, field_name, default_val):
+        def _resolve(
+            group_cfg: Dict[str, Any],
+            target_cfg: Dict[str, Any],
+            field_name: str,
+            default_val: Any,
+        ) -> Any:
             target_val = (
                 target_cfg.get(field_name)
                 if target_cfg and field_name in target_cfg
@@ -58,7 +73,7 @@ class NotificationRouter:
             group_val = group_cfg.get(field_name)
             state_key = "success" if success else "failure"
 
-            def get_state_val(v):
+            def get_state_val(v: Any) -> Any:
                 if isinstance(v, dict):
                     return v.get(state_key)
                 return v

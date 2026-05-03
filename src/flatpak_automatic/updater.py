@@ -1,9 +1,9 @@
 import subprocess
-from typing import List
+from typing import List, Optional
 
 
 class FlatpakUpdater:
-    def __init__(self, excludes: List[str] = None) -> None:
+    def __init__(self, excludes: Optional[List[str]] = None) -> None:
         self.updates_available: bool = False
         self.update_log: str = ""
         self.update_count: int = 0

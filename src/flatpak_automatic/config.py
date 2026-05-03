@@ -4,7 +4,7 @@ import shutil
 import logging
 import yaml
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, cast
 
 # Import file path constants from sibling modules
 from .logging_utils import STATE_FILE, USER_STATE_FILE
@@ -27,7 +27,7 @@ class StateManager:
         try:
             if path.exists():
                 with path.open("r", encoding="utf-8") as f:
-                    return json.load(f)
+                    return cast(Dict[str, Any], json.load(f))
         except (json.JSONDecodeError, PermissionError) as e:
             logging.warning(f"Could not load state from {path}: {e}")
 

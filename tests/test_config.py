@@ -1,5 +1,14 @@
+import os
+import sys
 from pathlib import Path
 from unittest.mock import patch, MagicMock
+from typing import Any
+
+# Ensure src is in the path for tests and linting
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
+)
+
 from flatpak_automatic.config import ConfigManager
 
 
@@ -11,12 +20,13 @@ class TestConfigManager:
     @patch("os.geteuid")
     def test_load_config_user_skeleton_source(
         self,
-        mock_geteuid,
-        mock_safe_load,
-        mock_gen_skeleton,
-        mock_get_user_path,
-        mock_find_resource,
-    ):
+        mock_geteuid: MagicMock,
+        mock_safe_load: MagicMock,
+        mock_gen_skeleton: MagicMock,
+        mock_get_user_path: MagicMock,
+        mock_find_resource: MagicMock,
+    ) -> None:
+        """Verify that user config is scaffolded from the correct user default source."""
         # Simulate non-root user
         mock_geteuid.return_value = 1000
 
@@ -32,7 +42,7 @@ class TestConfigManager:
         mock_get_user_path.return_value = user_config_path
 
         # Mock find_resource to return specific Path mocks
-        def side_effect(filename, fallback):
+        def side_effect(filename: str, fallback: str) -> Any:
             if filename == "config.user.default.yaml":
                 return user_default_path
             return MagicMock(spec=Path)
@@ -47,7 +57,10 @@ class TestConfigManager:
 
     @patch("pathlib.Path.mkdir")
     @patch("shutil.copy")
-    def test_generate_skeleton_execution(self, mock_copy, mock_mkdir):
+    def test_generate_skeleton_execution(
+        self, mock_copy: MagicMock, mock_mkdir: MagicMock
+    ) -> None:
+        """Test the low-level _generate_skeleton file operations."""
         target = MagicMock(spec=Path)
         source = MagicMock(spec=Path)
         source.exists.return_value = True
