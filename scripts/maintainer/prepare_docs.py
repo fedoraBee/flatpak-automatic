@@ -150,5 +150,5 @@ def transform_files(docs_dir: str):
 
 if __name__ == "__main__":
     src = sys.argv[1] if len(sys.argv) > 1 else "."
-    dest = "docs"
+    dest = "build_docs"
     prepare_docs(src, dest)

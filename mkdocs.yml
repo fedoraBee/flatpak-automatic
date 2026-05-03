@@ -4,6 +4,7 @@ site_url: https://fedorabee.github.io/flatpak-automatic/
 repo_url: https://github.com/fedoraBee/flatpak-automatic
 repo_name: fedoraBee/flatpak-automatic
 edit_uri: edit/main/
+docs_dir: build_docs
 
 theme:
   name: material
