@@ -69,7 +69,8 @@ To deploy changes locally for testing:
 3. **Update Local Repo:** `cp -r repo/ ../dnf-repos/flatpak-automatic/`
 4. **Install/Reinstall:**
    `sudo dnf reinstall -Cy ../dnf-repos/flatpak-automatic/latest/testing/*.rpm`
-5. **Start Timer:** `systemctl enable --now flatpak-automatic.timer`
+5. **Manage Timer:** `sudo flatpak-automatic --enable-timer` (or
+   `--disable-timer`)
 
 ## 🤖 AI & CLI Guidelines
 
@@ -129,7 +130,7 @@ To deploy changes locally for testing:
 - **Versioning & Release Process (`tbump`):** Do **NOT** manually edit
   `CHANGELOG.md` during feature development.
   1. For a new release, you MUST use tbump in no-push mode:
-     `tbump <version> --no-push`.
+     `tbump <version> --no-push --non-interactive`.
   2. `tbump` will automatically trigger the hook to sync/generate the
      `CHANGELOG.md` based on commit history, bump the version in `Makefile` and
      metadata files, and bundle it into a single commit.

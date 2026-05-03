@@ -79,15 +79,23 @@ sudo apt update && sudo apt install -y flatpak-automatic
 
 ### 3. Enable the Timer
 
+To enable and start the automatic update timer:
+
 ```bash
-sudo systemctl enable --now flatpak-automatic.timer
+sudo flatpak-automatic --enable-timer
 ```
 
-To run `flatpak-automatic` securely without root privileges, utilize the
-provided user-level systemd units:
+To disable and stop the timer:
 
 ```bash
-systemctl --user enable --now flatpak-automatic.timer
+sudo flatpak-automatic --disable-timer
+```
+
+To run `flatpak-automatic` securely without root privileges, utilize the same
+commands without `sudo`:
+
+```bash
+flatpak-automatic --enable-timer
 ```
 
 This ensures updates are handled within the user session, adhering to strict
@@ -139,7 +147,9 @@ Key options include:
 To trigger an update manually or use the advanced CLI:
 
 ```text
+
 usage: flatpak-automatic [-h] [-d] [-t] [-f] [-s] [-l] [-a] [-c] [-r]
+                         [--desktop-mode] [-e] [-x]
 
 Flatpak Automatic - Advanced Update Automation
 
@@ -153,6 +163,9 @@ options:
   -a, --apply-schedule  Apply systemd timer overrides based on config settings.
   -c, --check-config    Validate and print the current configuration, then exit.
   -r, --reload          Send SIGHUP to a running instance to reload its config.
+  --desktop-mode        Run in interactive desktop mode (keeps terminal open).
+  -e, --enable-timer    Enable and start the systemd timer (auto-scope).
+  -x, --disable-timer   Disable and stop the systemd timer (auto-scope).
 ```
 
 ### Architecture & Deployment
