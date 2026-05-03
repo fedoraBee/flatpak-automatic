@@ -9,7 +9,7 @@ from .webhook import WebhookNotifier
 from ..config import ConfigManager
 
 try:
-    import apprise  # type: ignore
+    import apprise
 
     APPRISE_AVAILABLE = True
 except ImportError:

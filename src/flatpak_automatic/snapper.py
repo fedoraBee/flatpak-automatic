@@ -6,7 +6,7 @@ try:
 
     DBUS_AVAILABLE = True
 except ImportError:
-    dbus = None  # type: ignore
+    dbus = None
     DBUS_AVAILABLE = False
     logging.warning(
         "python3-dbus is not installed. Snapper snapshots will be bypassed."
