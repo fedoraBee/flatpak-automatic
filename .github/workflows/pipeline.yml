@@ -78,6 +78,7 @@ jobs:
       - name: Run Mypy Type Check
         run: |
           pipx install mypy
+          export MYPYPATH=src
           mypy --strict scripts/ tests/
       - name: Run Bandit SAST
         run: |
@@ -141,7 +142,9 @@ jobs:
             apt-get update && apt-get install -y bats python3-pytest make hostname bsdutils python3-yaml
           fi
       - name: Run Tests
-        run: make test
+        run: |
+          export PYTHONPATH=src
+          make test
 
   build-rpm:
     name: Build & Verify RPMs
@@ -449,4 +452,5 @@ jobs:
           dnf install -y python3 python3-pytest python3-dbus python3-dbusmock dbus-daemon flatpak python3-yaml
       - name: Run DBus Integration Tests
         run: |
+          export PYTHONPATH=src
           python3 -m pytest tests/integration_test_dbus.py

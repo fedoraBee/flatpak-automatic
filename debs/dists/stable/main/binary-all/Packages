@@ -364,15 +364,15 @@ Version: 1.5.17-1
 Priority: optional
 Section: admin
 Maintainer: GitOps DevSecOps Team <noreply@github.com>
-Installed-Size: 132
+Installed-Size: 133
 Depends: flatpak, systemd, python3, python3-yaml, python3-dbus
 Recommends: python3-apprise
 Filename: pool/main/f/flatpak-automatic/flatpak-automatic_1.5.17-1_all.deb
-Size: 33168
-MD5sum: eb470fdd1ef17bf164c40c6fc9f64f8e
-SHA1: 7ef43526439d56185deb3750515be98963b11d09
-SHA256: d162d7d855e06f697d409036c053eb3f76d015836795345d965d82dcf922cc01
-SHA512: bfb260bbd481cb22d2747fa1501f13fe9aa996e93e345813bbe44f28c1cc20bb9f5e15c7c501926bad2e9ab04f15bfc56b752fa30789c891416ecd215e13d7bc
+Size: 33148
+MD5sum: e1136a9ad858732da90d30ea424f8210
+SHA1: 1f70201dc044b3bb4e965f30a0a9ee5532009bec
+SHA256: c6db5c4c0feb5749c1d3e01dcd3eb7fa785a2c75540605a1284e552a1e044cc3
+SHA512: 9fef5cafaf597d6adffcae0686bf6a7875ad9c2e8b3e51f0f904fbf6459304d377a529de7308397a51601c5ba596a0f9ff9e8bb5ee71e20ba8dafdf70ea64738
 Description: Secure, systemd-native automation for Flatpak updates
  A secure, systemd-native automation wrapper for Flatpak updates. It
  features Snapper-integrated atomic rollbacks, multi-channel alerting
