@@ -40,10 +40,18 @@ components:
 - **Sysconfig (`config/sysconfig/flatpak-automatic`)**: Holds environment-based
   configuration for snapshot behavior and Snapper settings.
 - **YAML Configs**: Stores structured settings (e.g., `config.default.yaml`,
-  `config.example.yaml`).
+  `config.user.default.yaml`, `config.example.yaml`).
 
 ## 🛠 Project Standards
 
+- **Exclusion Management**: Supports surgical updates by allowing users to
+  exclude specific Flatpak App IDs via the `exclusions` configuration key.
+- **Dual-Default Configuration**: Employs a context-aware loading strategy that
+  switches between system (`config.default.yaml`) and user
+  (`config.user.default.yaml`) default profiles based on process UID.
+- **XDG Scaffolding**: Automatically initializes a user's local configuration at
+  `~/.config/flatpak-automatic/config.yaml` using the provided example skeleton
+  upon first rootless execution.
 - **Idempotency**: The update script handles "No updates available" gracefully
   by cleaning up its own pre-update snapshots.
 - **Atomic Operations**: Every update attempt is preceded by a Snapper `pre`
