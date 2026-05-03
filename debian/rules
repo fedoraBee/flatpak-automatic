@@ -16,6 +16,11 @@ override_dh_auto_test:
 
 override_dh_install:
 	dh_install
+	# Renames for consistency with RPM and Makefile
+	mv debian/flatpak-automatic/etc/flatpak-automatic/config.default.yaml debian/flatpak-automatic/etc/flatpak-automatic/config.yaml || true
+	mv debian/flatpak-automatic/etc/flatpak-automatic/config.user.default.yaml debian/flatpak-automatic/etc/flatpak-automatic/config.user.yaml || true
 	mv debian/flatpak-automatic/usr/share/icons/hicolor/scalable/apps/logo.svg debian/flatpak-automatic/usr/share/icons/hicolor/scalable/apps/flatpak-automatic.svg || true
 	mv debian/flatpak-automatic/usr/lib/systemd/user/flatpak-automatic-user.service debian/flatpak-automatic/usr/lib/systemd/user/flatpak-automatic.service || true
 	mv debian/flatpak-automatic/usr/lib/systemd/user/flatpak-automatic-user.timer debian/flatpak-automatic/usr/lib/systemd/user/flatpak-automatic.timer || true
+	# Cleanup any __pycache__ that might have slipped in
+	find debian/flatpak-automatic/usr/share/flatpak-automatic -name "__pycache__" -type d -exec rm -rf {} + || true
