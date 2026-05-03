@@ -4,7 +4,7 @@
 Banner" width="450"></div>
 <!-- prettier-ignore-end -->
 
-## 🎉 Contributing
+# 🎉 Contributing
 
 Thank you for contributing to **Flatpak Automatic**! This project aims to
 provide a secure, configurable, and systemd-native automation wrapper for

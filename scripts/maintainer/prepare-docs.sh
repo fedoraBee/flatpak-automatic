@@ -21,7 +21,13 @@ done
 
 # Handle LICENSE (not an .md file)
 if [ -f "${SRC_DIR}/LICENSE" ]; then
-    cp "${SRC_DIR}/LICENSE" "${DOCS_DIR}/license.md"
+    {
+        echo "# License"
+        echo ""
+        echo '```text'
+        cat "${SRC_DIR}/LICENSE"
+        echo '```'
+    } >"${DOCS_DIR}/license.md"
 fi
 
 # Handle files from .github/
@@ -59,10 +65,6 @@ if [ -f "${DOCS_DIR}/agents.md" ]; then
 fi
 if [ -f "${DOCS_DIR}/changelog.md" ]; then
     sed -i 's|src="assets/banner.svg"|src="../assets/banner.svg"|g' "${DOCS_DIR}/changelog.md"
-fi
-
-if [ -f "${DOCS_DIR}/maintainers.md" ]; then
-    sed -i 's|src="assets/banner.svg"|src="../assets/banner.svg"|g' "${DOCS_DIR}/maintainers.md"
 fi
 
 if [ -f "${DOCS_DIR}/about/contributing.md" ]; then
