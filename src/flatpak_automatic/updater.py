@@ -10,14 +10,25 @@ class FlatpakUpdater:
         self.excludes = excludes or []
 
     def check_updates(self) -> bool:
-        cmd = ["flatpak", "update", "--dry-run", "--columns=application,branch,version"]
+        cmd = [
+            "flatpak",
+            "remote-ls",
+            "--updates",
+            "--columns=application,branch,version",
+        ]
         result = subprocess.run(cmd, capture_output=True, text=True)
-        if "Nothing to do" not in result.stdout and result.stdout.strip() != "":
+        if result.stdout.strip() != "":
             lines = result.stdout.strip().split("\n")
+            # Skip header if present
+            if lines and "Application ID" in lines[0]:
+                lines = lines[1:]
+
             filtered_lines = []
             for line in lines:
-                app_id = line.split("\t")[0] if "\t" in line else line.split()[0]
-                if app_id not in self.excludes and line.strip() != "":
+                if not line.strip():
+                    continue
+                app_id = line.split()[0]
+                if app_id not in self.excludes:
                     filtered_lines.append(line)
 
             if filtered_lines:

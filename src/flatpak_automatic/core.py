@@ -54,6 +54,64 @@ class AutomationEngine:
         print(f"\n{Colors.OKCYAN}📊 Execution State:{Colors.ENDC}")
         print(f"   Last Update Try: {self.state.get('last_try', 'Never')}")
         print(f"   Last Success:    {self.state.get('last_success', 'Never')}")
+
+        # Timer Status Check
+        print(f"\n{Colors.OKCYAN}⏰ Automation Timer:{Colors.ENDC}")
+        try:
+            # Check both 'is-enabled' and 'is-active' for a complete picture
+            is_enabled = (
+                subprocess.run(
+                    ["systemctl", "is-enabled", "flatpak-automatic.timer"]
+                    + self.flatpak_scope,
+                    capture_output=True,
+                    text=True,
+                ).returncode
+                == 0
+            )
+            is_active = (
+                subprocess.run(
+                    ["systemctl", "is-active", "flatpak-automatic.timer"]
+                    + self.flatpak_scope,
+                    capture_output=True,
+                    text=True,
+                ).returncode
+                == 0
+            )
+
+            if is_active:
+                status_str = f"{Colors.OKGREEN}Active & Running{Colors.ENDC}"
+                icon = "🟢"
+            elif is_enabled:
+                status_str = f"{Colors.OKCYAN}Enabled but Idle{Colors.ENDC}"
+                icon = "🟡"
+            else:
+                status_str = f"{Colors.WARNING}Disabled / Inactive{Colors.ENDC}"
+                icon = "⚪"
+
+            print(f"   Status: {icon} {status_str}")
+
+            if is_active:
+                # Show next run time if active
+                next_run = subprocess.run(
+                    [
+                        "systemctl",
+                        "show",
+                        "flatpak-automatic.timer",
+                        "--property=NextElapseUSecRealtime",
+                        "--value",
+                    ]
+                    + self.flatpak_scope,
+                    capture_output=True,
+                    text=True,
+                ).stdout.strip()
+                if next_run and next_run != "0":
+                    print(f"   Next Run: {next_run}")
+
+        except Exception:
+            print(
+                f"   Status: {Colors.WARNING}❓ Unknown (Service not found){Colors.ENDC}"
+            )
+
         print(f"\n{Colors.OKCYAN}📦 Installed Flatpaks:{Colors.ENDC}")
         result = subprocess.run(
             ["flatpak", "list", "--app", "--columns=application,version"],
@@ -61,7 +119,8 @@ class AutomationEngine:
             text=True,
         )
         for line in result.stdout.strip().split("\n"):
-            print(f"   {line}")
+            if line:
+                print(f"   {line}")
 
     def run(
         self, dry_run: bool = False, force: bool = False, desktop_mode: bool = False
