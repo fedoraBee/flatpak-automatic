@@ -1,6 +1,7 @@
 from unittest.mock import patch, MagicMock
 import sys
 import os
+from typing import Any
 
 # Mock dbus before importing anything that might use it
 sys.modules["dbus"] = MagicMock()
@@ -14,7 +15,7 @@ from flatpak_automatic.notifiers.mail import MailNotifier  # noqa: E402
 
 @patch("shutil.which")
 @patch("flatpak_automatic.config.ConfigManager.verify_policy")
-def test_mail_notifier_cmd_construction(mock_verify, mock_which):
+def test_mail_notifier_cmd_construction(mock_verify: Any, mock_which: Any) -> None:
     mock_verify.return_value = True
     # Only return a path for 'mailx', not for 's-nail' or others
     mock_which.side_effect = lambda x: "/usr/bin/mailx" if x == "mailx" else None
