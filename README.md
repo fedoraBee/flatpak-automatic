@@ -60,6 +60,7 @@ REPO="https://fedorabee.github.io/flatpak-automatic/debs"
 RING="/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg"
 
 curl -fsSL $KEY | sudo gpg --dearmor -o $RING
+sudo chmod 644 $RING
 echo "deb [signed-by=$RING] $REPO stable main" | \
 sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
 ```
