@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flatpak-automatic"
-version = "1.5.26"
+version = "1.5.28"
 authors = [
   { name = "fedoraBee", email = "9395414+fedoraBee@users.noreply.github.com" },
 ]
