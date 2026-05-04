@@ -141,24 +141,49 @@ class AutomationEngine:
                 f"   Status: {Colors.WARNING}❓ Unknown (Service not found){Colors.ENDC}"
             )
 
-        # Notification Availability
-        print(f"\n{Colors.OKCYAN}🔔 Notification Services:{Colors.ENDC}")
+        # Notification & Delivery Services
+        from .notifiers import DesktopNotifier, WebhookNotifier
+
+        print(f"\n{Colors.OKCYAN}🔔 Notification & Delivery Services:{Colors.ENDC}")
+
+        # Apprise
         apprise_status = (
             f"{Colors.OKGREEN}Available{Colors.ENDC}"
             if APPRISE_AVAILABLE
-            else f"{Colors.WARNING}Not installed{Colors.ENDC}"
+            else f"{Colors.WARNING}Not installed (optional){Colors.ENDC}"
         )
         apprise_icon = "🟢" if APPRISE_AVAILABLE else "⚪"
-        print(f"   Apprise Availability: {apprise_icon} {apprise_status}")
+        print(f"   Apprise Status:   {apprise_icon} {apprise_status}")
 
+        # Mail
         mail_avail = MailNotifier.is_available()
         mail_status = (
             f"{Colors.OKGREEN}Available{Colors.ENDC}"
             if mail_avail
-            else f"{Colors.WARNING}Client missing{Colors.ENDC}"
+            else f"{Colors.WARNING}Client missing (s-nail/mailx){Colors.ENDC}"
         )
         mail_icon = "🟢" if mail_avail else "⚪"
-        print(f"   Mail Availability:    {mail_icon} {mail_status}")
+        print(f"   Mail Dispatcher:  {mail_icon} {mail_status}")
+
+        # Desktop
+        desktop_avail = DesktopNotifier.is_available()
+        desktop_status = (
+            f"{Colors.OKGREEN}Available{Colors.ENDC}"
+            if desktop_avail
+            else f"{Colors.WARNING}notify-send missing{Colors.ENDC}"
+        )
+        desktop_icon = "🟢" if desktop_avail else "⚪"
+        print(f"   Desktop Alerts:   {desktop_icon} {desktop_status}")
+
+        # Webhook / Network
+        webhook_avail = WebhookNotifier.is_available()
+        webhook_status = (
+            f"{Colors.OKGREEN}Online{Colors.ENDC}"
+            if webhook_avail
+            else f"{Colors.WARNING}Offline / No Network{Colors.ENDC}"
+        )
+        webhook_icon = "🟢" if webhook_avail else "⚪"
+        print(f"   Network/Webhook:  {webhook_icon} {webhook_status}")
 
         print(f"\n{Colors.OKCYAN}📦 Installed Flatpaks:{Colors.ENDC}")
         result = subprocess.run(

@@ -1,11 +1,16 @@
 import os
 import logging
 import subprocess
+import shutil
 from ..config import ConfigManager
 from ..constants import ICON_PATH
 
 
 class DesktopNotifier:
+    @classmethod
+    def is_available(cls) -> bool:
+        return shutil.which("notify-send") is not None
+
     def __init__(self) -> None:
         self.enabled = ConfigManager.verify_policy("desktop")
 

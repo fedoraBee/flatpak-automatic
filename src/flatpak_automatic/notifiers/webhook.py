@@ -5,6 +5,18 @@ from ..config import ConfigManager
 
 
 class WebhookNotifier:
+    @classmethod
+    def is_available(cls) -> bool:
+        """Checks if the system has basic network connectivity."""
+        import socket
+
+        try:
+            # Connect to a reliable public host (Google DNS)
+            socket.create_connection(("8.8.8.8", 53), timeout=2)
+            return True
+        except (OSError, socket.timeout):
+            return False
+
     def __init__(self, urls: List[str], secret: str = "") -> None:
         self.enabled = ConfigManager.verify_policy("webhooks")
         self.urls = urls
