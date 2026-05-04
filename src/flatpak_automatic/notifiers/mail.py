@@ -30,13 +30,17 @@ class MailNotifier:
             return
 
         try:
+            # Determine content type (HTML vs Plain Text)
+            is_html = "<html>" in body.lower() or "<!doctype html>" in body.lower()
+            content_type = "text/html" if is_html else "text/plain"
+
             # Command-line arguments vary significantly between mail clients:
-            # - s-nail / heirloom-mailx: Uses -r for sender
+            # - s-nail / heirloom-mailx: Uses -r for sender, -a for headers
             # - mailutils: Uses -a "From: ..." or --return-address
-            # - bsd-mailx: Often does not support -r; depends on system config/postfix
+            # - bsd-mailx: Uses -a for headers, often lacks -r
             cmd = [self.mail_cmd, "-s", subject]
 
-            # Detect specific client capabilities to set the sender correctly
+            # Detect specific client capabilities to set the sender and headers correctly
             help_out = ""
             try:
                 # Some clients use --help, others use -h, others just fail on unknown args
@@ -58,6 +62,10 @@ class MailNotifier:
             except Exception as e:
                 logging.debug(f"Could not determine mail client capabilities: {e}")
 
+            # Add Content-Type header via -a if supported (common for mailx/s-nail/mailutils)
+            if "-a" in help_out or not help_out:
+                cmd += ["-a", f"Content-Type: {content_type}; charset=UTF-8"]
+
             # Check if -r (sender/return-address) is supported
             # Known to work with: s-nail, heirloom-mailx, GNU Mailutils, and modern bsd-mailx
             if (
@@ -68,12 +76,11 @@ class MailNotifier:
             ):
                 if self.from_address:
                     cmd += ["-r", self.from_address]
-            elif "GNU Mailutils" in help_out:
-                # Fallback for Mailutils if -r isn't explicitly in help but it's identified
-                if self.from_address:
-                    cmd += ["-a", f"From: {self.from_address}"]
+            elif "-a" in help_out and self.from_address:
+                # Fallback for clients where -r is missing but -a (append header) works
+                cmd += ["-a", f"From: {self.from_address}"]
             else:
-                # Default to bsd-mailx behavior (no -r support)
+                # Default behavior (sender override may not be supported)
                 logging.debug(
                     f"Using default mail dispatch for {self.mail_cmd} (sender override may not be supported)."
                 )
@@ -86,7 +93,7 @@ class MailNotifier:
             )
             process.communicate(input=body.encode("utf-8"))
             logging.info(
-                f"Notification dispatched to {self.to_address} via {self.mail_cmd}."
+                f"Notification dispatched to {self.to_address} via {self.mail_cmd} ({content_type})."
             )
         except Exception as e:
             logging.error(f"Failed to dispatch mail: {e}")
