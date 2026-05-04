@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+
+#DEBHELPER#
+
+case "$1" in
+    configure)
+        # Wipe any existing bytecode cache to ensure freshness after install/update
+        find /usr/share/flatpak-automatic -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

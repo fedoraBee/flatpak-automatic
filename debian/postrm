@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+#DEBHELPER#
+
+case "$1" in
+    purge|remove)
+        # Wipe bytecode cache on removal
+        rm -rf /usr/share/flatpak-automatic/__pycache__ 2>/dev/null || true
+        # Also cleanup subdirectories
+        find /usr/share/flatpak-automatic -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+    ;;
+
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    ;;
+
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0
