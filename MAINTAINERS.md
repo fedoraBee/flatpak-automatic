@@ -136,3 +136,30 @@ Before running `tbump` and cutting a new release, ensure the following:
       changelog).
 - [ ] CI pipeline (`lint`, `smoke-test`) is currently passing on `main`.
 - [ ] Ensure your local `main` branch is fully synced with `origin/main`.
+
+## Troubleshooting for Maintainers
+
+### GPG Signing Failures
+
+If `make rpm-sign` fails:
+
+- Ensure your GPG agent is running and has the private key loaded.
+- Verify `%_gpg_name` in `~/.rpmmacros` matches your key ID.
+- Check if `rpmsign` is installed (`sudo dnf install rpm-sign`).
+
+### Repository Sync Issues
+
+If the GitHub Pages repository shows outdated packages:
+
+- Verify the `release.yml` GitHub Action completed successfully for the latest
+  tag.
+- Ensure the `gh-pages` branch contains the expected `rpms/` and `debs/`
+  structures.
+- Check for metadata signature mismatches; the GPG key must be consistent across
+  releases.
+
+### Metadata Generation Errors
+
+- If `createrepo_c` or `apt-ftparchive` fails, ensure all build-time
+  dependencies are installed on the build machine.
+- For DEB repos, ensure `dpkg-dev` and `apt-utils` are available.

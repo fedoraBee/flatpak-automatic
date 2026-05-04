@@ -96,6 +96,18 @@ provided `make` targets:
 This project enforces a specific workflow for all contributions to ensure
 consistency and automated release management.
 
+### Common Pitfalls & Troubleshooting
+
+- **Linting Failures**: If `make lint` fails, check the output carefully.
+  `markdownlint` is often strict about line lengths (MD013).
+- **Branch Naming**: Ensure your branch follows the
+  `<type>/v<version>-<description>` format, or the GitOps tool will reject it.
+- **Conventional Commits**: If the GitOps tool reports commit message errors,
+  you may need to rebase and squash/reword your commits to follow the
+  specification.
+- **D-Bus in Tests**: Integration tests requiring D-Bus may fail in headless
+  environments without a session bus. Use `dbus-run-session pytest` if needed.
+
 ### 1. Branch Naming Convention
 
 All changes must be developed in a new branch. Branch names MUST follow this
