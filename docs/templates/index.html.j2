@@ -290,6 +290,7 @@ sudo dnf install flatpak-automatic</div>
         </p>
         <div class="code-block"># Download the GPG key and convert it to a format APT understands
 curl -fsSL https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
+sudo chmod 644 /usr/share/keyrings/flatpak-automatic-archive-keyring.gpg
 
 # Add the repository to your system's sources list
 echo "deb [signed-by=/usr/share/keyrings/flatpak-automatic-archive-keyring.gpg] https://{{ github_repo.split('/')[0] }}.github.io/{{ github_repo.split('/')[1] }}/debs stable main" | sudo tee /etc/apt/sources.list.d/flatpak-automatic.list
