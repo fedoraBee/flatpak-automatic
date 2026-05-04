@@ -607,11 +607,11 @@ Installed-Size: 135
 Depends: flatpak, systemd, python3, python3-yaml, python3-dbus, snapper, bsd-mailx | mailutils | s-nail, libnotify-bin
 Recommends: python3-apprise
 Filename: pool/main/f/flatpak-automatic/flatpak-automatic_1.5.23-1_all.deb
-Size: 33808
-MD5sum: f6fbd94eca9de87a7267b800a9aca1d8
-SHA1: aa7119b5db745b5d9c0d3e778d4f746078c2b696
-SHA256: 1c5b639fb2b3e7adc313ea68d7de958cfc970606723e6050f9fc61515c151b18
-SHA512: c2f3431ad4b350bdd5edd5097b6af4b553f5efd6511790f1631f3a96fe5e64f3e357b06e886f5081c26dfd4de4774f195e363d125d82400a5963176a08b7be7a
+Size: 33968
+MD5sum: 9706253be01fb137f046f091f678aa17
+SHA1: 324f582d09647a87dea2e9158ac389b1e9543b2e
+SHA256: bfcd2c38761bafe5f32f53986525d92ceb33a69f422dea08c47e27b4272d0ff9
+SHA512: a7443c8e23139158da16456f7d1e5df54b15657b761cb844923d63a07901a6df8931e1ae07fd697e499f463252c17a09de99c10392f5a55fccd8fee67d650d29
 Description: Secure, systemd-native automation for Flatpak updates
  A secure, systemd-native automation wrapper for Flatpak updates. It
  features Snapper-integrated atomic rollbacks, multi-channel alerting
