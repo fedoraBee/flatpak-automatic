@@ -13,6 +13,13 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.23] - 2026-05-04
+
+### 🐛 Bug Fixes
+
+- Improve mail client compatibility for debian/ubuntu (bsd-mailx support)
+- Use shutil.which for reliable mail client detection
+
 ## [1.5.21] - 2026-05-04
 
 ### 🐛 Bug Fixes
