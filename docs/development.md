@@ -79,12 +79,30 @@ Usage:
 
 This project enforces a Shift-Left testing approach.
 
+- **Config Validation:** Always run `flatpak-automatic --check-config` after
+  modifying default YAML templates.
 - **Integration Tests:** Execute `tests/integration_test_dbus.py` for DBus
   validation.
 - **Notification Tests:** Execute `tests/test_notifications.py` for UI/UX
   alerting validation.
+- **Live Notification Testing:** Use `flatpak-automatic --test-notify` to
+  validate the entire dispatch pipeline.
 - **Automation:** The GitOps patcher logic ensures test coverage is maintained
   on all PRs.
+
+## Troubleshooting for Developers
+
+- **D-Bus Timeouts:** If the dry-run check fails silently, ensure the user has
+  permission to talk to the Flatpak system/session bus.
+- **Path Issues:** In development, the script automatically prioritizes local
+  `config/` and `src/` directories. If it's picking up system-wide files, ensure
+  you are running from the project root.
+- **State Corruption:** If `--status` shows incorrect data, you can safely
+  delete `/var/lib/flatpak-automatic/state.json` (root) or
+  `~/.local/state/flatpak-automatic/state.json` (user) to reset it.
+- **Log Verbosity:** The default logging level is `INFO`. For deep debugging,
+  modify `src/flatpak_automatic/logging_utils.py` or use `DEBUG=1` if
+  implemented (currently requires code modification).
 
 ## Architectural Standards & Feature Parity
 

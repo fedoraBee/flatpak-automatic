@@ -110,9 +110,9 @@ class AutomationEngine:
         notify_type = self.config.get("auto_notify", "always").lower()
         trigger_notify = False
 
-        if notify_type in ("always", "on-update"):
+        if notify_type in ("always", "on-change"):
             trigger_notify = True
-        elif notify_type == "on-error" and not success:
+        elif notify_type == "on-failure" and not success:
             trigger_notify = True
 
         if trigger_notify:
