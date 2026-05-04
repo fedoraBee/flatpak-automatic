@@ -7,6 +7,7 @@ from .desktop import DesktopNotifier
 from .mail import MailNotifier
 from .webhook import WebhookNotifier
 from ..config import ConfigManager
+from ..constants import DATE_FORMAT
 
 try:
     import apprise
@@ -51,7 +52,7 @@ class NotificationRouter:
             "TITLE": title,
             "BODY": body,
             "STATUS": "SUCCESS" if success else "FAILED",
-            "DATE": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "DATE": datetime.now().strftime(DATE_FORMAT),
             "HOSTNAME": socket.gethostname(),
             "UPDATE_COUNT": str(update_count),
             "UPDATE_LIST": body if success else "",

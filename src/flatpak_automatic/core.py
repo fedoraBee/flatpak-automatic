@@ -10,7 +10,7 @@ from .config import StateManager
 from .updater import FlatpakUpdater
 from .snapper import SnapperManager
 from .notifiers import NotificationRouter
-from .constants import Colors
+from .constants import Colors, DATE_FORMAT
 
 
 class AutomationEngine:
@@ -121,7 +121,7 @@ class AutomationEngine:
 
             if is_active:
                 # Show next run time if active
-                next_run = subprocess.run(
+                next_run_raw = subprocess.run(
                     [
                         "systemctl",
                         "show",
@@ -133,7 +133,14 @@ class AutomationEngine:
                     capture_output=True,
                     text=True,
                 ).stdout.strip()
-                if next_run and next_run != "0":
+
+                if next_run_raw and next_run_raw != "0":
+                    # Reformat systemd date (Day YYYY-MM-DD HH:MM:SS TZ) -> YYYY-MM-DD HH:MM:SS
+                    parts = next_run_raw.split()
+                    if len(parts) >= 3:
+                        next_run = f"{parts[1]} {parts[2]}"
+                    else:
+                        next_run = next_run_raw
                     print(f"   Next Run: {next_run}")
 
         except Exception:
@@ -191,8 +198,16 @@ class AutomationEngine:
             capture_output=True,
             text=True,
         )
+        exclusions = self.config.get("exclusions", [])
         for line in result.stdout.strip().split("\n"):
-            if line:
+            if not line:
+                continue
+
+            # Simple parsing of application ID (first column)
+            app_id = line.split()[0]
+            if app_id in exclusions:
+                print(f"   {Colors.WARNING}{line} (Excluded){Colors.ENDC}")
+            else:
                 print(f"   {line}")
         print()  # Trailing empty line
 
@@ -204,7 +219,7 @@ class AutomationEngine:
             logging.info("Automatic updates are disabled via configuration.")
             return True
 
-        self.state["last_try"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.state["last_try"] = datetime.now().strftime(DATE_FORMAT)
         StateManager.save(self.state, self.user_scope)
 
         updater = FlatpakUpdater(excludes=self.config.get("exclusions", []))
@@ -233,7 +248,7 @@ class AutomationEngine:
         success: bool = updater.apply_updates()
 
         if success:
-            self.state["last_success"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.state["last_success"] = datetime.now().strftime(DATE_FORMAT)
             StateManager.save(self.state, self.user_scope)
             if snap_cfg.get("enabled", True):
                 if "snapper" in locals():
