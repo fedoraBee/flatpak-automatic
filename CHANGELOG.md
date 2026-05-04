@@ -20,6 +20,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Improve mail client compatibility for debian/ubuntu (bsd-mailx support)
 - Use shutil.which for reliable mail client detection
 
+## [1.5.22] - 2026-05-04
+
+### 🐛 Bug Fixes
+
+- Improve --reload handling by checking service status before signaling
+
 ## [1.5.21] - 2026-05-04
 
 ### 🐛 Bug Fixes
