@@ -23,9 +23,10 @@ components:
   D-Bus and CLI to avoid unnecessary operations.
 - **Snapshot Integration**: Automatically creates Snapper pre/post snapshots if
   Btrfs and Snapper are detected.
-- **Notification System**: Multi-channel support. Uses Jinja2 templates
-  (`config/templates/`) to format outputs for Apprise, Webhooks, Desktop
-  notifications, and local mail (`s-nail`/`mailx`).
+- **Notification System**: Multi-channel support. Uses `string.Template`
+  formatting with context-aware templates (`config/templates/`) to format
+  outputs for Apprise, Webhooks, Desktop notifications, and local mail
+  (`s-nail`/`mailx`).
 
 ### 2. Systemd Integration (`config/systemd/`)
 
@@ -150,6 +151,21 @@ To deploy changes locally for testing:
 - **Script Requirements:** All scripts (`scripts/maintainer/`, `scripts/build/`)
   must be idempotent, failure-tolerant (using `set -euo pipefail` for bash), and
   safe to re-run.
+
+## 🛠 Agent Troubleshooting Guide
+
+When investigating failures as an AI agent:
+
+1. **Verify Config Layering**: Use `flatpak-automatic --check-config` to see the
+   merged result of system defaults and user overrides.
+2. **Inspect State**: Read the state JSON files to understand the last run
+   context.
+3. **Simulate Notifications**: Use `--test-notify` to ensure the template
+   rendering and dispatch logic are functional.
+4. **Environment Context**: Always check `os.geteuid()` behavior to determine if
+   the service is operating in system or user scope.
+5. **Dry-Run Validation**: For any logic changes to the update process, validate
+   with `--dry-run` to prevent accidental system modifications.
 
 ## 📦 Reference Docs
 

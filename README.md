@@ -16,17 +16,15 @@ Flatpak environment remains current and resilient.
 
 - **Automated Flatpak Updates:** Keep your flatpak applications up-to-date
   seamlessly in the background.
-- **Atomic-like Rollbacks:** Integrates with Snapper/Btrfs for pre/post
-  snapshots
-- **Flexible Notifications:** Multiple delivery methods and formats supported,
-  adapting to varying infrastructure needs.
 - **Exclusion List:** Prevent specific Flatpaks from updating automatically.
+- **Atomic-like Rollbacks:** Integrates with Snapper/Btrfs for pre/post
+  snapshots.
+- **Flexible Notifications:** Multiple delivery methods and formats supported,
+  adapting to varying infrastructure needs (Apprise, Webhooks, Mail, Desktop).
 - **Systemd Integration:** Managed via standard oneshot services and timers
 - **Smart Execution:** Dry-run checks prevent unnecessary snapshots and logs
 - **Dual-Default Configuration:** Separate system and user-level default
   profiles with XDG-compliant overrides and auto-scaffolding.
-- **Atomic-like Rollbacks:** Integrates with Snapper/Btrfs for pre/post
-  snapshots.
 - **Non-Root Execution:** Secure, user-level systemd integration.
 - **Desktop Integration:** Native XDG `.desktop` entry included for seamless
   launching from GUI application menus (GNOME, KDE, etc.) with automated
@@ -134,26 +132,23 @@ The main configuration file is located at:
 
 Key options include:
 
-- `auto_update`: Automatically install available updates.
-- `exclusions`: List of Flatpak App IDs to exclude from automatic updates.
-- `auto_notify`: Notification policy: `always`, `on-change`, `on-failure`, or
-  `never`.
-- `timer.schedule`: The systemd timer execution schedule (e.g., `daily`,
-  weekly`).
-- `timer.delay`: Maximum randomized delay for the timer.
-- `timer.minimum_delay`: Minimum randomized delay for the timer.
-- `snapshots.enabled`: Globally enable or disable Snapper snapshot creation.
-- `snapshots.snapper_config`: The Snapper configuration to use (default:
-  `root`).
-- `snapshots.snapper_descriptions.pre`: Description for pre-update snapshots.
-- `snapshots.snapper_descriptions.post`: Description for post-update snapshots.
-- `notification_policy.desktop`: Enable/disable desktop notifications.
-- `notification_policy.mails`: Enable/disable mail notifications.
-- `notification_policy.webhooks`: Enable/disable webhook notifications.
-- `notification_policy.apprise`: Enable/disable Apprise notifications.
-- `notification_groups`: Defines multiple notification groups with various
-  methods (desktop, mail, webhooks, apprise) and their respective settings
-  (title, body_template, recipient, URLs, etc.).
+- `auto_update`: (bool) Automatically install available updates.
+- `exclusions`: (list) List of Flatpak App IDs to exclude from automatic
+  updates.
+- `auto_notify`: (string) Notification policy: `always`, `on-change`,
+  `on-failure`, or `never`.
+- `timer.schedule`: (string) The systemd timer execution schedule (e.g.,
+  `daily`, `weekly`).
+- `timer.delay`: (string) Maximum randomized delay for the timer.
+- `timer.minimum_delay`: (string) Minimum randomized delay for the timer.
+- `snapshots.enabled`: (bool) Globally enable or disable Snapper snapshot
+  creation.
+- `snapshots.snapper_config`: (string) The Snapper configuration to use
+  (default: `root`).
+- `notification_policy`: (object) Toggle global notification methods: `desktop`,
+  `mails`, `webhooks`, `apprise`.
+- `notification_groups`: (list) Defines multiple notification groups with
+  fine-grained settings (title, body_template, recipient, URLs, etc.).
 
 For non-root users, local configuration overrides can be placed at:
 
@@ -169,7 +164,6 @@ first run).
 To trigger an update manually or use the advanced CLI:
 
 ```text
-
 usage: flatpak-automatic [-h] [-d] [-t] [-f] [-s] [-l] [-a] [-c] [-r]
                          [--desktop-mode] [-e] [-x]
 
@@ -185,7 +179,8 @@ options:
   -a, --apply-schedule  Apply systemd timer overrides based on config settings.
   -c, --check-config    Validate and print the current configuration, then exit.
   -r, --reload          Send SIGHUP to a running instance to reload its config.
-  --desktop-mode        Run in interactive desktop mode (keeps terminal open).
+  --desktop-mode        Run in interactive desktop mode (keeps terminal open
+                        after completion).
   -e, --enable-timer    Enable and start the systemd timer (auto-scope).
   -x, --disable-timer   Disable and stop the systemd timer (auto-scope).
 ```
@@ -193,12 +188,12 @@ options:
 ### Architecture & Deployment
 
 `flatpak-automatic` is designed with a dual-architecture model, supporting
-simultaneous parallel execution for maximum security and flexibility:
+simultaneous parallel execution:
 
 - **System-Wide (Root):** Updates global system flatpaks. Ideal for multi-user
-  or enterprise fleet deployments.
+  deployments.
 - **User-Level (Rootless):** Updates user-specific flatpaks. Recommended as the
-  primary, secure default for single-user desktop environments.
+  primary, secure default for desktop environments.
 
 ## 📁 Repository Contents
 
@@ -214,16 +209,44 @@ The package repository contains:
 If you encounter issues with `flatpak-automatic`, follow these steps to diagnose
 and resolve them:
 
-### 1. Viewing Logs
+### 1. Validate Configuration
 
-Since the script integrates natively with systemd, the best place to check for
-failures or warnings is the system journal:
+If the script behaves unexpectedly after configuration changes, validate your
+YAML syntax and active settings:
+
+```bash
+flatpak-automatic --check-config
+```
+
+### 2. Check Execution History & Logs
+
+Since the script integrates natively with systemd, check the system journal for
+detailed logs of previous runs:
 
 ```bash
 flatpak-automatic --history
 ```
 
-### 2. Snapper Config Errors
+For user-level execution, you can also check the user-specific journal:
+
+```bash
+journalctl --user -u flatpak-automatic.service
+```
+
+### 3. Verify Notification Endpoints
+
+If you are not receiving alerts, use the test notification command to verify
+your configuration and connectivity:
+
+```bash
+flatpak-automatic --test-notify
+```
+
+**Common Email Issues:** If mail notifications fail, ensure `s-nail` or `mailx`
+is configured correctly in `/etc/mail.rc`. Test it manually:
+`echo "test" | s-nail -s "Test Subject" admin@example.com`
+
+### 4. Snapper Config Errors
 
 If the health check reports `FAIL: snapper config 'root' is invalid or missing`,
 you need to initialize a Snapper configuration for your root filesystem:
@@ -232,11 +255,17 @@ you need to initialize a Snapper configuration for your root filesystem:
 sudo snapper -c root create-config /
 ```
 
-### 3. Email/Mailx Authentication Failures
+**Note:** Snapper snapshots require Btrfs and are generally only supported for
+root-level execution.
 
-If you have `ENABLE_EMAIL=yes` but are not receiving notifications, check your
-`s-nail` configuration. The mail client relies on `/etc/mail.rc`. Ensure your
-SMTP server, port, and authentication credentials are set up correctly.
+### 5. System Status Overview
+
+Check the current state of the automation, including last run times and
+monitored packages:
+
+```bash
+flatpak-automatic --status
+```
 
 ## 🔗 Resources
 
