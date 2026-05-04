@@ -52,7 +52,7 @@ This will:
 3. Run `createrepo_c --update` on the RPM directory.
 4. Run `dpkg-scanpackages` and `apt-ftparchive` on the DEB directory.
 5. Generate signed metadata if a GPG key is provided.
-6. Export the public GPG key as `repo/gpg.key`.
+6. Automatically export the public GPG key as `repo/gpg.key`.
 7. Sync the content to `repo/rpms/latest/<CHANNEL>/` and
    `repo/debs/latest/<CHANNEL>/`.
 
