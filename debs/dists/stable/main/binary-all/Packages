@@ -794,6 +794,28 @@ Description: Secure, systemd-native automation for Flatpak updates
 
 Package: flatpak-automatic
 Architecture: all
+Version: 1.5.32-1
+Priority: optional
+Section: admin
+Maintainer: GitOps DevSecOps Team <noreply@github.com>
+Installed-Size: 145
+Depends: flatpak, systemd, python3, python3-yaml, python3-dbus, snapper, bsd-mailx | mailutils | s-nail, libnotify-bin
+Recommends: python3-apprise
+Filename: pool/main/f/flatpak-automatic/flatpak-automatic_1.5.32-1_all.deb
+Size: 36176
+MD5sum: 361ec20acb5a1c23b0eab45d4e56a4af
+SHA1: 78289110912ebb58bc902e1435930e40bc520948
+SHA256: d0382d3f0d259c347ab7a026ee1716a94c0e60cca0f6771d459b5b7157e99a3c
+SHA512: 56c92d6099a070017d352d5bd6d97fbc3c8fd2b5997a82633fe911537cea91d2a7eddda41d39e54dcd8e4c5b8c24ee438e79ca245d413a81757412dc3d533fe2
+Description: Secure, systemd-native automation for Flatpak updates
+ A secure, systemd-native automation wrapper for Flatpak updates. It
+ features Snapper-integrated atomic rollbacks, multi-channel alerting
+ (Apprise, Mail, Webhooks, Desktop), and supports both system-wide and
+ rootless user-level execution. Designed for reliability and ease of
+ use, it ensures your Flatpak environment remains current and resilient.
+
+Package: flatpak-automatic
+Architecture: all
 Version: 1.5.4-1
 Priority: optional
 Section: admin
