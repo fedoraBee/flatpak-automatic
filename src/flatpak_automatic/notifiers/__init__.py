@@ -57,6 +57,8 @@ class NotificationRouter:
             "DATE": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "HOSTNAME": socket.gethostname(),
             "UPDATE_COUNT": str(update_count),
+            "UPDATE_LIST": body if success else "",
+            "LOG_OUTPUT": body if not success else "",
         }
 
         def _resolve(

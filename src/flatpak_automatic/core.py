@@ -35,15 +35,17 @@ class AutomationEngine:
     def dispatch_test_notifications(self) -> None:
         logging.info("Executing Test Notification dispatch...")
         router = NotificationRouter(self.config)
+        test_body = (
+            "org.mozilla.firefox 125.0.1\n"
+            "org.gnome.Calculator 46.0\n"
+            "org.freedesktop.Platform 23.08"
+        )
         router.dispatch_all(
             "[TEST] Flatpak Automatic",
-            "This is a test notification from Flatpak Automatic.",
+            test_body,
             True,
+            update_count=3,
         )
-        # desktop = DesktopNotifier()
-        # desktop.send_notification(
-        #     "Test Notification", "This is a test notification from Flatpak Automatic."
-        # )
 
     def print_status_overview(self) -> None:
         print(
