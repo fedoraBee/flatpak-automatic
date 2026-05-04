@@ -21,7 +21,7 @@ usage() {
 }
 
 check_dependencies() {
-    local deps=("createrepo_c" "gpg" "rpm" "dpkg-scanpackages" "apt-ftparchive")
+    local deps=("createrepo_c" "gpg" "rpm" "apt-ftparchive")
     for dep in "${deps[@]}"; do
         if ! command -v "$dep" >/dev/null 2>&1; then
             echo "Error: Required command '$dep' not found. Please install it."
@@ -113,6 +113,7 @@ if [ ${#DEBS[@]} -gt 0 ]; then
     echo "Generating APT metadata in $DIST_DIR..."
     cd "$REPO_ROOT/debs"
 
+    # Create a temporary config file for apt-ftparchive
     cat <<EOF >apt-release.conf
 APT::FTPArchive::Release::Origin "fedoraBee";
 APT::FTPArchive::Release::Label "Flatpak Automatic";
@@ -126,19 +127,38 @@ EOF
     apt-ftparchive packages "pool/main" >"$BIN_DIR/Packages"
     gzip -9c "$BIN_DIR/Packages" >"$BIN_DIR/Packages.gz"
 
-    apt-ftparchive -c apt-release.conf release "$DIST_DIR" >"$DIST_DIR/Release"
+    # Change to the dist directory to ensure relative paths in Release file
+    cd "dists/$CHANNEL"
+    apt-ftparchive -c ../../apt-release.conf release . >Release
+    cd - >/dev/null
 
     if [ -n "$GPG_KEY_ID" ]; then
         echo "Signing APT metadata in $DIST_DIR..."
         rm -f "$DIST_DIR/Release.gpg" "$DIST_DIR/InRelease"
-        gpg --detach-sign --armor --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$DIST_DIR/Release.gpg" "$DIST_DIR/Release"
-        gpg --clearsign --batch --yes --pinentry-mode loopback --local-user "$GPG_KEY_ID" -o "$DIST_DIR/InRelease" "$DIST_DIR/Release"
+
+        # Sign with detached signature
+        gpg --detach-sign --armor --batch --yes --pinentry-mode loopback \
+            --local-user "$GPG_KEY_ID" \
+            -o "$DIST_DIR/Release.gpg" "$DIST_DIR/Release"
+
+        # Sign with inline signature (InRelease)
+        gpg --clearsign --batch --yes --pinentry-mode loopback \
+            --local-user "$GPG_KEY_ID" \
+            -o "$DIST_DIR/InRelease" "$DIST_DIR/Release"
+    else
+        echo "Warning: GPG_KEY_ID not set. APT repository will be UNSIGNED."
     fi
 
     rm -f apt-release.conf
     cd - >/dev/null
 else
     echo "Warning: No DEBs found in $DEB_SOURCE_DIR. Skipping DEB repo update."
+fi
+
+# --- GPG Key Export ---
+if [ -n "$GPG_KEY_ID" ]; then
+    echo "Exporting public GPG key to $REPO_ROOT/gpg.key..."
+    gpg --armor --export "$GPG_KEY_ID" >"$REPO_ROOT/gpg.key"
 fi
 
 echo "Repository update complete in $REPO_ROOT"
