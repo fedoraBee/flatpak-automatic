@@ -72,7 +72,7 @@ install -m 644 config/systemd/flatpak-automatic-user.timer %{buildroot}%{_prefix
 %dir %{_sysconfdir}/flatpak-automatic
 %dir %{_sysconfdir}/flatpak-automatic/templates
 %config(noreplace) %{_sysconfdir}/flatpak-automatic/config.yaml
-%config(noreplace) %{_sysconfdir}/flatpak-automatic/config.example.yaml
+%{_sysconfdir}/flatpak-automatic/config.example.yaml
 %config(noreplace) %{_sysconfdir}/flatpak-automatic/config.user.yaml
 %config(noreplace) %{_sysconfdir}/flatpak-automatic/templates/*
 

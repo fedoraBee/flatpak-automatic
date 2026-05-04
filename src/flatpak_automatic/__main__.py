@@ -46,6 +46,7 @@ def main() -> None:
         # 4. Handle specialized CLI commands
         if args.check_config:
             engine.validate_config()
+            print()
             sys.exit(0)
 
         if args.reload:
@@ -69,6 +70,7 @@ def main() -> None:
                     print(
                         "   Note: Since this is a oneshot service, it only needs a reload if it's currently executing."
                     )
+                    print()
                     sys.exit(0)
 
                 subprocess.run(
@@ -81,6 +83,7 @@ def main() -> None:
                 )
             except Exception as e:
                 print(f"{Colors.FAIL}❌ Failed to send reload signal: {e}{Colors.ENDC}")
+            print()
             sys.exit(0)
 
         if args.apply_schedule:
@@ -114,6 +117,7 @@ def main() -> None:
                 print(
                     f"{Colors.FAIL}❌ Failed to apply systemd schedule: {e}{Colors.ENDC}"
                 )
+            print()
             sys.exit(0)
 
         if args.enable_timer:
@@ -132,6 +136,7 @@ def main() -> None:
                 )
             except Exception as e:
                 print(f"{Colors.FAIL}❌ Failed to enable/start timer: {e}{Colors.ENDC}")
+            print()
             sys.exit(0)
 
         if args.disable_timer:
@@ -150,6 +155,7 @@ def main() -> None:
                 )
             except Exception as e:
                 print(f"{Colors.FAIL}❌ Failed to disable/stop timer: {e}{Colors.ENDC}")
+            print()
             sys.exit(0)
 
         if args.status:
@@ -170,10 +176,12 @@ def main() -> None:
                     "--no-pager",
                 ]
             )
+            print()
             sys.exit(0)
 
         if args.test_notify:
             engine.dispatch_test_notifications()
+            print()
             sys.exit(0)
 
         # 5. Execute Primary Automation Loop
@@ -185,6 +193,7 @@ def main() -> None:
             print("\n" + Colors.BOLD + "Execution finished." + Colors.ENDC)
             input("Press Enter to close this window...")
 
+        print()
         sys.exit(0 if success else 1)
 
     except KeyboardInterrupt:

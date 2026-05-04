@@ -14,9 +14,6 @@ try:
     APPRISE_AVAILABLE = True
 except ImportError:
     APPRISE_AVAILABLE = False
-    logging.warning(
-        "apprise is not installed. Universal notifications will be bypassed."
-    )
 
 __all__ = [
     "NotificationRouter",

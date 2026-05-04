@@ -28,7 +28,7 @@ class AutomationEngine:
             print(f"{Colors.OKGREEN}✅ Configuration is valid.{Colors.ENDC}")
             dump = yaml.dump(self.config, default_flow_style=False, sort_keys=False)
             indented_dump = dump.replace("\n", "\n   ")
-            print(f"   {indented_dump}", end="")
+            print(f"   {indented_dump}")
         else:
             print(f"{Colors.WARNING}⚠️ Configuration is empty or invalid.{Colors.ENDC}")
 
@@ -48,6 +48,8 @@ class AutomationEngine:
         )
 
     def print_status_overview(self) -> None:
+        from .notifiers import APPRISE_AVAILABLE, MailNotifier
+
         print(
             f"{Colors.HEADER}{Colors.BOLD}[ System Status & Monitoring Overview ]{Colors.ENDC}"
         )
@@ -112,6 +114,25 @@ class AutomationEngine:
                 f"   Status: {Colors.WARNING}❓ Unknown (Service not found){Colors.ENDC}"
             )
 
+        # Notification Availability
+        print(f"\n{Colors.OKCYAN}🔔 Notification Services:{Colors.ENDC}")
+        apprise_status = (
+            f"{Colors.OKGREEN}Available{Colors.ENDC}"
+            if APPRISE_AVAILABLE
+            else f"{Colors.WARNING}Not installed{Colors.ENDC}"
+        )
+        apprise_icon = "🟢" if APPRISE_AVAILABLE else "⚪"
+        print(f"   Apprise Availability: {apprise_icon} {apprise_status}")
+
+        mail_avail = MailNotifier.is_available()
+        mail_status = (
+            f"{Colors.OKGREEN}Available{Colors.ENDC}"
+            if mail_avail
+            else f"{Colors.WARNING}Client missing{Colors.ENDC}"
+        )
+        mail_icon = "🟢" if mail_avail else "⚪"
+        print(f"   Mail Availability:    {mail_icon} {mail_status}")
+
         print(f"\n{Colors.OKCYAN}📦 Installed Flatpaks:{Colors.ENDC}")
         result = subprocess.run(
             ["flatpak", "list", "--app", "--columns=application,version"],
@@ -121,6 +142,7 @@ class AutomationEngine:
         for line in result.stdout.strip().split("\n"):
             if line:
                 print(f"   {line}")
+        print()  # Trailing empty line
 
     def run(
         self, dry_run: bool = False, force: bool = False, desktop_mode: bool = False

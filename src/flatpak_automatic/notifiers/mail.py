@@ -12,6 +12,13 @@ class MailNotifier:
         self.from_address: str = from_address
         self.mail_cmd: Optional[str] = self._find_mail_cmd()
 
+    @classmethod
+    def is_available(cls) -> bool:
+        for cmd in ["s-nail", "mailx", "mailutils", "mail"]:
+            if shutil.which(cmd):
+                return True
+        return False
+
     def _find_mail_cmd(self) -> Optional[str]:
         for cmd in ["s-nail", "mailx", "mailutils", "mail"]:
             if shutil.which(cmd):
