@@ -35,16 +35,43 @@ class MailNotifier:
                 "Skipping mail notification: Mail client or recipient missing."
             )
             return
+
         try:
+            # Command-line arguments vary significantly between mail clients:
+            # - s-nail / heirloom-mailx: Uses -r for sender
+            # - mailutils: Uses -a "From: ..." or --return-address
+            # - bsd-mailx: Often does not support -r; depends on system config/postfix
+            cmd = [self.mail_cmd, "-s", subject]
+
+            # Detect specific client capabilities to set the sender correctly
+            help_out = (
+                subprocess.run(
+                    [self.mail_cmd, "--help"],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                ).stdout
+                or subprocess.run(
+                    [self.mail_cmd, "-h"], capture_output=True, text=True, check=False
+                ).stderr
+            )
+
+            if "s-nail" in help_out or "Heirloom" in help_out:
+                if self.from_address:
+                    cmd += ["-r", self.from_address]
+            elif "GNU Mailutils" in help_out:
+                if self.from_address:
+                    cmd += ["-a", f"From: {self.from_address}"]
+            else:
+                # Default to bsd-mailx behavior (no -r support)
+                logging.debug(
+                    f"Using default mail dispatch for {self.mail_cmd} (sender override may not be supported)."
+                )
+
+            cmd.append(self.to_address)
+
             process = subprocess.Popen(
-                [
-                    self.mail_cmd,
-                    "-s",
-                    subject,
-                    "-r",
-                    self.from_address,
-                    self.to_address,
-                ],
+                cmd,
                 stdin=subprocess.PIPE,
             )
             process.communicate(input=body.encode("utf-8"))
