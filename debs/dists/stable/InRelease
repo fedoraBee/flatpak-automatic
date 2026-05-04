@@ -4,31 +4,31 @@ Hash: SHA512
 Architectures: all
 Codename: stable
 Components: main
-Date: Mon, 04 May 2026 13:27:34 +0000
+Date: Mon, 04 May 2026 14:31:05 +0000
 Description: Flatpak Automatic DEB Repository
 Label: Flatpak Automatic
 Origin: fedoraBee
 Suite: stable
 MD5Sum:
- 887ee9f35e73c45980f8b7e91faceac2              194 Release
- 2374b828824ce24d1c89a9f32ad7f201            34228 main/binary-all/Packages
- e406ad276b0c9fd4ea5e557094c286fb             7540 main/binary-all/Packages.gz
+ 38e4c031d31affbee3a680a0906c7a1a              194 Release
+ 13de27b358d53865bc56b5da07de9f0a            34228 main/binary-all/Packages
+ db8dcbdad75c20d2834c6a00341c8697             7544 main/binary-all/Packages.gz
 SHA1:
- f93c3b0b0911fd779723de952d9b99bf269f2f89              194 Release
- 91361def3f900591a073a905ac1c452a2489fc45            34228 main/binary-all/Packages
- 488d8d270d21f0e1e6f4ee6450f092aad9b5c1a9             7540 main/binary-all/Packages.gz
+ b6d38f86a4e5ccff5c93acdefd57fd7078a7837b              194 Release
+ 4f7add1589cbdd69d0b8481a77847e5b638ad122            34228 main/binary-all/Packages
+ a9e6fef39062f1f2357c7367b32a2ef70d2434d9             7544 main/binary-all/Packages.gz
 SHA256:
- 8887407dde3109f55d8800ef779c11bf7104abba35a336d1cf3cae080011f7bb              194 Release
- 6bce8a6038f98e99d92d0a6a2f5ca8910e18d67b60a75507344ba849da99cfbf            34228 main/binary-all/Packages
- f54decddc0ebda993127d57a2143b9675e0aea75ba8bb4edbba6f70ef29d9e7c             7540 main/binary-all/Packages.gz
+ 932f57bdfa0e6123a21923149a7767887794847586e5cb7a01d42c1ecfed480e              194 Release
+ 9e09bbbc873d62bba7677b2f182838c8c690739a1d94439168996b7b32c3024b            34228 main/binary-all/Packages
+ 5cbc3d063804f994208fdeb288f0737bf785d5e6d15ba78ebe392c389424c49e             7544 main/binary-all/Packages.gz
 SHA512:
- 1906f611b05b7023dda993c55a4764e73c688e241780f30befd7cb73bf87373990aad1f0d1d5545fab5da5f2a769b531a6705b673fe7fbe4ea98557b763b78d6              194 Release
- 6fdbdbfa4053aac07a0238fa62b006a3e9df9329c05550185455aa1ecc9e2e8277f1061ee3692174eddb70e6234ab703f20ceaaf49844907b89f087f5b1ad92f            34228 main/binary-all/Packages
- 5ef1c2f582a14fa1d2559dc389187a7e2f60edc04d3b9708d951bf9c2b5ac3a17cac9fa8f3ebb7ba839f8ca5782adac193a8dac146278006a35ca7b08242cd7d             7540 main/binary-all/Packages.gz
+ 7746d2d9788f43ac8f7cf9161fc26ca3567ddd3816c9f737612fda7f04a70d7d87a79aa40d6ea7f8d1f199ff1ceb0bcbcda9fa6baeab5d789b519033661b42bc              194 Release
+ d89e9c45c2f78f0bcebac350a2e43cba9d6d9233273c2b4604f4f44b88a2eb621344777e86e6827d9403995fa0be06ddbb4994a26fd566294cfe3eb56f26a7da            34228 main/binary-all/Packages
+ f7390dd4fc9f419c73a7f2c909cda8ad928a8ae6ddad3ba5d2fb68e3c6882a0d6782e429f067b96be0506ce726e425faa6c00fc462b61b1212a0cb846658cc1d             7544 main/binary-all/Packages.gz
 -----BEGIN PGP SIGNATURE-----
 
-iHUEARYKAB0WIQSRCfK5ypdCEF7qio5R9PQXhPgciQUCafiexwAKCRBR9PQXhPgc
-ib3xAQCPefyN2orgRZ9Ii+4ofMxgqFmm3a8S2ZIdNohhvZqehAEA3/DMWi/UQx2j
-5senF8cKkGNDh4bSpEfdu3ZtyoFjigk=
-=dU5j
+iHUEARYKAB0WIQSRCfK5ypdCEF7qio5R9PQXhPgciQUCafitqQAKCRBR9PQXhPgc
+iVGRAP4+nEmVp5tjVY57WXZoUuuVm//hJv5IkRkwfRvMKnB8HAEAmRmCHzz6F6eH
+zk8g+INirgmo8hb/p0oP0Ie3tQXxUAk=
+=Hvhd
 -----END PGP SIGNATURE-----
