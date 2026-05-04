@@ -24,6 +24,17 @@ class TestFlatpakUpdater:
 
     @patch("subprocess.run")
     def test_check_updates_none(self, mock_run: Any) -> None:
+        # Test with the typical "no updates" output or header-only output
+        mock_run.return_value = MagicMock(
+            stdout="Application ID\tBranch\tVersion\n", returncode=0
+        )
+        updater = fa.FlatpakUpdater(excludes=[])
+        assert updater.check_updates() is False
+        assert updater.updates_available is False
+
+    @patch("subprocess.run")
+    def test_check_updates_info_messages(self, mock_run: Any) -> None:
+        # Test that informational messages without valid App IDs are ignored
         mock_run.return_value = MagicMock(
             stdout="Looking for updates...\nNothing to do.\n", returncode=0
         )

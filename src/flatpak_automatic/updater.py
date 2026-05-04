@@ -19,15 +19,24 @@ class FlatpakUpdater:
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.stdout.strip() != "":
             lines = result.stdout.strip().split("\n")
-            # Skip header if present
-            if lines and "Application ID" in lines[0]:
-                lines = lines[1:]
 
             filtered_lines = []
             for line in lines:
-                if not line.strip():
+                line = line.strip()
+                if not line or "Application ID" in line:
                     continue
-                app_id = line.split()[0]
+
+                # Basic validation: Flatpak App IDs usually have at least two dots
+                # and don't contain spaces in the ID itself (the first column).
+                parts = line.split()
+                if not parts:
+                    continue
+
+                app_id = parts[0]
+                # Filter out obvious non-AppID lines (like "Looking for updates...")
+                if "." not in app_id or app_id.startswith(" "):
+                    continue
+
                 if app_id not in self.excludes:
                     filtered_lines.append(line)
 
