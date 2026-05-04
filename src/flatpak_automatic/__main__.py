@@ -53,6 +53,24 @@ def main() -> None:
                 f"{Colors.BOLD}{Colors.OKCYAN}🔄 Sending SIGHUP to flatpak-automatic.service...{Colors.ENDC}"
             )
             try:
+                # Check if the service is active/running first
+                check_active = subprocess.run(
+                    ["systemctl", "is-active", "flatpak-automatic.service"]
+                    + flatpak_scope,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+
+                if check_active.returncode != 0:
+                    print(
+                        f"{Colors.WARNING}⚠️  Reload skipped: flatpak-automatic.service is not currently running.{Colors.ENDC}"
+                    )
+                    print(
+                        "   Note: Since this is a oneshot service, it only needs a reload if it's currently executing."
+                    )
+                    sys.exit(0)
+
                 subprocess.run(
                     ["systemctl", "kill", "-s", "HUP", "flatpak-automatic.service"]
                     + flatpak_scope,
