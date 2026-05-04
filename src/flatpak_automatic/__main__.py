@@ -78,8 +78,10 @@ def main() -> None:
                     + flatpak_scope,
                     check=True,
                 )
+                # Wipe bytecode cache to ensure freshness on next run
+                engine.wipe_bytecode_cache()
                 print(
-                    f"{Colors.OKGREEN}✅ Reload signal (SIGHUP) sent successfully.{Colors.ENDC}"
+                    f"{Colors.OKGREEN}✅ Reload signal (SIGHUP) sent and bytecode cache cleared.{Colors.ENDC}"
                 )
             except Exception as e:
                 print(f"{Colors.FAIL}❌ Failed to send reload signal: {e}{Colors.ENDC}")

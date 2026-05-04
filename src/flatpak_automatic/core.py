@@ -32,6 +32,33 @@ class AutomationEngine:
         else:
             print(f"{Colors.WARNING}⚠️ Configuration is empty or invalid.{Colors.ENDC}")
 
+    def wipe_bytecode_cache(self) -> None:
+        """Wipes all Python bytecode cache (__pycache__) in the application directory."""
+        import shutil
+
+        base_dir = (
+            "/usr/share/flatpak-automatic"
+            if not self.user_scope
+            else os.path.expanduser("~/.local/share/flatpak-automatic")
+        )
+        if not os.path.exists(base_dir):
+            # Fallback to local source if not installed system-wide (dev mode)
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        count = 0
+        try:
+            for root, dirs, _ in os.walk(base_dir):
+                if "__pycache__" in dirs:
+                    cache_path = os.path.join(root, "__pycache__")
+                    shutil.rmtree(cache_path)
+                    count += 1
+            if count > 0:
+                logging.debug(
+                    f"Cleared {count} bytecode cache directories in {base_dir}"
+                )
+        except Exception as e:
+            logging.debug(f"Could not clear bytecode cache: {e}")
+
     def dispatch_test_notifications(self) -> None:
         logging.info("Executing Test Notification dispatch...")
         router = NotificationRouter(self.config)

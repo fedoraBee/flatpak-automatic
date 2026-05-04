@@ -61,12 +61,18 @@ install -m 644 config/systemd/flatpak-automatic-user.timer %{buildroot}%{_prefix
 
 %post
 %systemd_post %{name}.service %{name}.timer
+# Wipe any existing bytecode cache to ensure freshness after install/update
+find %{_datadir}/%{name} -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 
 %preun
 %systemd_preun %{name}.service %{name}.timer
 
 %postun
 %systemd_postun_with_restart %{name}.service %{name}.timer
+if [ $1 -eq 0 ]; then
+    # Wipe bytecode cache on total removal
+    find %{_datadir}/%{name} -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+fi
 
 %files
 %dir %{_sysconfdir}/flatpak-automatic

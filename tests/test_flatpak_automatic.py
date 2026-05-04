@@ -81,6 +81,30 @@ class TestSnapperManager:
         assert manager.create_timeline_snapshot() == -1
 
 
+class TestAutomationEngine:
+    @patch("os.walk")
+    @patch("shutil.rmtree")
+    @patch("os.path.exists")
+    def test_wipe_bytecode_cache(
+        self, mock_exists: Any, mock_rmtree: Any, mock_walk: Any
+    ) -> None:
+        mock_exists.return_value = True
+        mock_walk.return_value = [
+            ("/usr/share/flatpak-automatic", ["flatpak_automatic", "__pycache__"], []),
+            ("/usr/share/flatpak-automatic/flatpak_automatic", ["__pycache__"], []),
+        ]
+
+        engine = fa.AutomationEngine({}, {})
+        engine.user_scope = False
+        engine.wipe_bytecode_cache()
+
+        assert mock_rmtree.call_count == 2
+        mock_rmtree.assert_any_call("/usr/share/flatpak-automatic/__pycache__")
+        mock_rmtree.assert_any_call(
+            "/usr/share/flatpak-automatic/flatpak_automatic/__pycache__"
+        )
+
+
 class TestLoadConfig:
     @patch("flatpak_automatic.config.ConfigManager._find_resource")
     @patch(
