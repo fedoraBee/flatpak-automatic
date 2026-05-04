@@ -39,27 +39,37 @@ class MailNotifier:
             # Detect specific client capabilities to set the sender correctly
             help_out = ""
             try:
-                help_out = (
-                    subprocess.run(
-                        [self.mail_cmd, "--help"],
-                        capture_output=True,
-                        text=True,
-                        check=False,
-                    ).stdout
-                    or subprocess.run(
+                # Some clients use --help, others use -h, others just fail on unknown args
+                res = subprocess.run(
+                    [self.mail_cmd, "--help"],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                help_out = (res.stdout or "") + (res.stderr or "")
+                if not help_out:
+                    res = subprocess.run(
                         [self.mail_cmd, "-h"],
                         capture_output=True,
                         text=True,
                         check=False,
-                    ).stderr
-                )
+                    )
+                    help_out = (res.stdout or "") + (res.stderr or "")
             except Exception as e:
                 logging.debug(f"Could not determine mail client capabilities: {e}")
 
-            if "s-nail" in help_out or "Heirloom" in help_out:
+            # Check if -r (sender/return-address) is supported
+            # Known to work with: s-nail, heirloom-mailx, GNU Mailutils, and modern bsd-mailx
+            if (
+                "-r" in help_out
+                or "s-nail" in help_out
+                or "Heirloom" in help_out
+                or "GNU Mailutils" in help_out
+            ):
                 if self.from_address:
                     cmd += ["-r", self.from_address]
             elif "GNU Mailutils" in help_out:
+                # Fallback for Mailutils if -r isn't explicitly in help but it's identified
                 if self.from_address:
                     cmd += ["-a", f"From: {self.from_address}"]
             else:
