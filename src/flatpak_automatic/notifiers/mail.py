@@ -1,5 +1,6 @@
 import logging
 import subprocess
+import shutil
 from typing import Optional
 from ..config import ConfigManager
 
@@ -13,16 +14,8 @@ class MailNotifier:
 
     def _find_mail_cmd(self) -> Optional[str]:
         for cmd in ["s-nail", "mailx", "mailutils", "mail"]:
-            try:
-                if (
-                    subprocess.run(
-                        ["command", "-v", cmd], capture_output=True, shell=True
-                    ).returncode
-                    == 0
-                ):
-                    return cmd
-            except Exception:
-                continue
+            if shutil.which(cmd):
+                return cmd
         return None
 
     def send_mail(self, subject: str, body: str) -> None:
@@ -44,17 +37,24 @@ class MailNotifier:
             cmd = [self.mail_cmd, "-s", subject]
 
             # Detect specific client capabilities to set the sender correctly
-            help_out = (
-                subprocess.run(
-                    [self.mail_cmd, "--help"],
-                    capture_output=True,
-                    text=True,
-                    check=False,
-                ).stdout
-                or subprocess.run(
-                    [self.mail_cmd, "-h"], capture_output=True, text=True, check=False
-                ).stderr
-            )
+            help_out = ""
+            try:
+                help_out = (
+                    subprocess.run(
+                        [self.mail_cmd, "--help"],
+                        capture_output=True,
+                        text=True,
+                        check=False,
+                    ).stdout
+                    or subprocess.run(
+                        [self.mail_cmd, "-h"],
+                        capture_output=True,
+                        text=True,
+                        check=False,
+                    ).stderr
+                )
+            except Exception as e:
+                logging.debug(f"Could not determine mail client capabilities: {e}")
 
             if "s-nail" in help_out or "Heirloom" in help_out:
                 if self.from_address:
