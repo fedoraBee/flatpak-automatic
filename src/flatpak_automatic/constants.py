@@ -39,3 +39,4 @@ def find_brand_icon() -> str:
 ICON_PATH = find_brand_icon()
 TEMPLATE_DIR = "/etc/flatpak-automatic/templates"
 CONFIG_FILE = "/etc/flatpak-automatic/config.yaml"
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
