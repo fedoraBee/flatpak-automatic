@@ -4,14 +4,14 @@ from flatpak_automatic.config import StateManager
 
 
 class TestStateManager:
-    @patch("flatpak_automatic.config.STATE_FILE", "/tmp/system_state.json")
-    @patch("flatpak_automatic.config.USER_STATE_FILE", "/tmp/user_state.json")
+    @patch("flatpak_automatic.config.STATE_FILE", "/tmp/system_state.json")  # nosec
+    @patch("flatpak_automatic.config.USER_STATE_FILE", "/tmp/user_state.json")  # nosec
     def test_get_state_path(self) -> None:
         assert StateManager.get_state_path(user_scope=False) == Path(
-            "/tmp/system_state.json"
+            "/tmp/system_state.json"  # nosec
         )
         assert StateManager.get_state_path(user_scope=True) == Path(
-            "/tmp/user_state.json"
+            "/tmp/user_state.json"  # nosec
         )
 
     @patch("pathlib.Path.exists", return_value=True)

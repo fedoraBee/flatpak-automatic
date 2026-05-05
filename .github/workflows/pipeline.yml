@@ -139,9 +139,9 @@ jobs:
       - name: Install Test Dependencies
         run: |
           if command -v dnf >/dev/null 2>&1; then
-            dnf install -y bats python3-pytest python3-pytest-cov python3-xdist make hostname util-linux python3-yaml
+            dnf install -y bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-yaml
           else
-            apt-get update && apt-get install -y bats python3-pytest python3-pytest-cov python3-xdist make hostname bsdutils python3-yaml
+            apt-get update && apt-get install -y bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname bsdutils python3-yaml
           fi
       - name: Run Tests
         run: |
