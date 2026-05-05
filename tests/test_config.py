@@ -1,7 +1,7 @@
 import os
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, mock_open
 from typing import Any
 
 # Ensure src is in the path for tests and linting
@@ -29,15 +29,20 @@ class TestConfigManager:
         """Verify that user config is scaffolded from the correct user default source."""
         # Simulate non-root user
         mock_geteuid.return_value = 1000
+        # Return a real dict to avoid MagicMock issues in deep_merge
+        mock_safe_load.return_value = {"default": True}
 
         # Setup paths
         user_config_path = MagicMock(spec=Path)
-        user_config_path.exists.return_value = (
-            False  # Simulate user config NOT existing
-        )
+        user_config_path.exists.return_value = False
 
         user_default_path = MagicMock(spec=Path)
         user_default_path.exists.return_value = True
+        # Ensure open returns something that doesn't cause yaml to hang
+        user_default_path.open.return_value.__enter__.return_value = MagicMock()
+        user_default_path.open.return_value.__enter__.return_value.read.return_value = (
+            ""
+        )
 
         mock_get_user_path.return_value = user_config_path
 
@@ -49,8 +54,6 @@ class TestConfigManager:
 
         mock_find_resource.side_effect = side_effect
 
-        # When calling load(), it should trigger _generate_skeleton
-        # We want to verify that user_default_path is passed as source
         ConfigManager.load()
 
         mock_gen_skeleton.assert_called_once_with(user_config_path, user_default_path)
@@ -69,3 +72,98 @@ class TestConfigManager:
 
         target.parent.mkdir.assert_called_once_with(parents=True, exist_ok=True)
         mock_copy.assert_called_once_with(source, target)
+
+    @patch("flatpak_automatic.config.ConfigManager._find_resource")
+    def test_load_system_config(self, mock_find: MagicMock) -> None:
+        """Verify that system config is loaded correctly for root."""
+        mock_path = MagicMock(spec=Path)
+        mock_path.exists.return_value = True
+        # Correctly mock the context manager and read() to return a string
+        m_open = mock_open(read_data="auto_update: true\n")
+        mock_path.open = m_open
+        mock_find.return_value = mock_path
+
+        with patch("os.geteuid", return_value=0):
+            config = ConfigManager.load()
+            assert config.get("auto_update") is True
+
+    @patch("flatpak_automatic.config.ConfigManager._find_resource")
+    def test_load_empty_config(self, mock_find: MagicMock) -> None:
+        mock_path = MagicMock(spec=Path)
+        mock_path.exists.return_value = False
+        mock_find.return_value = mock_path
+        with patch("os.geteuid", return_value=0):
+            config = ConfigManager.load()
+            assert config == {}
+
+    def test_deep_merge_basic(self) -> None:
+        base = {"a": 1, "b": {"c": 2}}
+        override = {"b": {"d": 3}, "e": 4}
+        result = ConfigManager.deep_merge(base, override)
+        assert result == {"a": 1, "b": {"c": 2, "d": 3}, "e": 4}
+
+    def test_deep_merge_circular_protection(self) -> None:
+        """Verify that deep_merge handles trivial circularities safely."""
+        inner = {"x": 1}
+        base = {"a": inner}
+        # In the original code, if override["a"] was 'inner', it would recurse.
+        # Now it should skip recursion if they are the same object.
+        result = ConfigManager.deep_merge(base, {"a": inner})
+        assert result["a"] is inner
+
+    def test_find_resource_dev_missing(self) -> None:
+        """Test _find_resource when the development path does not exist."""
+        # Use a filename that definitely doesn't exist in dev config dir
+        with patch("pathlib.Path.exists", return_value=False):
+            path = ConfigManager._find_resource(
+                "nonexistent.yaml",
+                "/tmp/fallback.yaml",  # nosec
+            )
+            assert str(path) == "/tmp/fallback.yaml"  # nosec
+
+    @patch("flatpak_automatic.config.ConfigManager._find_resource")
+    def test_load_system_config_parse_error(self, mock_find: MagicMock) -> None:
+        """Verify that system config parse error is handled."""
+        mock_path = MagicMock(spec=Path)
+        mock_path.exists.return_value = True
+        mock_path.open.side_effect = PermissionError("Access denied")
+        mock_find.return_value = mock_path
+        with patch("os.geteuid", return_value=0):
+            config = ConfigManager.load()
+            assert config == {}
+
+    @patch("flatpak_automatic.config.ConfigManager.get_user_config_path")
+    @patch("flatpak_automatic.config.ConfigManager._find_resource")
+    def test_load_user_config_parse_error(
+        self, mock_find: MagicMock, mock_user_path: MagicMock
+    ) -> None:
+        """Verify that user config parse error is handled."""
+        mock_find.return_value = MagicMock(spec=Path)
+        mock_find.return_value.exists.return_value = False
+
+        user_path = MagicMock(spec=Path)
+        user_path.exists.return_value = True
+        user_path.open.side_effect = PermissionError("Access denied")
+        mock_user_path.return_value = user_path
+
+        with patch("os.geteuid", return_value=1000):
+            config = ConfigManager.load()
+            assert config == {}
+
+    @patch("shutil.copy")
+    def test_generate_skeleton_source_missing(self, mock_copy: MagicMock) -> None:
+        """Test _generate_skeleton when the source file is missing."""
+        target = MagicMock(spec=Path)
+        source = MagicMock(spec=Path)
+        source.exists.return_value = False
+        ConfigManager._generate_skeleton(target, source)
+        mock_copy.assert_not_called()
+
+    @patch("shutil.copy")
+    def test_generate_skeleton_permission_error(self, mock_copy: MagicMock) -> None:
+        """Test _generate_skeleton handling PermissionError."""
+        target = MagicMock(spec=Path)
+        target.parent.mkdir.side_effect = PermissionError("No write access")
+        source = MagicMock(spec=Path)
+        ConfigManager._generate_skeleton(target, source)
+        mock_copy.assert_not_called()
