@@ -13,6 +13,37 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.37] - 2026-05-05
+
+### 🐛 Bug Fixes
+
+- _(rpm)_ Use compatible package names for OpenSUSE and AlmaLinux
+
+## [1.5.36] - 2026-05-05
+
+### 🐛 Bug Fixes
+
+- _(rpm)_ Mark example config as configuration file to satisfy rpmlint
+- _(rpm)_ Mark example config as noreplace to satisfy rpmlint
+
+### ⚙️ Miscellaneous Tasks
+
+- _(release)_ Bump version to 1.5.36
+
+## [1.5.35] - 2026-05-05
+
+### 🐛 Bug Fixes
+
+- _(ci)_ Resolve OpenSUSE and AlmaLinux installation issues and improve spec
+  portability
+
+## [1.5.34] - 2026-05-05
+
+### ⚙️ Miscellaneous Tasks
+
+- Expand distro testing coverage with AlmaLinux, Arch, and OpenSUSE
+- Fix Arch Linux package name for bats and expand distro matrix
+
 ## [1.5.33] - 2026-05-05
 
 ### 🐛 Bug Fixes

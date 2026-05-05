@@ -14,10 +14,10 @@ BuildRequires:  systemd-rpm-macros
 
 Requires:       flatpak
 Requires:       python3
-Requires:       python3-yaml
-Requires:       python3-dbus
+Requires:       (python3-pyyaml or python3-PyYAML)
+Requires:       (python3-dbus or python3-dbus-python)
 Requires:       snapper
-Requires:       s-nail
+Requires:       (s-nail or mailx)
 Requires:       systemd
 Recommends:     python3-apprise
 
@@ -78,7 +78,7 @@ fi
 %dir %{_sysconfdir}/flatpak-automatic
 %dir %{_sysconfdir}/flatpak-automatic/templates
 %config(noreplace) %{_sysconfdir}/flatpak-automatic/config.yaml
-%{_sysconfdir}/flatpak-automatic/config.example.yaml
+%config(noreplace) %{_sysconfdir}/flatpak-automatic/config.example.yaml
 %config(noreplace) %{_sysconfdir}/flatpak-automatic/config.user.yaml
 %config(noreplace) %{_sysconfdir}/flatpak-automatic/templates/*
 
