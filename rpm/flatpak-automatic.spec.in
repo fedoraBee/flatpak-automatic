@@ -78,7 +78,7 @@ fi
 %dir %{_sysconfdir}/flatpak-automatic
 %dir %{_sysconfdir}/flatpak-automatic/templates
 %config(noreplace) %{_sysconfdir}/flatpak-automatic/config.yaml
-%{_sysconfdir}/flatpak-automatic/config.example.yaml
+%config %{_sysconfdir}/flatpak-automatic/config.example.yaml
 %config(noreplace) %{_sysconfdir}/flatpak-automatic/config.user.yaml
 %config(noreplace) %{_sysconfdir}/flatpak-automatic/templates/*
 
