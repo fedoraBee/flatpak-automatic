@@ -258,16 +258,25 @@ jobs:
           if command -v apt-get >/dev/null 2>&1; then
             apt-get update && apt-get install -y curl unzip systemd
           elif command -v zypper >/dev/null 2>&1; then
-            zypper --non-interactive install curl unzip systemd util-linux shadow
+            zypper --non-interactive --no-gpg-checks install curl unzip systemd util-linux shadow
           else
-            # For AlmaLinux, enable EPEL and CRB for snapper and other dependencies
+            # For AlmaLinux, enable EPEL, CRB, and Oracle UEK (for snapper)
             if grep -q "AlmaLinux" /etc/os-release; then
                 dnf install -y epel-release dnf-plugins-core
                 dnf config-manager --set-enabled crb || true
+                {
+                    echo "[ol9_UEKR7]"
+                    echo "name=Oracle Linux 9 UEK Release 7 (\$basearch)"
+                    echo "baseurl=https://yum.oracle.com/repo/OracleLinux/OL9/UEKR7/\$basearch/"
+                    echo "gpgkey=https://yum.oracle.com/RPM-GPG-KEY-oracle-ol9"
+                    echo "gpgcheck=1"
+                    echo "enabled=1"
+                } > /etc/yum.repos.d/oracle-linux-9.repo
                 dnf makecache
-                # Pre-install dependencies from EPEL to ensure they are available
-                dnf install -y snapper s-nail
+                # Pre-install dependencies to ensure they are available
+                dnf install -y --allowerasing snapper s-nail || dnf install -y --allowerasing snapper mailx
             fi
+
             dnf install -y --allowerasing curl unzip systemd shadow-utils util-linux
           fi
 
@@ -290,7 +299,7 @@ jobs:
           if command -v apt-get >/dev/null 2>&1; then
             apt-get install -y ./debs/*.deb
           elif command -v zypper >/dev/null 2>&1; then
-            zypper --non-interactive install rpms/flatpak-automatic-[0-9].*.noarch.rpm
+            zypper --non-interactive --no-gpg-checks install rpms/flatpak-automatic-[0-9].*.noarch.rpm
           else
             dnf install -y --allowerasing rpms/flatpak-automatic-[0-9].*.noarch.rpm
           fi
