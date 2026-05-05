@@ -29,3 +29,4 @@ __pycache__/
 build_docs/
 site/
 src/flatpak_automatic.egg-info/
+htmlcov/
