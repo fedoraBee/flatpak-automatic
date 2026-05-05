@@ -79,7 +79,9 @@ jobs:
         run: |
           pipx install mypy
           export MYPYPATH=src
-          mypy --strict scripts/ tests/
+          # Check scripts and src (flatpak_automatic)
+          # tests are excluded from strict check in .mypy.ini usually
+          mypy --strict src/ scripts/
       - name: Run Bandit SAST
         run: |
           pipx install bandit
@@ -137,9 +139,9 @@ jobs:
       - name: Install Test Dependencies
         run: |
           if command -v dnf >/dev/null 2>&1; then
-            dnf install -y bats python3-pytest make hostname util-linux python3-yaml
+            dnf install -y bats python3-pytest python3-pytest-cov python3-xdist make hostname util-linux python3-yaml
           else
-            apt-get update && apt-get install -y bats python3-pytest make hostname bsdutils python3-yaml
+            apt-get update && apt-get install -y bats python3-pytest python3-pytest-cov python3-xdist make hostname bsdutils python3-yaml
           fi
       - name: Run Tests
         run: |
