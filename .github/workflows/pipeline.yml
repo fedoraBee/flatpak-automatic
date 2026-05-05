@@ -265,6 +265,8 @@ jobs:
                 dnf install -y epel-release dnf-plugins-core
                 dnf config-manager --set-enabled crb || true
                 dnf makecache
+                # Pre-install dependencies from EPEL to ensure they are available
+                dnf install -y snapper s-nail
             fi
             dnf install -y --allowerasing curl unzip systemd shadow-utils util-linux
           fi

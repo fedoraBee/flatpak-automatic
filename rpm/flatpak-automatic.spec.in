@@ -17,7 +17,7 @@ Requires:       python3
 Requires:       (python3-pyyaml or python3-PyYAML)
 Requires:       (python3-dbus or python3-dbus-python)
 Requires:       snapper
-Requires:       s-nail
+Requires:       (s-nail or mailx)
 Requires:       systemd
 Recommends:     python3-apprise
 
