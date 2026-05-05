@@ -116,9 +116,10 @@ class TestConfigManager:
         # Use a filename that definitely doesn't exist in dev config dir
         with patch("pathlib.Path.exists", return_value=False):
             path = ConfigManager._find_resource(
-                "nonexistent.yaml", "/tmp/fallback.yaml"
+                "nonexistent.yaml",
+                "/tmp/fallback.yaml",  # nosec
             )
-            assert str(path) == "/tmp/fallback.yaml"
+            assert str(path) == "/tmp/fallback.yaml"  # nosec
 
     @patch("flatpak_automatic.config.ConfigManager._find_resource")
     def test_load_system_config_parse_error(self, mock_find: MagicMock) -> None:
