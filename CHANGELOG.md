@@ -18,6 +18,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### 🐛 Bug Fixes
 
 - _(rpm)_ Mark example config as configuration file to satisfy rpmlint
+- _(rpm)_ Mark example config as noreplace to satisfy rpmlint
+
+### ⚙️ Miscellaneous Tasks
+
+- _(release)_ Bump version to 1.5.36
 
 ## [1.5.35] - 2026-05-05
 
