@@ -455,4 +455,4 @@ jobs:
       - name: Run DBus Integration Tests
         run: |
           export PYTHONPATH=src
-          python3 -m pytest tests/integration_test_dbus.py
+          python3 -m pytest --no-cov tests/integration_test_dbus.py
