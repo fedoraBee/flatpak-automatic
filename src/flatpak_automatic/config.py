@@ -154,7 +154,9 @@ class ConfigManager:
         """Recursively merge dictionaries; override values take precedence over base."""
         for key, value in override.items():
             if isinstance(value, dict) and key in base and isinstance(base[key], dict):
-                ConfigManager.deep_merge(base[key], value)
+                # Avoid recursion if they are the same object to prevent infinite loops
+                if base[key] is not value:
+                    ConfigManager.deep_merge(base[key], value)
             else:
                 base[key] = value
         return base

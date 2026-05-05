@@ -105,6 +105,43 @@ class TestAutomationEngine:
         )
 
 
+class TestAutomationEngineRun:
+    @patch("flatpak_automatic.core.FlatpakUpdater")
+    @patch("flatpak_automatic.config.StateManager.save")
+    def test_run_no_updates(
+        self, mock_save: MagicMock, mock_updater: MagicMock
+    ) -> None:
+        engine = fa.AutomationEngine({"auto_update": True}, {})
+        mock_updater.return_value.check_updates.return_value = False
+
+        assert engine.run() is True
+        assert mock_updater.return_value.check_updates.called
+
+    @patch("flatpak_automatic.core.FlatpakUpdater")
+    @patch("flatpak_automatic.config.StateManager.save")
+    def test_run_dry_run(self, mock_save: MagicMock, mock_updater: MagicMock) -> None:
+        engine = fa.AutomationEngine({"auto_update": True}, {})
+        mock_updater.return_value.check_updates.return_value = True
+        mock_updater.return_value.update_log = "Some updates"
+
+        assert engine.run(dry_run=True) is True
+        assert not mock_updater.return_value.apply_updates.called
+
+    @patch("flatpak_automatic.core.FlatpakUpdater")
+    @patch("flatpak_automatic.core.NotificationRouter")
+    @patch("flatpak_automatic.config.StateManager.save")
+    def test_run_force(
+        self, mock_save: MagicMock, mock_router: MagicMock, mock_updater: MagicMock
+    ) -> None:
+        # Even if auto_update is false, force=True should proceed
+        engine = fa.AutomationEngine({"auto_update": False}, {})
+        mock_updater.return_value.check_updates.return_value = True
+        mock_updater.return_value.apply_updates.return_value = True
+
+        assert engine.run(force=True) is True
+        assert mock_updater.return_value.apply_updates.called
+
+
 class TestLoadConfig:
     @patch("flatpak_automatic.config.ConfigManager._find_resource")
     @patch(

@@ -105,5 +105,9 @@ test:
 	@echo "Running Pytest..."
 	python3 -m pytest tests/
 
+test-fast:
+	@echo "Running Pytest without coverage..."
+	python3 -m pytest --no-cov tests/
+
 deb: prep
 	@./scripts/build/build-deb-local.sh
