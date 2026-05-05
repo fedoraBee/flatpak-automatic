@@ -2,38 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://fedorabee.github.io/flatpak-automatic/</loc>
-         <lastmod>2026-05-04</lastmod>
+         <lastmod>2026-05-05</lastmod>
     </url>
     <url>
          <loc>https://fedorabee.github.io/flatpak-automatic/agents/</loc>
-         <lastmod>2026-05-04</lastmod>
+         <lastmod>2026-05-05</lastmod>
     </url>
     <url>
          <loc>https://fedorabee.github.io/flatpak-automatic/changelog/</loc>
-         <lastmod>2026-05-04</lastmod>
+         <lastmod>2026-05-05</lastmod>
     </url>
     <url>
          <loc>https://fedorabee.github.io/flatpak-automatic/development/</loc>
-         <lastmod>2026-05-04</lastmod>
+         <lastmod>2026-05-05</lastmod>
     </url>
     <url>
          <loc>https://fedorabee.github.io/flatpak-automatic/license/</loc>
-         <lastmod>2026-05-04</lastmod>
+         <lastmod>2026-05-05</lastmod>
     </url>
     <url>
          <loc>https://fedorabee.github.io/flatpak-automatic/maintainers/</loc>
-         <lastmod>2026-05-04</lastmod>
+         <lastmod>2026-05-05</lastmod>
     </url>
     <url>
          <loc>https://fedorabee.github.io/flatpak-automatic/repository/</loc>
-         <lastmod>2026-05-04</lastmod>
+         <lastmod>2026-05-05</lastmod>
+    </url>
+    <url>
+         <loc>https://fedorabee.github.io/flatpak-automatic/testing/</loc>
+         <lastmod>2026-05-05</lastmod>
     </url>
     <url>
          <loc>https://fedorabee.github.io/flatpak-automatic/about/contributing/</loc>
-         <lastmod>2026-05-04</lastmod>
+         <lastmod>2026-05-05</lastmod>
     </url>
     <url>
          <loc>https://fedorabee.github.io/flatpak-automatic/about/security/</loc>
-         <lastmod>2026-05-04</lastmod>
+         <lastmod>2026-05-05</lastmod>
     </url>
 </urlset>

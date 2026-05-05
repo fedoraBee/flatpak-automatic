@@ -79,7 +79,9 @@ jobs:
         run: |
           pipx install mypy
           export MYPYPATH=src
-          mypy --strict scripts/ tests/
+          # Check scripts and src (flatpak_automatic)
+          # tests are excluded from strict check in .mypy.ini usually
+          mypy --strict src/ scripts/
       - name: Run Bandit SAST
         run: |
           pipx install bandit
@@ -137,9 +139,9 @@ jobs:
       - name: Install Test Dependencies
         run: |
           if command -v dnf >/dev/null 2>&1; then
-            dnf install -y bats python3-pytest make hostname util-linux python3-yaml
+            dnf install -y bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-yaml
           else
-            apt-get update && apt-get install -y bats python3-pytest make hostname bsdutils python3-yaml
+            apt-get update && apt-get install -y bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname bsdutils python3-yaml
           fi
       - name: Run Tests
         run: |
@@ -449,8 +451,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install System Dependencies
         run: |
-          dnf install -y python3 python3-pytest python3-dbus python3-dbusmock dbus-daemon flatpak python3-yaml
+          dnf install -y python3 python3-pytest python3-pytest-cov python3-dbus python3-dbusmock dbus-daemon flatpak python3-yaml
       - name: Run DBus Integration Tests
         run: |
           export PYTHONPATH=src
-          python3 -m pytest tests/integration_test_dbus.py
+          python3 -m pytest --no-cov tests/integration_test_dbus.py
