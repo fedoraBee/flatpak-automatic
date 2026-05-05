@@ -124,30 +124,52 @@ jobs:
 
   # --- Build and Validation Stage ---
   unit-tests:
-    name: Run Unit Tests (${{ matrix.os }})
+    name: Unit Tests (${{ matrix.target.name }})
     if: github.ref != 'refs/heads/gh-pages'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [fedora:latest, debian:latest]
+        target:
+          - name: 'Fedora'
+            image: 'fedora:latest'
+            pkg_cmd: 'dnf install -y'
+            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-yaml'
+          - name: 'AlmaLinux'
+            image: 'almalinux:9'
+            # Enable CRB for epel, then install epel-release for bats, then install packages
+            pkg_cmd: 'dnf install -y dnf-plugins-core && dnf config-manager --set-enabled crb && dnf install -y epel-release && dnf install -y'
+            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-yaml'
+          - name: 'Debian'
+            image: 'debian:latest'
+            pkg_cmd: 'apt-get update && apt-get install -y'
+            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname bsdutils python3-yaml'
+          - name: 'Ubuntu'
+            image: 'ubuntu:latest'
+            pkg_cmd: 'apt-get update && apt-get install -y'
+            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname bsdutils python3-yaml'
+          - name: 'Arch Linux'
+            image: 'archlinux:latest'
+            pkg_cmd: 'pacman -Syu --noconfirm'
+            deps: 'bats python-pytest python-pytest-cov python-pytest-xdist make inetutils util-linux python-yaml'
+          - name: 'OpenSUSE'
+            image: 'opensuse/tumbleweed:latest'
+            pkg_cmd: 'zypper --non-interactive install'
+            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-PyYAML python3-dbus-python'
     container:
-      image: ${{ matrix.os }}
+      image: ${{ matrix.target.image }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
+
       - name: Install Test Dependencies
         run: |
-          if command -v dnf >/dev/null 2>&1; then
-            dnf install -y bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-yaml
-          else
-            apt-get update && apt-get install -y bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname bsdutils python3-yaml
-          fi
+          ${{ matrix.target.pkg_cmd }} ${{ matrix.target.deps }}
+
       - name: Run Tests
         run: |
           export PYTHONPATH=src
           make test
-
   build-rpm:
     name: Build & Verify RPMs
     if: github.ref != 'refs/heads/gh-pages'
@@ -214,7 +236,6 @@ jobs:
           name: debs
           path: debs/
           retention-days: 5
-
   smoke-test:
     name: Smoke Test (${{ matrix.os }})
     if: github.ref != 'refs/heads/gh-pages'
@@ -223,42 +244,69 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [fedora:40, fedora:41, ubuntu:latest, debian:latest]
+        # Added almalinux:9 and opensuse/tumbleweed for comprehensive Linux representation
+        os: [fedora:40, fedora:41, almalinux:9, ubuntu:latest, debian:latest, opensuse/tumbleweed:latest]
     container:
       image: ${{ matrix.os }}
       options: --privileged
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v5
+
       - name: Install Runtime Dependencies
         run: |
-          if [ -f /etc/debian_version ]; then
+          if command -v apt-get >/dev/null 2>&1; then
             apt-get update && apt-get install -y curl unzip systemd
+          elif command -v zypper >/dev/null 2>&1; then
+            zypper --non-interactive --no-gpg-checks install curl unzip systemd util-linux shadow
           else
-            dnf install -y curl unzip systemd shadow-utils util-linux
+            # For AlmaLinux, enable EPEL, CRB, and Oracle UEK (for snapper)
+            if grep -q "AlmaLinux" /etc/os-release; then
+                dnf install -y epel-release dnf-plugins-core
+                dnf config-manager --set-enabled crb || true
+                {
+                    echo "[ol9_UEKR7]"
+                    echo "name=Oracle Linux 9 UEK Release 7 (\$basearch)"
+                    echo "baseurl=https://yum.oracle.com/repo/OracleLinux/OL9/UEKR7/\$basearch/"
+                    echo "gpgkey=https://yum.oracle.com/RPM-GPG-KEY-oracle-ol9"
+                    echo "gpgcheck=1"
+                    echo "enabled=1"
+                } > /etc/yum.repos.d/oracle-linux-9.repo
+                dnf makecache
+                # Pre-install dependencies to ensure they are available
+                dnf install -y --allowerasing snapper s-nail || dnf install -y --allowerasing snapper mailx
+            fi
+
+            dnf install -y --allowerasing curl unzip systemd shadow-utils util-linux
           fi
+
       - name: Retrieve RPM Artifacts
-        if: contains(matrix.os, 'fedora')
+        if: contains(matrix.os, 'fedora') || contains(matrix.os, 'almalinux') || contains(matrix.os, 'opensuse')
         uses: actions/download-artifact@v4
         with:
           name: rpms
           path: rpms
+
       - name: Retrieve DEB Artifacts
         if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'debian')
         uses: actions/download-artifact@v4
         with:
           name: debs
           path: debs
+
       - name: Execute Package Installation
         run: |
-          if [ -f /etc/debian_version ]; then
+          if command -v apt-get >/dev/null 2>&1; then
             apt-get install -y ./debs/*.deb
+          elif command -v zypper >/dev/null 2>&1; then
+            zypper --non-interactive --no-gpg-checks install rpms/flatpak-automatic-[0-9].*.noarch.rpm
           else
-            dnf install -y rpms/flatpak-automatic-[0-9].*.noarch.rpm
+            dnf install -y --allowerasing rpms/flatpak-automatic-[0-9].*.noarch.rpm
           fi
+
       - name: Validate Filesystem Integrity
         run: |
-          if [ -f /etc/debian_version ]; then
+          if command -v apt-get >/dev/null 2>&1; then
             test -f /etc/default/flatpak-automatic
             test -f /lib/systemd/system/flatpak-automatic.timer || test -f /usr/lib/systemd/system/flatpak-automatic.timer
             test -f /lib/systemd/system/flatpak-automatic.service || test -f /usr/lib/systemd/system/flatpak-automatic.service
@@ -268,9 +316,10 @@ jobs:
             test -f /usr/lib/systemd/system/flatpak-automatic.service
           fi
           test -f /usr/bin/flatpak-automatic
+
       - name: Verify Systemd Unit Syntax
         run: |
-          if [ -f /etc/debian_version ]; then
+          if command -v apt-get >/dev/null 2>&1; then
             systemd-analyze verify /lib/systemd/system/flatpak-automatic.timer || systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.timer
             systemd-analyze verify /lib/systemd/system/flatpak-automatic.service || systemd-analyze verify /usr/lib/systemd/system/flatpak-automatic.service
           else
