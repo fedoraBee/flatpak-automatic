@@ -1,6 +1,6 @@
 from .updater import FlatpakUpdater
 
-__version__ = "1.5.35"
+__version__ = "1.5.36"
 
 from .snapper import SnapperManager
 from .config import ConfigManager, StateManager
