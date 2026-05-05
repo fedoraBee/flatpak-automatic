@@ -155,7 +155,7 @@ jobs:
           - name: 'OpenSUSE'
             image: 'opensuse/tumbleweed:latest'
             pkg_cmd: 'zypper --non-interactive install'
-            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-PyYAML'
+            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-PyYAML python3-dbus-python'
     container:
       image: ${{ matrix.target.image }}
     steps:
@@ -260,7 +260,7 @@ jobs:
           elif command -v zypper >/dev/null 2>&1; then
             zypper --non-interactive install curl unzip systemd util-linux shadow
           else
-            dnf install -y curl unzip systemd shadow-utils util-linux
+            dnf install -y --allowerasing curl unzip systemd shadow-utils util-linux
           fi
 
       - name: Retrieve RPM Artifacts
@@ -284,7 +284,7 @@ jobs:
           elif command -v zypper >/dev/null 2>&1; then
             zypper --non-interactive install rpms/flatpak-automatic-[0-9].*.noarch.rpm
           else
-            dnf install -y rpms/flatpak-automatic-[0-9].*.noarch.rpm
+            dnf install -y --allowerasing rpms/flatpak-automatic-[0-9].*.noarch.rpm
           fi
 
       - name: Validate Filesystem Integrity
