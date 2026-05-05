@@ -13,6 +13,13 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.34] - 2026-05-05
+
+### ⚙️ Miscellaneous Tasks
+
+- Expand distro testing coverage with AlmaLinux, Arch, and OpenSUSE
+- Fix Arch Linux package name for bats and expand distro matrix
+
 ## [1.5.33] - 2026-05-05
 
 ### 🐛 Bug Fixes
