@@ -151,7 +151,7 @@ jobs:
           - name: 'Arch Linux'
             image: 'archlinux:latest'
             pkg_cmd: 'pacman -Syu --noconfirm'
-            deps: 'bash-bats python-pytest python-pytest-cov python-pytest-xdist make inetutils util-linux python-yaml'
+            deps: 'bats python-pytest python-pytest-cov python-pytest-xdist make inetutils util-linux python-yaml'
           - name: 'OpenSUSE'
             image: 'opensuse/tumbleweed:latest'
             pkg_cmd: 'zypper --non-interactive install'
