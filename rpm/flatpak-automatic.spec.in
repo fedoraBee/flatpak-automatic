@@ -14,13 +14,8 @@ BuildRequires:  systemd-rpm-macros
 
 Requires:       flatpak
 Requires:       python3
-%if 0%{?suse_version}
-Requires:       python3-PyYAML
-Requires:       python3-dbus-python
-%else
-Requires:       python3-pyyaml
-Requires:       python3-dbus
-%endif
+Requires:       (python3-pyyaml or python3-PyYAML)
+Requires:       (python3-dbus or python3-dbus-python)
 Requires:       snapper
 Requires:       s-nail
 Requires:       systemd

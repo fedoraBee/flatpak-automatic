@@ -260,9 +260,11 @@ jobs:
           elif command -v zypper >/dev/null 2>&1; then
             zypper --non-interactive install curl unzip systemd util-linux shadow
           else
-            # For AlmaLinux, enable EPEL for snapper and other dependencies
+            # For AlmaLinux, enable EPEL and CRB for snapper and other dependencies
             if grep -q "AlmaLinux" /etc/os-release; then
-                dnf install -y epel-release
+                dnf install -y epel-release dnf-plugins-core
+                dnf config-manager --set-enabled crb || true
+                dnf makecache
             fi
             dnf install -y --allowerasing curl unzip systemd shadow-utils util-linux
           fi
