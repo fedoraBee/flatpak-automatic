@@ -42,9 +42,10 @@ class MailNotifier:
             content_type = "text/html" if is_html else "text/plain"
 
             # Command-line arguments vary significantly between mail clients:
-            # - s-nail / heirloom-mailx: Uses -r for sender, -a for headers
-            # - mailutils: Uses -a "From: ..." or --return-address
-            # - bsd-mailx: Uses -a for headers, often lacks -r
+            # - s-nail: Uses -r for sender, -M for MIME type, -a for attachments.
+            # - heirloom-mailx: Uses -r for sender, -a for attachments.
+            # - mailutils: Uses -a for headers, -r for sender.
+            # - bsd-mailx: Uses -a for headers, often lacks -r.
             cmd = [self.mail_cmd, "-s", subject]
 
             # Detect specific client capabilities to set the sender and headers correctly
@@ -69,21 +70,33 @@ class MailNotifier:
             except Exception as e:
                 logging.debug(f"Could not determine mail client capabilities: {e}")
 
-            # Add Content-Type header via -a if supported (common for mailx/s-nail/mailutils)
-            if "-a" in help_out or not help_out:
+            help_lower = help_out.lower()
+
+            # Add Content-Type header
+            if "s-nail" in help_lower or self.mail_cmd == "s-nail":
+                # s-nail uses -M for MIME type
+                cmd += ["-M", content_type]
+            elif "-a" in help_lower and (
+                "header" in help_lower or "append" in help_lower
+            ):
+                # bsd-mailx and mailutils use -a for headers
                 cmd += ["-a", f"Content-Type: {content_type}; charset=UTF-8"]
 
             # Check if -r (sender/return-address) is supported
             # Known to work with: s-nail, heirloom-mailx, GNU Mailutils, and modern bsd-mailx
             if (
-                "-r" in help_out
-                or "s-nail" in help_out
-                or "Heirloom" in help_out
-                or "GNU Mailutils" in help_out
+                "-r" in help_lower
+                or "s-nail" in help_lower
+                or "heirloom" in help_lower
+                or "gnu mailutils" in help_lower
             ):
                 if self.from_address:
                     cmd += ["-r", self.from_address]
-            elif "-a" in help_out and self.from_address:
+            elif (
+                "-a" in help_lower
+                and ("header" in help_lower or "append" in help_lower)
+                and self.from_address
+            ):
                 # Fallback for clients where -r is missing but -a (append header) works
                 cmd += ["-a", f"From: {self.from_address}"]
             else:
