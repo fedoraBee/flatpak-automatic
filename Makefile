@@ -2,7 +2,7 @@
 
 NAME := flatpak-automatic
 EPOCH := 1
-VERSION := 1.5.41
+VERSION := 1.5.42
 REL_NUM := 1
 DATE := $(shell LC_ALL=C date +"%a %b %d %Y")
 AUTHOR := "fedoraBee <9395414+fedoraBee@users.noreply.github.com>"
@@ -55,12 +55,7 @@ install:
 	install -m 0644 config/config.example.yaml $(DESTDIR)/etc/flatpak-automatic/config.example.yaml
 	install -m 0644 config/config.user.default.yaml $(DESTDIR)/etc/flatpak-automatic/config.user.yaml
 	install -m 0644 config/config.default.yaml $(DESTDIR)/etc/flatpak-automatic/config.yaml
-	install -m 0644 config/templates/default.md $(DESTDIR)/etc/flatpak-automatic/templates/default.md
-	install -m 0644 config/templates/default_success.md $(DESTDIR)/etc/flatpak-automatic/templates/default_success.md
-	install -m 0644 config/templates/default_failure.md $(DESTDIR)/etc/flatpak-automatic/templates/default_failure.md
-	install -m 0644 config/templates/default_mail_success.md $(DESTDIR)/etc/flatpak-automatic/templates/default_mail_success.md
-	install -m 0644 config/templates/default_mail_failure.md $(DESTDIR)/etc/flatpak-automatic/templates/default_mail_failure.md
-	install -m 0644 config/templates/minimal.txt $(DESTDIR)/etc/flatpak-automatic/templates/minimal.txt
+	install -m 0644 config/templates/* $(DESTDIR)/etc/flatpak-automatic/templates/
 
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	mkdir -p $(DESTDIR)$(PREFIX)/share/man/man1
