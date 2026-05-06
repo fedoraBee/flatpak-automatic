@@ -62,16 +62,33 @@ class AutomationEngine:
     def dispatch_test_notifications(self) -> None:
         logging.info("Executing Test Notification dispatch...")
         router = NotificationRouter(self.config)
-        test_body = (
+        hostname = socket.gethostname()
+
+        # 1. Success Test Notification
+        logging.info("Sending SUCCESS test notification...")
+        success_body = (
             "org.mozilla.firefox 125.0.1\n"
             "org.gnome.Calculator 46.0\n"
             "org.freedesktop.Platform 23.08"
         )
         router.dispatch_all(
-            "[TEST] Flatpak Automatic",
-            test_body,
+            f"[TEST-SUCCESS] Flatpak Automatic - {hostname}",
+            success_body,
             True,
             update_count=3,
+        )
+
+        # 2. Failure Test Notification
+        logging.info("Sending FAILURE test notification...")
+        failure_body = (
+            "Error: Failed to fetch updates from remote 'flathub'\n"
+            "Error: Connection timed out after 30 seconds"
+        )
+        router.dispatch_all(
+            f"[TEST-FAILURE] Flatpak Automatic - {hostname}",
+            failure_body,
+            False,
+            update_count=0,
         )
 
     def print_status_overview(self) -> None:

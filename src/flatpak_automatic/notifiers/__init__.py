@@ -48,12 +48,13 @@ class NotificationRouter:
         if not self.groups:
             return
 
+        hostname = socket.gethostname()
         context = {
             "TITLE": title,
             "BODY": body,
             "STATUS": "SUCCESS" if success else "FAILED",
             "DATE": datetime.now().strftime(DATE_FORMAT),
-            "HOSTNAME": socket.gethostname(),
+            "HOSTNAME": hostname,
             "UPDATE_COUNT": str(update_count),
             "UPDATE_LIST": body if success else "",
             "LOG_OUTPUT": body if not success else "",
@@ -65,12 +66,15 @@ class NotificationRouter:
             field_name: str,
             default_val: Any,
         ) -> Any:
+            # First, check if the specific plugin (target_cfg) has an override
             target_val = (
                 target_cfg.get(field_name)
                 if target_cfg and field_name in target_cfg
                 else None
             )
+            # Second, check if the group has a default
             group_val = group_cfg.get(field_name)
+
             state_key = "success" if success else "failure"
 
             def get_state_val(v: Any) -> Any:
@@ -99,7 +103,7 @@ class NotificationRouter:
                 app_title = _resolve(group, apprise_cfg, "title", title)
                 app_title = app_title.replace(
                     "$UPDATE_COUNT", str(update_count)
-                ).replace("$(hostname)", socket.gethostname())
+                ).replace("$(hostname)", hostname)
                 app_tpl = _resolve(group, apprise_cfg, "body_template", "")
                 app_body = (
                     TemplateRenderer.render(app_tpl, context) if app_tpl else body
@@ -130,10 +134,10 @@ class NotificationRouter:
                 to_addrs = mails_cfg.get("to", [])
                 if isinstance(to_addrs, str):
                     to_addrs = [to_addrs]
-                from_addr = mails_cfg.get("from", f"bot@{socket.gethostname()}")
+                from_addr = mails_cfg.get("from", f"bot@{hostname}")
                 m_title = _resolve(group, mails_cfg, "title", title)
                 m_title = m_title.replace("$UPDATE_COUNT", str(update_count)).replace(
-                    "$(hostname)", socket.gethostname()
+                    "$(hostname)", hostname
                 )
                 m_tpl = _resolve(group, mails_cfg, "body_template", "")
                 m_body = TemplateRenderer.render(m_tpl, context) if m_tpl else body
@@ -149,7 +153,7 @@ class NotificationRouter:
                 secret = webhook_cfg.get("secret", "")
                 wh_title = _resolve(group, webhook_cfg, "title", title)
                 wh_title = wh_title.replace("$UPDATE_COUNT", str(update_count)).replace(
-                    "$(hostname)", socket.gethostname()
+                    "$(hostname)", hostname
                 )
                 wh_tpl = _resolve(group, webhook_cfg, "body_template", "")
                 wh_body = TemplateRenderer.render(wh_tpl, context) if wh_tpl else body
@@ -162,7 +166,7 @@ class NotificationRouter:
             if desktop_cfg.get("enabled", True):
                 dt_title = _resolve(group, desktop_cfg, "title", title)
                 dt_title = dt_title.replace("$UPDATE_COUNT", str(update_count)).replace(
-                    "$(hostname)", socket.gethostname()
+                    "$(hostname)", hostname
                 )
                 dt_tpl = _resolve(group, desktop_cfg, "body_template", "")
                 dt_body = TemplateRenderer.render(dt_tpl, context) if dt_tpl else body
