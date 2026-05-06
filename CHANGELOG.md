@@ -13,6 +13,12 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.39] - 2026-05-06
+
+### 🐛 Bug Fixes
+
+- _(notifiers)_ Resolve s-nail attachment error by using -M for MIME type
+
 ## [1.5.38] - 2026-05-06
 
 ### 📚 Documentation
