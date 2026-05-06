@@ -107,6 +107,7 @@ def transform_files(docs_dir: str) -> None:
         # Translate internal links
         content = content.replace("(AGENTS.md)", "(agents.md)")
         content = content.replace("(docs/development.md)", "(development.md)")
+        content = content.replace("(docs/testing.md)", "(testing.md)")
         content = content.replace(
             "(.github/CONTRIBUTING.md)", "(about/contributing.md)"
         )
@@ -135,6 +136,7 @@ def transform_files(docs_dir: str) -> None:
         # Translate internal links
         content = content.replace("(README.md)", "(index.md)")
         content = content.replace("(docs/development.md)", "(development.md)")
+        content = content.replace("(docs/testing.md)", "(testing.md)")
         content = content.replace(
             "(.github/CONTRIBUTING.md)", "(about/contributing.md)"
         )

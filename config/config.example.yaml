@@ -1,60 +1,57 @@
 # ==============================================================================
-# CONFIGURATION SCHEMA
+# CONFIGURATION SCHEMA & ENFORCEMENT
 # ==============================================================================
-# ENFORCEMENT: Every configuration key below MUST define:
-# - Description: Operational purpose of the key.
-# - Type: Valid data type (e.g., string, boolean, integer).
-# - Default: Fallback value if omitted.
+# Every configuration key below is governed by the following rules:
+# - Description: Clear operational purpose of the setting.
+# - Type: Valid data type (e.g., string, boolean, integer, list, dict).
+# - Default: Fallback behavior if the key is omitted or null.
 # ==============================================================================
 
 # ==============================================================================
 # Flatpak Automatic - Example Configuration
 # ==============================================================================
-# This file provides a comprehensive overview of all available configuration
-# options for flatpak-automatic.
-#
-# Use this as a reference for customizing your installation.
+# This file provides a comprehensive reference of all available options.
+# Use this as a guide for creating your custom /etc/flatpak-automatic/config.yaml
+# or ~/.config/flatpak-automatic/config.yaml.
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# Core Settings
+# Core Execution Settings
 # ------------------------------------------------------------------------------
 
 # Automatically install available updates.
-
 auto_update: true
 
 # List of Flatpak App IDs to exclude from the automatic update process.
-# Example: ["org.mozilla.firefox", "com.discordapp.Discord"]
-# Type: list of strings, Default: []
+# Useful for applications where updates might break critical workflows.
 exclusions:
   - "org.mozilla.firefox"
   - "com.discordapp.Discord"
 
-
-# Notification policy: 'always', 'on-change', 'on-failure', or 'never'.
-
+# Notification trigger policy: 'always', 'on-change', 'on-failure', or 'never'.
 auto_notify: always
 
 # ------------------------------------------------------------------------------
-# Systemd Timer Settings
+# Systemd Timer Schedule
 # ------------------------------------------------------------------------------
 
-
-timer:  # Schedule format as defined in systemd.time(7).
+timer:
+  # Schedule format as defined in systemd.time(7).
   schedule: daily
-  # Randomized delay to avoid thundering herd on mirror servers.
+  # Randomized window to prevent thundering herd on mirror servers.
   delay: 1h
   minimum_delay: 1h
 
 # ------------------------------------------------------------------------------
-# Snapper Snapshot Settings
+# Snapper Atomic Snapshot Settings
 # ------------------------------------------------------------------------------
 
-
 snapshots:
+  # Enable Btrfs snapshots for atomic updates.
   enabled: true
+  # The Snapper configuration to use.
   snapper_config: root
+  # Custom descriptions for the snapshots.
   snapper_descriptions:
     pre: "flatpak-automatic-pre"
     post: "flatpak-automatic-post"
@@ -62,7 +59,7 @@ snapshots:
 # ------------------------------------------------------------------------------
 # Notification Routing Engine
 # ------------------------------------------------------------------------------
-# 'title' and 'body_template' support state-aware routing.
+# The routing engine supports state-aware formatting for 'title' and 'body_template'.
 # You may provide a flat string for universal application OR a dictionary
 # specifying distinct 'success' and 'failure' values.
 #
@@ -71,16 +68,17 @@ snapshots:
 #   $hostname     : System hostname.
 # ------------------------------------------------------------------------------
 
-
+# Plugin-level master switches
 notification_policy:
   desktop: true
   mails: true
   webhooks: true
   apprise: true
 
+notification_groups:
 
-notification_groups:  # ----------------------------------------------------------------------------
-  # Example 1: Full extended group with multiple plugins
+  # ----------------------------------------------------------------------------
+  # Example 1: Multi-Channel Operational Alerting
   # ----------------------------------------------------------------------------
   - name: "Admin & Operations Alerting"
     desktop_notify: true
@@ -93,46 +91,43 @@ notification_groups:  # --------------------------------------------------------
     # Generic body template for all plugins in this group
     body_template: default.md
 
-    # Plugin: Email
+    # Plugin: Email (SMTP via local MTA)
     mails:
       to:
         - IT Ops <ops@example.com>
         - Security Team <security@example.com>
       from: "Flatpak Auto Bot <flatpak-automatic@$(hostname)>"
 
-      # Plugin-level override for specific templates
+      # Plugin-level override for specific HTML templates
       body_template:
-        success: default_mail_success.md
-        failure: default_mail_failure.md
+        success: default_mail_success.html
+        failure: default_mail_failure.html
 
-    # Plugin: Webhooks (JSON POST requests)
+    # Plugin: Webhooks (Secure JSON POST)
     webhooks:
-      # Disable webhook by setting 'enabled: false'; defaults to 'enabled: true'
-      enabled: false
+      enabled: true
       urls:
         - https://hooks.example.com/flatpak-updates
       secret: "optional_hmac_secret_for_verification"
-      # Inherits 'title' and 'body_template' from group level
 
-    # Plugin: Apprise (Universal notification library)
+    # Plugin: Apprise (Unified Alerting)
     apprise:
       urls:
         - discord://user:pass@example.com
-        - telegram://user:pass@example.com
-        - slack://user:pass@example.com
+        - telegram://bot_token/chat_id
 
-      # Overriding titles for Apprise specifically
+      # Overriding titles specifically for Apprise
       title:
         success: "🚀 Flatpak Success: $UPDATE_COUNT updates"
         failure: "⚠️ Flatpak Failure on $hostname"
 
-      # Overriding templates for Apprise specifically
+      # Overriding templates specifically for Apprise
       body_template:
         success: custom_apprise_success.md
         failure: custom_apprise_failure.md
 
   # ----------------------------------------------------------------------------
-  # Example 2: Minimal text-only fallback group
+  # Example 2: Minimalist Fallback Group
   # ----------------------------------------------------------------------------
   - name: "Simple Text Log"
     mails:

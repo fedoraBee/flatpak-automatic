@@ -1,5 +1,5 @@
 [Unit]
-Description=Run daily Flatpak update check
+Description=Run Flatpak update check
 
 [Timer]
 OnCalendar=daily
