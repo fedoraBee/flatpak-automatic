@@ -112,8 +112,8 @@ notification_groups:
         success: "Flatpak Automatic: $UPDATE_COUNT upgrades installed."
         failure: "Flatpak Automatic: Update failed!"
       body_template:
-        success: default_desktop_success.md
-        failure: default_desktop_failure.md
+        success: default_desktop_success.txt
+        failure: default_desktop_failure.txt
 
     # Plugin: Email (requires s-nail, mailx, or equivalent)
     mails:
