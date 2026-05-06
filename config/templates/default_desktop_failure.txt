@@ -1,1 +1,2 @@
-❌ Automatic Updates Failed
+The flatpak-automatic agent encountered an error while attempting to process updates on ${HOSTNAME}.
+Check logs for details.
