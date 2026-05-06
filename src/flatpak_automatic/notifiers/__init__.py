@@ -87,6 +87,11 @@ class NotificationRouter:
                 res = get_state_val(target_val)
             if res is None and group_val is not None:
                 res = get_state_val(group_val)
+
+            # Enforce global defaults for body_template if still unresolved
+            if res is None and field_name == "body_template":
+                res = "default_success.md" if success else "default_failure.md"
+
             if res is None:
                 res = default_val
             return res
@@ -105,9 +110,7 @@ class NotificationRouter:
                     "$UPDATE_COUNT", str(update_count)
                 ).replace("$(hostname)", hostname)
                 app_tpl = _resolve(group, apprise_cfg, "body_template", "")
-                app_body = (
-                    TemplateRenderer.render(app_tpl, context) if app_tpl else body
-                )
+                app_body = TemplateRenderer.render(app_tpl, context)
                 if not ConfigManager.verify_policy("apprise"):
                     logging.info(
                         "Apprise notifications disabled by global policy. Skipping."
@@ -140,7 +143,7 @@ class NotificationRouter:
                     "$(hostname)", hostname
                 )
                 m_tpl = _resolve(group, mails_cfg, "body_template", "")
-                m_body = TemplateRenderer.render(m_tpl, context) if m_tpl else body
+                m_body = TemplateRenderer.render(m_tpl, context)
 
                 for to_addr in to_addrs:
                     mailer = MailNotifier(to_addr, from_addr)
@@ -156,7 +159,7 @@ class NotificationRouter:
                     "$(hostname)", hostname
                 )
                 wh_tpl = _resolve(group, webhook_cfg, "body_template", "")
-                wh_body = TemplateRenderer.render(wh_tpl, context) if wh_tpl else body
+                wh_body = TemplateRenderer.render(wh_tpl, context)
 
                 wh = WebhookNotifier(wh_urls, secret)
                 wh.send_notification(wh_title, wh_body)
@@ -169,6 +172,6 @@ class NotificationRouter:
                     "$(hostname)", hostname
                 )
                 dt_tpl = _resolve(group, desktop_cfg, "body_template", "")
-                dt_body = TemplateRenderer.render(dt_tpl, context) if dt_tpl else body
+                dt_body = TemplateRenderer.render(dt_tpl, context)
                 desktop = DesktopNotifier()
                 desktop.send_notification(dt_title, dt_body)

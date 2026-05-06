@@ -37,6 +37,26 @@ def find_brand_icon() -> str:
 
 
 ICON_PATH = find_brand_icon()
-TEMPLATE_DIR = "/etc/flatpak-automatic/templates"
+
+
+def find_template_dir() -> str:
+    """Locate the templates directory."""
+    # 1. System-wide Installation Path (RPM/DEB)
+    sys_path = "/etc/flatpak-automatic/templates"
+    if os.path.exists(sys_path):
+        return sys_path
+
+    # 2. Local Development Path
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    local_path = os.path.join(
+        os.path.dirname(os.path.dirname(script_dir)), "config", "templates"
+    )
+    if os.path.exists(local_path):
+        return local_path
+
+    return sys_path
+
+
+TEMPLATE_DIR = find_template_dir()
 CONFIG_FILE = "/etc/flatpak-automatic/config.yaml"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
