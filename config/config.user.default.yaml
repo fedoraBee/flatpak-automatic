@@ -1,76 +1,94 @@
 # ==============================================================================
-# CONFIGURATION SCHEMA
+# CONFIGURATION SCHEMA & ENFORCEMENT
 # ==============================================================================
-# ENFORCEMENT: Every configuration key below MUST define:
-# - Description: Operational purpose of the key.
-# - Type: Valid data type (e.g., string, boolean, integer).
-# - Default: Fallback value if omitted.
+# Every configuration key below is governed by the following rules:
+# - Description: Clear operational purpose of the setting.
+# - Type: Valid data type (e.g., string, boolean, integer, list, dict).
+# - Default: Fallback behavior if the key is omitted or null.
 # ==============================================================================
 
 # ==============================================================================
-# Flatpak Automatic - User-Level Default Configuration
+# Flatpak Automatic - Default Configuration (Rootless User)
 # ==============================================================================
-# This file contains the default configuration for rootless user-level execution.
-# It is typically installed at /etc/flatpak-automatic/config.user.yaml
-# and serves as the base for ~/.config/flatpak-automatic/config.yaml
+# This file contains the primary defaults for rootless user-level execution.
+# Location: /etc/flatpak-automatic/config.user.yaml
+# (Serves as the template for ~/.config/flatpak-automatic/config.yaml)
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# Core Settings
+# Core Execution Settings
 # ------------------------------------------------------------------------------
 
 # Automatically install available updates.
+# If set to false, the script runs in dry-run mode, only sending notifications.
+# Type: boolean, Default: true
 auto_update: true
 
 # List of Flatpak App IDs to exclude from the automatic update process.
+# Type: list of strings, Default: []
 exclusions: []
 
-# Notification policy: 'always', 'on-change', 'on-failure', or 'never'.
+# Notification trigger policy: 'always', 'on-change', 'on-failure', or 'never'.
+# Type: string, Default: always
 auto_notify: always
 
 # ------------------------------------------------------------------------------
-# Systemd Timer Settings
+# Systemd Timer Schedule (User Scope)
 # ------------------------------------------------------------------------------
+# These settings control the execution frequency via user-level systemd timers.
+# Changes require: flatpak-automatic --apply-timer
 
 timer:
+  # Execution schedule (e.g., 'daily', 'weekly').
+  # Type: string, Default: daily
   schedule: daily
+
+  # Maximum randomized delay before execution.
+  # Type: string (time duration), Default: 1h
   delay: 1h
+
+  # Minimum randomized delay before execution.
+  # Type: string (time duration), Default: 1h
   minimum_delay: 1h
 
 # ------------------------------------------------------------------------------
-# Snapper Snapshot Settings
+# Snapper Atomic Snapshot Settings
 # ------------------------------------------------------------------------------
 
 snapshots:
-  # Rootless users cannot typically create Snapper snapshots of the root filesystem.
-  # If the user has a personal Btrfs subvolume and Snapper config (e.g., 'home'),
-  # they can enable this and set the snapper_config to 'home'.
+  # NOTE: Rootless users typically cannot create Snapper snapshots of the root
+  # filesystem. If you have a personal Btrfs subvolume and Snapper config
+  # (e.g., 'home'), you can enable this and set snapper_config accordingly.
+  # Type: boolean, Default: false
   enabled: false
+
+  # The Snapper configuration name (e.g., 'home').
+  # Type: string, Default: home
   snapper_config: home
 
-  # Descriptions for pre and post snapshots.
+  # Descriptive labels for the pre/post snapshot pair.
   snapper_descriptions:
     pre: "flatpak-automatic-user-pre"
     post: "flatpak-automatic-user-post"
 
 # ------------------------------------------------------------------------------
-# Notification Groups
+# Notification Engine & Routing
 # ------------------------------------------------------------------------------
-# Define where and how to send update reports and alerts.
-# Each group can have multiple notification methods (desktop, mail, webhooks, apprise).
 
-
+# Global enable/disable toggles for notification plugins.
 notification_policy:
   desktop: true
   mails: false
   webhooks: false
   apprise: false
 
-
+# List of notification groups for targeted alerting.
 notification_groups:
   - name: "Default Local Notifications"
 
-    # Notification title (supports $UPDATE_COUNT and $hostname).
+    # Universal notification title. Supports variable expansion:
+    # - $UPDATE_COUNT : Number of updates applied.
+    # - $hostname     : System hostname.
     title:
       success: "[$(hostname)] Flatpak Automatic (User): $UPDATE_COUNT upgrades installed."
       failure: "[$(hostname)] Flatpak Automatic (User): Update failed!"
@@ -80,6 +98,7 @@ notification_groups:
       success: default_success.md
       failure: default_failure.md
 
+    # Plugin: Desktop Notifications (via libnotify/DBus)
     desktop:
       title:
         success: "Flatpak Automatic: $UPDATE_COUNT upgrades installed."
@@ -88,24 +107,24 @@ notification_groups:
         success: default_desktop_success.md
         failure: default_desktop_failure.md
 
-    # Example: Email Notifications (requires s-nail or mailx)
+    # Plugin: Email (requires s-nail, mailx, or equivalent)
     mails:
       enabled: false
       to:
-        - admin@example.com
+        - user@example.com
       from: "Flatpak Automatic <noreply@$(hostname)>"
       body_template:
         success: default_mail_success.html
         failure: default_mail_failure.html
 
-    # Example: Webhook Notifications
+    # Plugin: Webhooks (JSON POST requests)
     webhooks:
       enabled: false
       urls:
         - https://webhook.site/your-unique-id
       secret: "your-hmac-secret"
 
-    # Example: Apprise Notifications (supports Discord, Telegram, Slack, etc.)
+    # Plugin: Apprise (Unified Alerting)
     apprise:
       enabled: false
       urls:

@@ -1,28 +1,28 @@
 # ==============================================================================
-# CONFIGURATION SCHEMA
+# CONFIGURATION SCHEMA & ENFORCEMENT
 # ==============================================================================
-# ENFORCEMENT: Every configuration key below MUST define:
-# - Description: Operational purpose of the key.
-# - Type: Valid data type (e.g., string, boolean, integer).
-# - Default: Fallback value if omitted.
+# Every configuration key below is governed by the following rules:
+# - Description: Clear operational purpose of the setting.
+# - Type: Valid data type (e.g., string, boolean, integer, list, dict).
+# - Default: Fallback behavior if the key is omitted or null.
 # ==============================================================================
 
 # ==============================================================================
-# Flatpak Automatic - Default Configuration
+# Flatpak Automatic - Default Configuration (System-Wide)
 # ==============================================================================
-# This file contains the default configuration for flatpak-automatic.
-# It is typically installed at /etc/flatpak-automatic/config.yaml
+# This file contains the primary defaults for system-wide execution.
+# Location: /etc/flatpak-automatic/config.yaml
 #
-# For more advanced examples and documentation, see config.example.yaml
+# For advanced routing examples, see: config.example.yaml
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# Core Settings
+# Core Execution Settings
 # ------------------------------------------------------------------------------
 
 # Automatically install available updates.
-# If set to false, the script will only perform dry-runs and send notifications.
-
+# If set to false, the script runs in dry-run mode, only sending notifications.
+# Type: boolean, Default: true
 auto_update: true
 
 # List of Flatpak App IDs to exclude from the automatic update process.
@@ -30,75 +30,83 @@ auto_update: true
 # Type: list of strings, Default: []
 exclusions: []
 
-
-# Notification policy: 'always', 'on-change', 'on-failure', or 'never'.
-# 'always': Send a notification after every run.
-# 'on-change': Send a notification only when updates were installed.
-# 'on-failure': Send a notification only when an error occurred.
-# 'never': Disable all notifications.
-
+# Notification trigger policy: 'always', 'on-change', 'on-failure', or 'never'.
+# - 'always':    Alert after every execution.
+# - 'on-change': Alert only when updates were successfully applied.
+# - 'on-failure': Alert only when an error occurs.
+# - 'never':     Silences all automated notifications.
+# Type: string, Default: always
 auto_notify: always
 
 # ------------------------------------------------------------------------------
-# Systemd Timer Settings
+# Systemd Timer Schedule
 # ------------------------------------------------------------------------------
-# These settings control the systemd timer execution schedule.
-# Changes require running 'flatpak-automatic --apply-timer' or restarting the timer.
+# These settings control the execution frequency via systemd timers.
+# Changes require: flatpak-automatic --apply-timer (requires root)
 
-
-timer:  # The execution schedule (e.g., 'daily', 'weekly', '*-*-* 04:00:00').
+timer:
+  # Execution schedule in systemd.time(7) format (e.g., 'daily', 'weekly').
+  # Type: string, Default: daily
   schedule: daily
 
-  # Maximum randomized delay before starting the update process.
-  # This helps prevent server congestion when many clients update at once.
+  # Maximum randomized delay before execution to prevent server congestion.
+  # Type: string (time duration), Default: 1h
   delay: 1h
 
-  # Minimum randomized delay before starting the update process.
+  # Minimum randomized delay before execution.
+  # Type: string (time duration), Default: 1h
   minimum_delay: 1h
 
 # ------------------------------------------------------------------------------
-# Snapper Snapshot Settings
+# Snapper Atomic Snapshot Settings
 # ------------------------------------------------------------------------------
+# Integrated Btrfs snapshots for atomic rollback capability.
 
-
-snapshots:  # Globally enable or disable snapshot creation.
+snapshots:
+  # Enable or disable snapshot creation globally.
+  # Type: boolean, Default: true
   enabled: true
 
-  # The Snapper configuration to use (usually 'root').
+  # The Snapper configuration name (usually 'root').
+  # Type: string, Default: root
   snapper_config: root
 
-  # Descriptions for pre and post snapshots.
+  # Descriptive labels for the pre/post snapshot pair.
   snapper_descriptions:
     pre: "flatpak-automatic-pre"
     post: "flatpak-automatic-post"
 
 # ------------------------------------------------------------------------------
-# Notification Groups
+# Notification Engine & Routing
 # ------------------------------------------------------------------------------
-# Define where and how to send update reports and alerts.
-# Each group can have multiple notification methods (desktop, mail, webhooks, apprise).
+# Define where and how to send update reports. The routing engine supports
+# multiple groups, each capable of dispatching to various plugins.
 
-
+# Global enable/disable toggles for notification plugins.
 notification_policy:
   desktop: true
   mails: false
   webhooks: false
   apprise: false
 
-
+# List of notification groups for targeted alerting.
 notification_groups:
   - name: "Default Local Notifications"
 
-    # Notification title (supports $UPDATE_COUNT and $hostname).
+    # Universal notification title. Supports variable expansion:
+    # - $UPDATE_COUNT : Number of updates applied.
+    # - $hostname     : System hostname.
     title:
       success: "[$(hostname)] Flatpak Automatic: $UPDATE_COUNT upgrades installed."
       failure: "[$(hostname)] Flatpak Automatic: Update failed!"
 
     # Templates for the notification body (located in /etc/flatpak-automatic/templates/).
+    # May be a single string or a success/failure dictionary.
     body_template:
       success: default_success.md
       failure: default_failure.md
 
+    # Plugin: Desktop Notifications (via libnotify/DBus)
     desktop:
       title:
         success: "Flatpak Automatic: $UPDATE_COUNT upgrades installed."
@@ -107,7 +115,7 @@ notification_groups:
         success: default_desktop_success.md
         failure: default_desktop_failure.md
 
-    # Example: Email Notifications (requires s-nail or mailx)
+    # Plugin: Email (requires s-nail, mailx, or equivalent)
     mails:
       enabled: false
       to:
@@ -117,14 +125,14 @@ notification_groups:
         success: default_mail_success.html
         failure: default_mail_failure.html
 
-    # Example: Webhook Notifications
+    # Plugin: Webhooks (JSON POST requests)
     webhooks:
       enabled: false
       urls:
         - https://webhook.site/your-unique-id
       secret: "your-hmac-secret"
 
-    # Example: Apprise Notifications (supports Discord, Telegram, Slack, etc.)
+    # Plugin: Apprise (Unified notification library for 50+ services)
     apprise:
       enabled: false
       urls:

@@ -99,4 +99,4 @@ fi
 %{_datadir}/icons/hicolor/scalable/apps/flatpak-automatic.svg
 
 %files doc
-%doc README.md CHANGELOG.md docs/development.md .github/CONTRIBUTING.md AGENTS.md MAINTAINERS.md
+%doc README.md CHANGELOG.md docs/development.md docs/testing.md .github/CONTRIBUTING.md AGENTS.md MAINTAINERS.md

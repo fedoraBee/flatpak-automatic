@@ -56,6 +56,7 @@ nav:
   - Repository: repository.md
   - Guides:
     - Development: development.md
+    - Testing: testing.md
     - Maintainers: maintainers.md
   - Project Info:
     - Agents: agents.md

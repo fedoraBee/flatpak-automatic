@@ -274,6 +274,7 @@ flatpak-automatic --status
 - 🌐 [Repository](https://fedorabee.github.io/flatpak-automatic/repository/)
 - 📖 [Technical Manifest](AGENTS.md)
 - 🛠 [Development Guide](docs/development.md)
+- 🧪 [Testing](docs/testing.md)
 - 🤝 [Contribution Guidelines](.github/CONTRIBUTING.md)
 - 📜 [Changelog](CHANGELOG.md)
 - 🧑‍💻 [Maintainer's Guide](MAINTAINERS.md)

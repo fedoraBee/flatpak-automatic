@@ -135,6 +135,7 @@ To deploy changes locally for testing:
 
 - **Documentation:** Keep documentation consistent and up to date:
   - Update `docs/development.md` for build steps.
+  - Update `docs/testing.md` for testing requirements.
   - Update `README.md` and man pages (`docs/flatpak-automatic.1`) for
     user-facing changes.
 
@@ -172,6 +173,7 @@ When investigating failures as an AI agent:
 - [README.md](README.md): Installation and usage guide.
 - [CONTRIBUTING.md](.github/CONTRIBUTING.md): Guidelines for contributors.
 - [DEVELOPMENT.md](docs/development.md): Build instructions and technical notes.
+- [TESTING.md](docs/testing.md): Testing instructions and requirements.
 - [CHANGELOG.md](CHANGELOG.md): Record of notable changes and versions
   (Auto-generated on release).
 - [MAINTAINERS.md](MAINTAINERS.md): Project maintenance guide.
