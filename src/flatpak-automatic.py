@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Version: 1.5.41
+# Version: 1.5.42
 import sys
 import os
 
