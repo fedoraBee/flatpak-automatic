@@ -89,6 +89,7 @@ class DesktopNotifier:
 
                 # Use file:// URI for absolute paths to ensure compatibility with all notification daemons
                 icon_param = ICON_PATH
+                app_icon = ICON_PATH
                 hints = []
                 if os.path.isabs(ICON_PATH):
                     icon_param = f"file://{ICON_PATH}"
@@ -105,6 +106,8 @@ class DesktopNotifier:
                         "Flatpak Automatic",
                         "-i",
                         icon_param,
+                        "-n",
+                        app_icon,
                     ]
                     + hints
                     + [title, body],

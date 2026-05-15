@@ -112,17 +112,6 @@ flatpak-automatic --enable-timer
 This ensures updates are handled within the user session, adhering to strict
 least-privilege security models.
 
-## 🔐 GPG Key
-
-The GPG key is available at
-<https://fedorabee.github.io/flatpak-automatic/gpg.key>.
-
-Fingerprint:
-
-```text
-8D12 D614 9E1E 5E83 29DD E6FD 9B99 A03F 6577 BF59
-```
-
 ## ⚙️ Configuration
 
 The main configuration file is located at:
@@ -205,6 +194,13 @@ The package repository contains:
 - Repository metadata
 - GPG signing key (`gpg.key`)
 
+### 🔐 GPG Key
+
+The GPG key is available at
+<https://fedorabee.github.io/flatpak-automatic/gpg.key>.
+
+**GPG Fingerprint:** `8D12 D614 9E1E 5E83 29DD E6FD 9B99 A03F 6577 BF59`
+
 ## Troubleshooting & Runbook
 
 If you encounter issues with `flatpak-automatic`, follow these steps to diagnose
@@ -274,7 +270,7 @@ flatpak-automatic --status
 - 🌐 [Repository](https://fedorabee.github.io/flatpak-automatic/repository/)
 - 📖 [Technical Manifest](AGENTS.md)
 - 🛠 [Development Guide](docs/development.md)
-- 🧪 [Testing](docs/testing.md)
+- 🧪 [Testing Guide](docs/testing.md)
 - 🤝 [Contribution Guidelines](.github/CONTRIBUTING.md)
 - 📜 [Changelog](CHANGELOG.md)
 - 🧑‍💻 [Maintainer's Guide](MAINTAINERS.md)

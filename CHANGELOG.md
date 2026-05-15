@@ -13,6 +13,20 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.44] - 2026-05-15
+
+### 🐛 Bug Fixes
+
+- Improve desktop notifications and GPG documentation
+
+### 📚 Documentation
+
+- Align desktop templates with mail templates
+
+### ⚙️ Miscellaneous Tasks
+
+- _(release)_ Bump version to 1.5.43
+
 ## [1.5.43] - 2026-05-06
 
 ### 💼 Other
