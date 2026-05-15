@@ -66,6 +66,7 @@ class TestDesktopNotifier:
 
         # Check notify-send call
         expected_icon = f"file://{ICON_PATH}" if os.path.isabs(ICON_PATH) else ICON_PATH
+        app_icon = ICON_PATH
         expected_hints = (
             ["-h", f"string:image-path:{ICON_PATH}"] if os.path.isabs(ICON_PATH) else []
         )
@@ -83,6 +84,8 @@ class TestDesktopNotifier:
                 "Flatpak Automatic",
                 "-i",
                 expected_icon,
+                "-n",
+                app_icon,
             ]
             + expected_hints
             + ["Test Title", "Test Body"],
