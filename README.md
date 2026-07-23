@@ -12,6 +12,12 @@ updates. It features Snapper-integrated atomic rollbacks, multi-channel alerting
 user-level execution. Designed for reliability and ease of use, it ensures your
 Flatpak environment remains current and resilient.
 
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable-next-line MD033 -->
+<div align="center"><img src="assets/status-screenshot.png" alt="Flatpak Automatic
+System Status Overview" width="750"></div>
+<!-- prettier-ignore-end -->
+
 ## ✨ Features
 
 - **Automated Flatpak Updates:** Keep your flatpak applications up-to-date

@@ -75,6 +75,20 @@ Usage:
   [--dry-run]
 ```
 
+## Screenshot Generation Tool
+
+A `scripts/maintainer/generate-screenshot.py` script automatically captures the
+output of `flatpak-automatic -s` (including the full ASCII header banner) and
+renders a high-resolution terminal screenshot image saved at
+`assets/status-screenshot.png` for display in `README.md`. This script is
+automatically invoked during release version bumps via `tbump`.
+
+Usage:
+
+```bash
+python3 scripts/maintainer/generate-screenshot.py
+```
+
 ## Testing Matrix
 
 This project enforces a Shift-Left testing approach.
