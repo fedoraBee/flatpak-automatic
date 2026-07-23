@@ -160,8 +160,8 @@ first run).
 To trigger an update manually or use the advanced CLI:
 
 ```text
-usage: flatpak-automatic [-h] [-d] [-t] [-f] [-s] [-B] [-V] [-l] [-a] [-c] [-r]
-                         [--desktop-mode] [-e] [-x]
+usage: flatpak-automatic [-h] [-d] [-t] [-f] [-s] [-B] [-v] [-V] [-l] [-a] [-c]
+                         [-r] [--desktop-mode] [-e] [-x]
 
 Flatpak Automatic - Advanced Update Automation
 
@@ -172,6 +172,7 @@ options:
   -f, --force           Force the update process, ignoring safeguards.
   -s, --status          Display system monitoring overview and exit.
   -B, --hide-banner     Hide the header ASCII banner upon execution.
+  -v, --version         Show application version and exit.
   -V, --verbose         Enable verbose output (e.g. detailed status view with -s/--status).
   -l, --history         Display recent update history from journalctl and exit.
   -a, --apply-schedule  Apply systemd timer overrides based on config settings.

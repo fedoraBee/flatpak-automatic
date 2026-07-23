@@ -58,6 +58,12 @@ def get_parser() -> BrandedArgumentParser:
         help="Hide the header ASCII banner upon execution.",
     )
     parser.add_argument(
+        "-v",
+        "--version",
+        action="store_true",
+        help="Show application version and exit.",
+    )
+    parser.add_argument(
         "-V",
         "--verbose",
         action="store_true",

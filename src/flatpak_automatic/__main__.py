@@ -4,6 +4,7 @@ import logging
 import signal
 import subprocess
 from typing import Any
+from . import __version__
 from .cli import get_parser, banner
 from .config import ConfigManager, StateManager
 from .core import AutomationEngine
@@ -15,6 +16,11 @@ def main() -> None:
     # 1. Initialize Parser & Logging
     parser = get_parser()
     args = parser.parse_args()
+
+    if args.version:
+        print(f"flatpak-automatic {__version__}")
+        sys.exit(0)
+
     setup_logging()
 
     # Dynamic Flatpak Scope for non-root execution
