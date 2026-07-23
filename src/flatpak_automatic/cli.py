@@ -52,6 +52,12 @@ def get_parser() -> BrandedArgumentParser:
         help="Display system monitoring overview and exit.",
     )
     parser.add_argument(
+        "-V",
+        "--verbose",
+        action="store_true",
+        help="Enable verbose output (e.g. detailed status view with -s/--status).",
+    )
+    parser.add_argument(
         "-l",
         "--history",
         action="store_true",

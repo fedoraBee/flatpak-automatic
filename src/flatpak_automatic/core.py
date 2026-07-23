@@ -91,7 +91,7 @@ class AutomationEngine:
             update_count=0,
         )
 
-    def print_status_overview(self) -> None:
+    def print_status_overview(self, verbose: bool = False) -> None:
         from .notifiers import APPRISE_AVAILABLE, MailNotifier
 
         print(
@@ -209,23 +209,74 @@ class AutomationEngine:
         webhook_icon = "🟢" if webhook_avail else "⚪"
         print(f"   Network/Webhook:  {webhook_icon} {webhook_status}")
 
-        print(f"\n{Colors.OKCYAN}📦 Installed Flatpaks:{Colors.ENDC}")
-        result = subprocess.run(
-            ["flatpak", "list", "--app", "--columns=application,version"],
-            capture_output=True,
-            text=True,
-        )
         exclusions = self.config.get("exclusions", [])
-        for line in result.stdout.strip().split("\n"):
-            if not line:
-                continue
 
-            # Simple parsing of application ID (first column)
-            app_id = line.split()[0]
-            if app_id in exclusions:
-                print(f"   {Colors.WARNING}{line} (Excluded){Colors.ENDC}")
-            else:
-                print(f"   {line}")
+        if verbose:
+            print(
+                f"\n{Colors.OKCYAN}📦 Installed Flatpaks & Runtimes (Verbose):{Colors.ENDC}"
+            )
+            result = subprocess.run(
+                [
+                    "flatpak",
+                    "list",
+                    "--columns=name,application,version,branch,installation",
+                ],
+                capture_output=True,
+                text=True,
+            )
+            raw_lines = [
+                line.split("\t")
+                for line in result.stdout.strip().split("\n")
+                if line.strip()
+            ]
+
+            if raw_lines:
+                headers = [
+                    "NAME",
+                    "APPLICATION ID",
+                    "VERSION",
+                    "BRANCH",
+                    "INSTALLATION",
+                ]
+                col_widths = [len(h) for h in headers]
+                for row in raw_lines:
+                    for i in range(min(5, len(row))):
+                        col_widths[i] = max(col_widths[i], len(row[i]))
+
+                header_str = "   " + "  ".join(
+                    f"{headers[i]:<{col_widths[i]}}" for i in range(5)
+                )
+                print(f"{Colors.BOLD}{Colors.OKCYAN}{header_str}{Colors.ENDC}")
+
+                for row in raw_lines:
+                    padded_row = row + [""] * (5 - len(row))
+                    app_id = padded_row[1]
+                    formatted_row = "   " + "  ".join(
+                        f"{padded_row[i]:<{col_widths[i]}}" for i in range(5)
+                    )
+
+                    if app_id in exclusions:
+                        print(
+                            f"   {Colors.WARNING}{formatted_row.strip()} (Excluded){Colors.ENDC}"
+                        )
+                    else:
+                        print(f"{formatted_row}")
+        else:
+            print(f"\n{Colors.OKCYAN}📦 Installed Flatpaks:{Colors.ENDC}")
+            result = subprocess.run(
+                ["flatpak", "list", "--app", "--columns=application,version"],
+                capture_output=True,
+                text=True,
+            )
+            for line in result.stdout.strip().split("\n"):
+                if not line:
+                    continue
+
+                app_id = line.split()[0]
+                if app_id in exclusions:
+                    print(f"   {Colors.WARNING}{line} (Excluded){Colors.ENDC}")
+                else:
+                    print(f"   {line}")
         print()  # Trailing empty line
 
     def run(

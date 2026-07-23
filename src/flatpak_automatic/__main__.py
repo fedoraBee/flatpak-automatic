@@ -160,8 +160,8 @@ def main() -> None:
             print()
             sys.exit(0)
 
-        if args.status:
-            engine.print_status_overview()
+        if args.status or args.verbose:
+            engine.print_status_overview(verbose=args.verbose)
             sys.exit(0)
 
         if args.history:

@@ -54,6 +54,7 @@ class TestMainCLI:
             enable_timer=False,
             disable_timer=False,
             status=True,
+            verbose=False,
             history=False,
             test_notify=False,
         )
@@ -84,6 +85,7 @@ class TestMainCLI:
             enable_timer=True,
             disable_timer=False,
             status=False,
+            verbose=False,
             history=False,
             test_notify=False,
         )
@@ -115,6 +117,7 @@ class TestMainCLI:
             enable_timer=False,
             disable_timer=True,
             status=False,
+            verbose=False,
             history=False,
             test_notify=False,
         )
@@ -146,6 +149,7 @@ class TestMainCLI:
             enable_timer=False,
             disable_timer=False,
             status=False,
+            verbose=False,
             history=False,
             test_notify=False,
         )
@@ -178,6 +182,7 @@ class TestMainCLI:
             enable_timer=False,
             disable_timer=False,
             status=False,
+            verbose=False,
             history=True,
             test_notify=False,
         )
@@ -207,6 +212,7 @@ class TestMainCLI:
             enable_timer=False,
             disable_timer=False,
             status=False,
+            verbose=False,
             history=False,
             test_notify=True,
         )
@@ -239,6 +245,7 @@ class TestMainCLI:
             enable_timer=False,
             disable_timer=False,
             status=False,
+            verbose=False,
             history=False,
             test_notify=False,
         )
