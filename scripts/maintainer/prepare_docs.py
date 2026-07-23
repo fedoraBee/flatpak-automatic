@@ -68,8 +68,9 @@ def prepare_docs(src_dir: str, docs_dir: str) -> None:
 
     src_assets_dir = os.path.join(src_dir, "assets")
     if os.path.isdir(src_assets_dir):
+        valid_extensions = (".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp")
         for item in os.listdir(src_assets_dir):
-            if item.endswith(".svg"):
+            if item.lower().endswith(valid_extensions):
                 safe_copy(
                     os.path.join(src_assets_dir, item), os.path.join(assets_dest, item)
                 )
@@ -82,71 +83,6 @@ def prepare_docs(src_dir: str, docs_dir: str) -> None:
 
 
 def transform_files(docs_dir: str) -> None:
-    # Banner path replacements based on directory depth
-    replacements = [
-        # (pattern, replacement, file_glob)
-        (r'src="assets/banner.svg"', r'src="assets/banner.svg"', r"^index\.md$"),
-        (
-            r'src="assets/banner.svg"',
-            r'src="../assets/banner.svg"',
-            r"^(agents|changelog|maintainers|development)\.md$",
-        ),
-        (
-            r'src="\.\./assets/banner.svg"',
-            r'src="../../assets/banner.svg"',
-            r"^about/.*\.md$",
-        ),
-    ]
-
-    # Link translations for index.md
-    index_path = os.path.join(docs_dir, "index.md")
-    if os.path.exists(index_path):
-        with open(index_path, "r") as f:
-            content = f.read()
-
-        # Translate internal links
-        content = content.replace("(AGENTS.md)", "(agents.md)")
-        content = content.replace("(docs/development.md)", "(development.md)")
-        content = content.replace("(docs/testing.md)", "(testing.md)")
-        content = content.replace(
-            "(.github/CONTRIBUTING.md)", "(about/contributing.md)"
-        )
-        content = content.replace("(CHANGELOG.md)", "(changelog.md)")
-        content = content.replace("(MAINTAINERS.md)", "(maintainers.md)")
-        content = content.replace("(.github/SECURITY.md)", "(about/security.md)")
-        # Specific resource link transformations
-        content = content.replace(
-            "- 📝 [Project Documentation](https://fedorabee.github.io/flatpak-automatic/)",
-            "- 📝 [GitHub Source Code](https://github.com/fedoraBee/flatpak-automatic/)",
-        )
-        content = content.replace(
-            "- 🌐 [Repository](https://fedorabee.github.io/flatpak-automatic/repository/)",
-            "- 🌐 [Repository](repository.md)",
-        )
-
-        with open(index_path, "w") as f:
-            f.write(content)
-
-    # Link translations for agents.md
-    agents_path = os.path.join(docs_dir, "agents.md")
-    if os.path.exists(agents_path):
-        with open(agents_path, "r") as f:
-            content = f.read()
-
-        # Translate internal links
-        content = content.replace("(README.md)", "(index.md)")
-        content = content.replace("(docs/development.md)", "(development.md)")
-        content = content.replace("(docs/testing.md)", "(testing.md)")
-        content = content.replace(
-            "(.github/CONTRIBUTING.md)", "(about/contributing.md)"
-        )
-        content = content.replace("(CHANGELOG.md)", "(changelog.md)")
-        content = content.replace("(MAINTAINERS.md)", "(maintainers.md)")
-        content = content.replace("(LICENSE)", "(license.md)")
-
-        with open(agents_path, "w") as f:
-            f.write(content)
-
     # Walk through docs and apply replacements
     for root, _, files in os.walk(docs_dir):
         for f_name in files:
@@ -160,9 +96,66 @@ def transform_files(docs_dir: str) -> None:
                 content = f.read()
 
             orig_content = content
-            for pattern, repl, file_re in replacements:
-                if re.search(file_re, rel_path):
-                    content = re.sub(pattern, repl, content)
+
+            # Determine relative asset path prefix based on MkDocs page depth.
+            # In MkDocs:
+            # - index.md is at site root -> 'assets/'
+            # - Root md files (e.g. agents.md) become site/agents/index.html -> '../assets/'
+            # - Nested md files (e.g. about/contributing.md) become site/about/contributing/index.html -> '../../assets/'
+            if rel_path == "index.md":
+                asset_prefix = "assets/"
+            else:
+                parts = rel_path.split(os.sep)
+                depth = len(parts)
+                asset_prefix = "../" * depth + "assets/"
+
+            # HTML img tag src attribute replacement for assets/
+            content = re.sub(
+                r'src="(?:\.\./)*assets/([^"]+)"',
+                f'src="{asset_prefix}\\1"',
+                content,
+            )
+
+            # Markdown image syntax replacement for assets/
+            content = re.sub(
+                r"!\[([^\]]*)\]\((?:\.\./)*assets/([^)]+)\)",
+                f"![\\1]({asset_prefix}\\2)",
+                content,
+            )
+
+            # Link translations for index.md
+            if rel_path == "index.md":
+                content = content.replace("(AGENTS.md)", "(agents.md)")
+                content = content.replace("(docs/development.md)", "(development.md)")
+                content = content.replace("(docs/testing.md)", "(testing.md)")
+                content = content.replace(
+                    "(.github/CONTRIBUTING.md)", "(about/contributing.md)"
+                )
+                content = content.replace("(CHANGELOG.md)", "(changelog.md)")
+                content = content.replace("(MAINTAINERS.md)", "(maintainers.md)")
+                content = content.replace(
+                    "(.github/SECURITY.md)", "(about/security.md)"
+                )
+                content = content.replace(
+                    "- 📝 [Project Documentation](https://fedorabee.github.io/flatpak-automatic/)",
+                    "- 📝 [GitHub Source Code](https://github.com/fedoraBee/flatpak-automatic/)",
+                )
+                content = content.replace(
+                    "- 🌐 [Repository](https://fedorabee.github.io/flatpak-automatic/repository/)",
+                    "- 🌐 [Repository](repository.md)",
+                )
+
+            # Link translations for agents.md
+            elif rel_path == "agents.md":
+                content = content.replace("(README.md)", "(index.md)")
+                content = content.replace("(docs/development.md)", "(development.md)")
+                content = content.replace("(docs/testing.md)", "(testing.md)")
+                content = content.replace(
+                    "(.github/CONTRIBUTING.md)", "(about/contributing.md)"
+                )
+                content = content.replace("(CHANGELOG.md)", "(changelog.md)")
+                content = content.replace("(MAINTAINERS.md)", "(maintainers.md)")
+                content = content.replace("(LICENSE)", "(license.md)")
 
             # Specific fixes for about/ files
             if rel_path.startswith("about/"):
