@@ -13,6 +13,20 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.45] - 2026-07-23
+
+### 🚀 Features
+
+- Add automated terminal screenshot generator and update documentation
+- Add verbose status mode (-V/--verbose) for detailed Flatpak table overview
+- Add -B/--hide-banner option and cli.hide_banner config setting to hide ASCII
+  header banner
+- Add -v/--version option to display installed application version
+
+### ⚙️ Miscellaneous Tasks
+
+- Update smoke test matrix for Fedora 43/44 and AlmaLinux 10
+
 ## [1.5.44] - 2026-05-15
 
 ### 🐛 Bug Fixes
