@@ -90,8 +90,10 @@ When you are ready to cut a new release, follow these steps to generate the
    tbump X.Y.Z --no-push
    ```
 
-   _Note: `tbump` will automatically trigger the `before_commit` hook, run
-   `update-package-metadata.py`, generate the changelog and bundle everything
+   _Note: `tbump` will automatically trigger the `before_commit` hooks to
+   regenerate the status screenshot
+   (`scripts/maintainer/generate-screenshot.py`), run
+   `update-package-metadata.py`, generate the changelog, and bundle everything
    into a single release commit and local tag._
 
    💡 **Tip for Release Candidates:** You can safely use standard SemVer tags

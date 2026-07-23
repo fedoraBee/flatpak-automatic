@@ -4,6 +4,7 @@ import logging
 import signal
 import subprocess
 from typing import Any
+from . import __version__
 from .cli import get_parser, banner
 from .config import ConfigManager, StateManager
 from .core import AutomationEngine
@@ -15,17 +16,25 @@ def main() -> None:
     # 1. Initialize Parser & Logging
     parser = get_parser()
     args = parser.parse_args()
+
+    if args.version:
+        print(f"flatpak-automatic {__version__}")
+        sys.exit(0)
+
     setup_logging()
 
     # Dynamic Flatpak Scope for non-root execution
     user_scope = os.geteuid() != 0
     flatpak_scope = ["--user"] if user_scope else ["--system"]
 
-    if sys.stdout.isatty():
-        print(banner())
-
     # 2. Load Configuration & State
     config = ConfigManager.load()
+
+    # Determine if banner should be displayed
+    hide_banner = args.hide_banner or config.get("cli", {}).get("hide_banner", False)
+
+    if sys.stdout.isatty() and not hide_banner:
+        print(banner())
 
     def sighup_handler(signum: int, frame: Any) -> None:
         logging.info("SIGHUP received. Hot-reloading configuration...")
@@ -160,8 +169,8 @@ def main() -> None:
             print()
             sys.exit(0)
 
-        if args.status:
-            engine.print_status_overview()
+        if args.status or args.verbose:
+            engine.print_status_overview(verbose=args.verbose)
             sys.exit(0)
 
         if args.history:

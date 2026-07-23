@@ -1,6 +1,7 @@
 # ✅ Update Report: Success
 
-The `flatpak-automatic` agent has successfully installed **${UPDATE_COUNT}**
+The `flatpak-automatic` agent has successfully installed
+**${UPDATE_COUNT}**
 updates on the host **${HOSTNAME}**.
 
 ## Installation Details

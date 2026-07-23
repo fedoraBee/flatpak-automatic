@@ -33,6 +33,15 @@ exclusions: []
 auto_notify: always
 
 # ------------------------------------------------------------------------------
+# CLI & Interface Settings
+# ------------------------------------------------------------------------------
+
+cli:
+  # Hide the ASCII header banner when executing from terminal.
+  # Type: boolean, Default: false
+  hide_banner: false
+
+# ------------------------------------------------------------------------------
 # Systemd Timer Schedule (User Scope)
 # ------------------------------------------------------------------------------
 # These settings control the execution frequency via user-level systemd timers.
