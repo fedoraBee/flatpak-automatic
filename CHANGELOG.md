@@ -13,6 +13,18 @@ The used format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.46] - 2026-07-23
+
+### 🐛 Bug Fixes
+
+- Resolve missing homepage screenshot and asset paths in MkDocs preparation
+
+### ⚙️ Miscellaneous Tasks
+
+- _(release)_ Bump version to 1.5.46
+- Update status screenshot title to sudo flatpak-automatic -s (#358)
+- Prepare CHANGELOG for 1.5.46 release
+
 ## [1.5.45] - 2026-07-23
 
 ### 🚀 Features
