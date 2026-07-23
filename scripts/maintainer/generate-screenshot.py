@@ -113,15 +113,24 @@ def generate_screenshot() -> None:
 
     output_text = None
 
-    # Try non-interactive sudo first, then interactive sudo, then non-root execution
+    python_root_fallback = [
+        sys.executable,
+        "-c",
+        "from unittest.mock import patch; import sys, os; sys.path.insert(0, 'src'); "
+        "from flatpak_automatic.__main__ import main; sys.argv = ['flatpak-automatic', '-s', '-B']; "
+        "with patch('os.geteuid', return_value=0): "
+        "  try: main()\n  except SystemExit: pass",
+    ]
+
+    # Try non-interactive sudo first, then interactive sudo, then root-mocked execution
     attempts = [
-        ["sudo", "-n", sys.executable, str(cli_script), "-s"],
-        ["sudo", sys.executable, str(cli_script), "-s"],
-        [sys.executable, str(cli_script), "-s"],
+        ["sudo", "-n", sys.executable, str(cli_script), "-s", "-B"],
+        ["sudo", sys.executable, str(cli_script), "-s", "-B"],
+        python_root_fallback,
     ]
 
     if os.geteuid() == 0:
-        attempts.insert(0, [sys.executable, str(cli_script), "-s"])
+        attempts.insert(0, [sys.executable, str(cli_script), "-s", "-B"])
 
     for cmd in attempts:
         try:
@@ -131,7 +140,7 @@ def generate_screenshot() -> None:
                 capture_output=True,
                 text=True,
                 check=True,
-                timeout=5,
+                timeout=15,
             )
             output_text = result.stdout.strip()
             if output_text:
@@ -142,7 +151,7 @@ def generate_screenshot() -> None:
     if not output_text:
         # Ultimate fallback
         result = subprocess.run(
-            [sys.executable, str(cli_script), "-s"],
+            python_root_fallback,
             cwd=repo_root,
             capture_output=True,
             text=True,
