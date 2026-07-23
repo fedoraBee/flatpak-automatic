@@ -19,6 +19,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Resolve missing homepage screenshot and asset paths in MkDocs preparation
 
+### ⚙️ Miscellaneous Tasks
+
+- _(release)_ Bump version to 1.5.46
+- Update status screenshot title to sudo flatpak-automatic -s (#358)
+- Prepare CHANGELOG for 1.5.46 release
+
 ## [1.5.45] - 2026-07-23
 
 ### 🚀 Features
