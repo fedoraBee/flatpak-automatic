@@ -158,7 +158,7 @@ def generate_screenshot() -> None:
     console.print(rich_text)
 
     svg_data = console.export_svg(
-        title="flatpak-automatic -s", theme=VIBRANT_TERMINAL_THEME
+        title="sudo flatpak-automatic -s", theme=VIBRANT_TERMINAL_THEME
     )
     temp_svg.write_text(svg_data, encoding="utf-8")
 
