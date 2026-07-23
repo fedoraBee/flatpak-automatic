@@ -227,6 +227,76 @@ class TestMainCLI:
     @patch("flatpak_automatic.__main__.ConfigManager.load")
     @patch("flatpak_automatic.__main__.StateManager.load")
     @patch("flatpak_automatic.__main__.AutomationEngine")
+    @patch("sys.stdout.isatty", return_value=True)
+    @patch("flatpak_automatic.__main__.banner")
+    def test_main_hide_banner_cli(
+        self,
+        mock_banner: MagicMock,
+        mock_isatty: MagicMock,
+        mock_engine: MagicMock,
+        mock_state: MagicMock,
+        mock_config: MagicMock,
+        mock_parser: MagicMock,
+    ) -> None:
+        args = MagicMock(
+            check_config=True,
+            hide_banner=True,
+            reload=False,
+            apply_schedule=False,
+            enable_timer=False,
+            disable_timer=False,
+            status=False,
+            verbose=False,
+            history=False,
+            test_notify=False,
+        )
+        mock_parser.return_value.parse_args.return_value = args
+        mock_config.return_value = {"cli": {"hide_banner": False}}
+
+        with pytest.raises(SystemExit) as e:
+            main()
+        assert e.value.code == 0
+        mock_banner.assert_not_called()
+
+    @patch("flatpak_automatic.__main__.get_parser")
+    @patch("flatpak_automatic.__main__.ConfigManager.load")
+    @patch("flatpak_automatic.__main__.StateManager.load")
+    @patch("flatpak_automatic.__main__.AutomationEngine")
+    @patch("sys.stdout.isatty", return_value=True)
+    @patch("flatpak_automatic.__main__.banner")
+    def test_main_hide_banner_config(
+        self,
+        mock_banner: MagicMock,
+        mock_isatty: MagicMock,
+        mock_engine: MagicMock,
+        mock_state: MagicMock,
+        mock_config: MagicMock,
+        mock_parser: MagicMock,
+    ) -> None:
+        args = MagicMock(
+            check_config=True,
+            hide_banner=False,
+            reload=False,
+            apply_schedule=False,
+            enable_timer=False,
+            disable_timer=False,
+            status=False,
+            verbose=False,
+            history=False,
+            test_notify=False,
+        )
+        mock_parser.return_value.parse_args.return_value = args
+        mock_config.return_value = {"cli": {"hide_banner": True}}
+
+        with pytest.raises(SystemExit) as e:
+            main()
+        assert e.value.code == 0
+        mock_banner.assert_not_called()
+
+    @patch("flatpak_automatic.__main__.get_parser")
+    @patch("flatpak_automatic.__main__.ConfigManager.load")
+    @patch("flatpak_automatic.__main__.StateManager.load")
+    @patch("flatpak_automatic.__main__.AutomationEngine")
     @patch("subprocess.run")
     @patch("os.makedirs")
     def test_main_apply_schedule(
@@ -240,6 +310,7 @@ class TestMainCLI:
     ) -> None:
         args = MagicMock(
             check_config=False,
+            hide_banner=False,
             reload=False,
             apply_schedule=True,
             enable_timer=False,

@@ -52,6 +52,12 @@ def get_parser() -> BrandedArgumentParser:
         help="Display system monitoring overview and exit.",
     )
     parser.add_argument(
+        "-B",
+        "--hide-banner",
+        action="store_true",
+        help="Hide the header ASCII banner upon execution.",
+    )
+    parser.add_argument(
         "-V",
         "--verbose",
         action="store_true",

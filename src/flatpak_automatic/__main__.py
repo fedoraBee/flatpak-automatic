@@ -21,11 +21,14 @@ def main() -> None:
     user_scope = os.geteuid() != 0
     flatpak_scope = ["--user"] if user_scope else ["--system"]
 
-    if sys.stdout.isatty():
-        print(banner())
-
     # 2. Load Configuration & State
     config = ConfigManager.load()
+
+    # Determine if banner should be displayed
+    hide_banner = args.hide_banner or config.get("cli", {}).get("hide_banner", False)
+
+    if sys.stdout.isatty() and not hide_banner:
+        print(banner())
 
     def sighup_handler(signum: int, frame: Any) -> None:
         logging.info("SIGHUP received. Hot-reloading configuration...")
