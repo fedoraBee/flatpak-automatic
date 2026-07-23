@@ -2,10 +2,10 @@ name: Pipeline
 
 on:
   push:
-    branches: [ main, gh-pages ]
-    tags: [ 'v*' ]
+    branches: [main, gh-pages]
+    tags: ["v*"]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -36,7 +36,7 @@ jobs:
       - name: Lint Shell Scripts
         uses: ludeeus/action-shellcheck@2.0.0
         with:
-          scandir: './scripts'
+          scandir: "./scripts"
 
       - name: Lint Documentation
         uses: DavidAnson/markdownlint-cli2-action@v23
@@ -70,11 +70,11 @@ jobs:
       - name: Run Ruff Lint
         uses: astral-sh/ruff-action@v3
         with:
-          args: 'check scripts/ tests/'
+          args: "check scripts/ tests/"
       - name: Run Ruff Format
         uses: astral-sh/ruff-action@v3
         with:
-          args: 'format --check scripts/ tests/'
+          args: "format --check scripts/ tests/"
       - name: Run Mypy Type Check
         run: |
           pipx install mypy
@@ -131,31 +131,31 @@ jobs:
       fail-fast: false
       matrix:
         target:
-          - name: 'Fedora'
-            image: 'fedora:latest'
-            pkg_cmd: 'dnf install -y'
-            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-yaml'
-          - name: 'AlmaLinux'
-            image: 'almalinux:9'
+          - name: "Fedora"
+            image: "fedora:latest"
+            pkg_cmd: "dnf install -y"
+            deps: "bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-yaml"
+          - name: "AlmaLinux"
+            image: "almalinux:9"
             # Enable CRB for epel, then install epel-release for bats, then install packages
-            pkg_cmd: 'dnf install -y dnf-plugins-core && dnf config-manager --set-enabled crb && dnf install -y epel-release && dnf install -y'
-            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-yaml'
-          - name: 'Debian'
-            image: 'debian:latest'
-            pkg_cmd: 'apt-get update && apt-get install -y'
-            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname bsdutils python3-yaml'
-          - name: 'Ubuntu'
-            image: 'ubuntu:latest'
-            pkg_cmd: 'apt-get update && apt-get install -y'
-            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname bsdutils python3-yaml'
-          - name: 'Arch Linux'
-            image: 'archlinux:latest'
-            pkg_cmd: 'pacman -Syu --noconfirm'
-            deps: 'bats python-pytest python-pytest-cov python-pytest-xdist make inetutils util-linux python-yaml'
-          - name: 'OpenSUSE'
-            image: 'opensuse/tumbleweed:latest'
-            pkg_cmd: 'zypper --non-interactive install'
-            deps: 'bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-PyYAML python3-dbus-python'
+            pkg_cmd: "dnf install -y dnf-plugins-core && dnf config-manager --set-enabled crb && dnf install -y epel-release && dnf install -y"
+            deps: "bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-yaml"
+          - name: "Debian"
+            image: "debian:latest"
+            pkg_cmd: "apt-get update && apt-get install -y"
+            deps: "bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname bsdutils python3-yaml"
+          - name: "Ubuntu"
+            image: "ubuntu:latest"
+            pkg_cmd: "apt-get update && apt-get install -y"
+            deps: "bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname bsdutils python3-yaml"
+          - name: "Arch Linux"
+            image: "archlinux:latest"
+            pkg_cmd: "pacman -Syu --noconfirm"
+            deps: "bats python-pytest python-pytest-cov python-pytest-xdist make inetutils util-linux python-yaml"
+          - name: "OpenSUSE"
+            image: "opensuse/tumbleweed:latest"
+            pkg_cmd: "zypper --non-interactive install"
+            deps: "bats python3-pytest python3-pytest-cov python3-pytest-xdist make hostname util-linux python3-PyYAML python3-dbus-python"
     container:
       image: ${{ matrix.target.image }}
     steps:
@@ -244,8 +244,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Added almalinux:9 and opensuse/tumbleweed for comprehensive Linux representation
-        os: [fedora:40, fedora:41, almalinux:9, ubuntu:latest, debian:latest, opensuse/tumbleweed:latest]
+        # Tested on active stable Fedora releases (43, 44), AlmaLinux 9 & 10, Ubuntu, Debian, and openSUSE Tumbleweed
+        os:
+          [
+            fedora:43,
+            fedora:44,
+            almalinux:9,
+            almalinux:10,
+            ubuntu:latest,
+            debian:latest,
+            opensuse/tumbleweed:latest,
+          ]
     container:
       image: ${{ matrix.os }}
       options: --privileged
@@ -260,21 +269,23 @@ jobs:
           elif command -v zypper >/dev/null 2>&1; then
             zypper --non-interactive --no-gpg-checks install curl unzip systemd util-linux shadow
           else
-            # For AlmaLinux, enable EPEL, CRB, and Oracle UEK (for snapper)
+            # For AlmaLinux, enable EPEL, CRB, and Oracle UEK (for EL9 snapper)
             if grep -q "AlmaLinux" /etc/os-release; then
                 dnf install -y epel-release dnf-plugins-core
                 dnf config-manager --set-enabled crb || true
-                {
-                    echo "[ol9_UEKR7]"
-                    echo "name=Oracle Linux 9 UEK Release 7 (\$basearch)"
-                    echo "baseurl=https://yum.oracle.com/repo/OracleLinux/OL9/UEKR7/\$basearch/"
-                    echo "gpgkey=https://yum.oracle.com/RPM-GPG-KEY-oracle-ol9"
-                    echo "gpgcheck=1"
-                    echo "enabled=1"
-                } > /etc/yum.repos.d/oracle-linux-9.repo
+                if grep -q 'VERSION_ID="9' /etc/os-release; then
+                    {
+                        echo "[ol9_UEKR7]"
+                        echo "name=Oracle Linux 9 UEK Release 7 (\$basearch)"
+                        echo "baseurl=https://yum.oracle.com/repo/OracleLinux/OL9/UEKR7/\$basearch/"
+                        echo "gpgkey=https://yum.oracle.com/RPM-GPG-KEY-oracle-ol9"
+                        echo "gpgcheck=1"
+                        echo "enabled=1"
+                    } > /etc/yum.repos.d/oracle-linux-9.repo
+                fi
                 dnf makecache
                 # Pre-install dependencies to ensure they are available
-                dnf install -y --allowerasing snapper s-nail || dnf install -y --allowerasing snapper mailx
+                dnf install -y --allowerasing snapper s-nail || dnf install -y --allowerasing snapper mailx || true
             fi
 
             dnf install -y --allowerasing curl unzip systemd shadow-utils util-linux
